@@ -4,11 +4,11 @@
 const CLUES = [
   {
     umbralDias: 10, // se abre 15 de septiembre
-    texto: 'LA PISTA DE MALETAS · Preparate la maleta: repelente, bloqueador, ropa ligera, chanclas cómodas. Y lo más importante: no olvides tu pasaporte físico.',
+    texto: 'LA PISTA DE MALETAS · Prepara la maleta: repelente, bloqueador, ropa ligera, chanclas cómodas. Y lo más importante: no olvides tu pasaporte físico.',
   },
   {
     umbralDias: 5,
-    texto: 'Va a haber fuego en la arena, y no es solo para calentarse. Llevá algo que quieras dejar atrás.',
+    texto: 'Va a haber fuego en la arena, y no es solo para calentarse. Lleva algo que quieras dejar atrás.',
   },
   {
     umbralDias: 1,
