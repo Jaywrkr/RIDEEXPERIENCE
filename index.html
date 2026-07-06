@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Las Tanusas 2026 — A Todo Terreno · Shineray</title>
+<meta name="description" content="Manifiesto de expedición Las Tanusas 2026. Invitación exclusiva Shineray.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-state="invitado">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="grain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.4 0"/>
+    <feComposite operator="over" in2="SourceGraphic"/>
+  </filter>
+</svg>
+<a class="skip-link" href="#manifiesto">Ir al manifiesto de expedición</a>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="hero__grain" aria-hidden="true"></div>
+  <div class="hero__dune" aria-hidden="true"></div>
+  <div class="hero__content">
+    <p class="overline">TRANSMISIÓN RESTRINGIDA</p>
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <span>SHINERAY</span>
+    </div>
+    <h1 class="hero__title">LAS TANUSAS</h1>
+    <p class="hero__sub">A TODO TERRENO — CONVENCIÓN 2026</p>
+    <p class="hero__hint">Tu nombre ya está en la arena.<br>Bajá para confirmarlo.</p>
+    <button class="scroll-cue" id="scrollCue" aria-label="Bajar a la bitácora">
+      <span class="scroll-cue__line"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ BITÁCORA (storytelling) ============ -->
+<section class="bitacora" id="bitacora" aria-label="Bitácora de la expedición">
+  <p class="bitacora__linea reveal">No hay ruta marcada. Solo coordenadas que se revelan a quien se anima a cruzar.</p>
+  <p class="bitacora__linea reveal">Las Tanusas no están en ningún mapa turístico. Las abre quien las pisa primero.</p>
+  <p class="bitacora__linea reveal">Recibiste esta invitación porque alguien confía en que aguantás el terreno. No hace falta explicarla. No la compartas.</p>
+</section>
+
+<!-- ============ MANIFIESTO (formulario tipo pasaporte) ============ -->
+<section class="manifiesto" id="manifiesto" aria-labelledby="manifiestoTitulo">
+  <div class="manifiesto__card" id="manifiestoCard">
+    <p class="overline">MANIFIESTO DE EXPEDICIÓN</p>
+    <h2 id="manifiestoTitulo">Sellá tu lugar en el convoy</h2>
+    <p class="manifiesto__intro">Cada nombre que entra queda sellado. No hay vuelta atrás, solo ruta.</p>
+
+    <form id="passportForm" novalidate>
+      <div class="field">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" required autocomplete="name">
+        <span class="field__error" id="err-nombre" role="alert"></span>
+      </div>
+
+      <div class="field">
+        <label for="alias">Alias de radio <em>(opcional)</em></label>
+        <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
+      </div>
+
+      <div class="field field--split">
+        <div>
+          <label for="moto">Modelo de moto</label>
+          <input type="text" id="moto" name="moto" required>
+          <span class="field__error" id="err-moto" role="alert"></span>
+        </div>
+        <div>
+          <label for="ciudad">Ciudad de partida</label>
+          <input type="text" id="ciudad" name="ciudad" required>
+          <span class="field__error" id="err-ciudad" role="alert"></span>
+        </div>
+      </div>
+
+      <fieldset class="tiers">
+        <legend>Categoría de acceso</legend>
+
+        <label class="tier tier--standard">
+          <input type="radio" name="tier" value="standard" checked>
+          <span class="tier__mark" aria-hidden="true"></span>
+          <span class="tier__name">STANDARD <em>· Convoy Base</em></span>
+          <span class="tier__desc">Entrás al convoy. Ruta compartida, campamento común, la misma arena para todos.</span>
+        </label>
+
+        <label class="tier tier--plus">
+          <input type="radio" name="tier" value="plus">
+          <span class="tier__mark" aria-hidden="true"></span>
+          <span class="tier__name">PLUS <em>· Avanzada</em></span>
+          <span class="tier__desc">Salís antes que el resto. Zona de acampe reservada, briefing con los guías de ruta.</span>
+        </label>
+
+        <label class="tier tier--elite">
+          <input type="radio" name="tier" value="elite">
+          <span class="tier__mark" aria-hidden="true"></span>
+          <span class="tier__name">ELITE <em>· Cabeza de expedición</em></span>
+          <span class="tier__desc">Vas al frente. Acceso a pistas antes que nadie, ruta técnica exclusiva, cupo mínimo.</span>
+        </label>
+      </fieldset>
+
+      <button type="submit" class="btn-sellar">
+        <span>SELLAR MI LUGAR</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Canvas donde el manifiesto se disuelve en arena -->
+  <canvas id="dustCanvas" class="dust-canvas" aria-hidden="true"></canvas>
+</section>
+
+<!-- ============ CONFIRMACIÓN ============ -->
+<section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
+  <div class="sello" aria-hidden="true">SELLADO</div>
+  <h2 id="confTitulo">Quedás sellado.</h2>
+  <p>Tu nombre entró al manifiesto de Las Tanusas 2026.<br>A partir de ahora, la arena empieza a moverse para vos.</p>
+  <p class="confirmacion__tier" id="confTier"></p>
+</section>
+
+<!-- ============ COUNTDOWN ============ -->
+<section class="countdown" id="countdown" hidden aria-label="Cuenta regresiva hasta el evento">
+  <p class="overline">CUENTA REGRESIVA HASTA CRUZAR LA DUNA</p>
+  <div class="countdown__grid" role="timer" aria-live="off">
+    <div class="countdown__unit"><span id="cd-dias">00</span><small>días</small></div>
+    <div class="countdown__unit"><span id="cd-horas">00</span><small>hs</small></div>
+    <div class="countdown__unit"><span id="cd-min">00</span><small>min</small></div>
+    <div class="countdown__unit"><span id="cd-seg">00</span><small>seg</small></div>
+  </div>
+</section>
+
+<!-- ============ PISTAS ============ -->
+<section class="pistas" id="pistas" hidden aria-label="Pistas de ruta">
+  <p class="overline">PISTAS DE RUTA</p>
+  <p class="pistas__intro">Se revelan solas, a medida que se acerca la fecha. No preguntes por más — el terreno decide cuándo.</p>
+  <ol class="pistas__lista" id="pistasLista"></ol>
+</section>
+
+<footer class="footer">
+  <p>SHINERAY — LAS TANUSAS 2026 · Invitación no transferible</p>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
