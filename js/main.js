@@ -10,11 +10,12 @@ initHeroParallax();
 
 let stopCountdown = null;
 
-function revealPostSello(tierLabel) {
+function revealPostSello({ serial, tierLabel }) {
   const confirmacion = document.getElementById('confirmacion');
   const countdown = document.getElementById('countdown');
   const pistas = document.getElementById('pistas');
 
+  document.getElementById('confSerial').textContent = serial;
   document.getElementById('confTier').textContent = tierLabel;
 
   confirmacion.hidden = false;
@@ -29,7 +30,7 @@ function revealPostSello(tierLabel) {
 }
 
 initPassportForm({
-  onSealed: ({ tierLabel }) => revealPostSello(tierLabel),
+  onSealed: revealPostSello,
 });
 
 window.addEventListener('beforeunload', () => {

@@ -7,7 +7,7 @@
 <meta name="description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. 25, 26 y 27 de septiembre · Tanusas, Manabí.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-state="invitado">
@@ -89,71 +89,86 @@
   <p class="explicador__cta">↓ Probalo vos mismo con tu pasaporte</p>
 </section>
 
-<!-- ============ MANIFIESTO (formulario tipo pasaporte) ============ -->
+<!-- ============ MANIFIESTO (pasaporte digital de expedición) ============ -->
 <section class="manifiesto" id="manifiesto" aria-labelledby="manifiestoTitulo">
-  <div class="manifiesto__card" id="manifiestoCard">
-    <p class="overline">REGISTRO · PASAPORTE DE AVENTURA</p>
-    <h2 id="manifiestoTitulo">Sellá tu lugar en el convoy</h2>
-    <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia Tanusas. Confirmá y el conteo empieza para vos.</p>
+  <div class="pasaporte" id="manifiestoCard">
+    <span class="pasaporte__watermark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="220" height="220" role="presentation">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
 
-    <form id="passportForm" novalidate>
-      <div class="field">
-        <label for="nombre">Nombre completo</label>
-        <input type="text" id="nombre" name="nombre" required autocomplete="name">
-        <span class="field__error" id="err-nombre" role="alert"></span>
-      </div>
+    <div class="pasaporte__header">
+      <span class="pasaporte__emisor">SHINERAY MOTORS · DOCUMENTO DE EXPEDICIÓN</span>
+      <span class="pasaporte__serial">N.º <span id="passportSerial">AT26-000000</span></span>
+    </div>
 
-      <div class="field">
-        <label for="alias">Alias de radio <em>(opcional)</em></label>
-        <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
-      </div>
+    <div class="pasaporte__body">
+      <p class="overline">PASAPORTE DE AVENTURA</p>
+      <h2 id="manifiestoTitulo">Sellá tu lugar en el convoy</h2>
+      <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia Tanusas. Confirmá y el conteo empieza para vos.</p>
 
-      <div class="field field--split">
-        <div>
-          <label for="moto">Modelo de moto</label>
-          <input type="text" id="moto" name="moto" required>
-          <span class="field__error" id="err-moto" role="alert"></span>
+      <form id="passportForm" novalidate>
+        <div class="field">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" required autocomplete="name">
+          <span class="field__error" id="err-nombre" role="alert"></span>
         </div>
-        <div>
-          <label for="ciudad">Ciudad de partida</label>
-          <input type="text" id="ciudad" name="ciudad" required>
-          <span class="field__error" id="err-ciudad" role="alert"></span>
+
+        <div class="field">
+          <label for="alias">Alias de radio <em>(opcional)</em></label>
+          <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
         </div>
-      </div>
 
-      <fieldset class="tiers">
-        <legend>Categoría de acceso</legend>
-        <p class="tiers__nota">Tu categoría la define tu compra del trimestre. Elegí la que te confirmó tu asesor.</p>
+        <div class="field field--split">
+          <div>
+            <label for="moto">Modelo de moto</label>
+            <input type="text" id="moto" name="moto" required>
+            <span class="field__error" id="err-moto" role="alert"></span>
+          </div>
+          <div>
+            <label for="ciudad">Ciudad de partida</label>
+            <input type="text" id="ciudad" name="ciudad" required>
+            <span class="field__error" id="err-ciudad" role="alert"></span>
+          </div>
+        </div>
 
-        <label class="tier tier--standard">
-          <input type="radio" name="tier" value="standard" checked>
-          <span class="tier__mark" aria-hidden="true"></span>
-          <span class="tier__name">STANDARD <em>· Convoy</em></span>
-          <span class="tier__desc">Ruta compartida, villa estándar. Entrás al mismo terreno que todos: la sede se abre igual para vos.</span>
-        </label>
+        <fieldset class="tiers">
+          <legend>Categoría de acceso</legend>
+          <p class="tiers__nota">Tu categoría la define tu compra del trimestre. Elegí la que te confirmó tu asesor.</p>
 
-        <label class="tier tier--plus">
-          <input type="radio" name="tier" value="plus">
-          <span class="tier__mark" aria-hidden="true"></span>
-          <span class="tier__name">PLUS <em>· Avanzada</em></span>
-          <span class="tier__desc">Tu pedido del trimestre te subió de categoría. Villa superior, acceso a zonas reservadas del predio.</span>
-        </label>
+          <label class="tier tier--standard">
+            <input type="radio" name="tier" value="standard" checked>
+            <span class="tier__mark" aria-hidden="true"></span>
+            <span class="tier__name">STANDARD <em>· Convoy</em></span>
+            <span class="tier__desc">Ruta compartida, villa estándar. Entrás al mismo terreno que todos: la sede se abre igual para vos.</span>
+          </label>
 
-        <label class="tier tier--elite">
-          <input type="radio" name="tier" value="elite">
-          <span class="tier__mark" aria-hidden="true"></span>
-          <span class="tier__name">ELITE <em>· Cabeza de expedición</em></span>
-          <span class="tier__desc">Los números más altos van al frente. Mejor villa, mejor acceso, primera fila en cada actividad.</span>
-        </label>
-      </fieldset>
+          <label class="tier tier--plus">
+            <input type="radio" name="tier" value="plus">
+            <span class="tier__mark" aria-hidden="true"></span>
+            <span class="tier__name">PLUS <em>· Avanzada</em></span>
+            <span class="tier__desc">Tu pedido del trimestre te subió de categoría. Villa superior, acceso a zonas reservadas del predio.</span>
+          </label>
 
-      <button type="submit" class="btn-sellar">
-        <span>SELLAR MI LUGAR</span>
-      </button>
-    </form>
+          <label class="tier tier--elite">
+            <input type="radio" name="tier" value="elite">
+            <span class="tier__mark" aria-hidden="true"></span>
+            <span class="tier__name">ELITE <em>· Cabeza de expedición</em></span>
+            <span class="tier__desc">Los números más altos van al frente. Mejor villa, mejor acceso, primera fila en cada actividad.</span>
+          </label>
+        </fieldset>
+
+        <button type="submit" class="btn-sellar">
+          <span>SELLAR MI LUGAR</span>
+        </button>
+        <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026 · Tanusas, Manabí.</p>
+      </form>
+    </div>
   </div>
 
-  <!-- Canvas donde el manifiesto se disuelve en arena -->
+  <!-- Canvas donde el pasaporte se disuelve en arena -->
   <canvas id="dustCanvas" class="dust-canvas" aria-hidden="true"></canvas>
 </section>
 
@@ -162,7 +177,10 @@
   <div class="sello" aria-hidden="true">SELLADO</div>
   <h2 id="confTitulo">Quedás sellado.</h2>
   <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sube a Tanusas el 25 de septiembre.</p>
-  <p class="confirmacion__tier" id="confTier"></p>
+  <dl class="confirmacion__datos">
+    <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
+    <div><dt>Categoría</dt><dd id="confTier">—</dd></div>
+  </dl>
 </section>
 
 <!-- ============ COUNTDOWN ============ -->

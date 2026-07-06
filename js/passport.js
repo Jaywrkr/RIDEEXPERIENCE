@@ -1,8 +1,17 @@
 const TIER_LABELS = {
-  standard: 'Categoría STANDARD — Convoy Base',
-  plus: 'Categoría PLUS — Avanzada',
-  elite: 'Categoría ELITE — Cabeza de expedición',
+  standard: 'STANDARD — Convoy',
+  plus: 'PLUS — Avanzada',
+  elite: 'ELITE — Cabeza de expedición',
 };
+
+// Genera un número de pasaporte estable para esta sesión, con formato
+// consistente con la serie de la Convención Nacional Shineray 2026.
+function generateSerial() {
+  const n = Math.floor(Math.random() * 999999)
+    .toString()
+    .padStart(6, '0');
+  return `AT26-${n}`;
+}
 
 function validate(form) {
   let ok = true;
@@ -87,7 +96,11 @@ export function initPassportForm({ onSealed }) {
   const form = document.getElementById('passportForm');
   const card = document.getElementById('manifiestoCard');
   const canvas = document.getElementById('dustCanvas');
+  const serialEl = document.getElementById('passportSerial');
   if (!form) return;
+
+  const serial = generateSerial();
+  if (serialEl) serialEl.textContent = serial;
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -107,7 +120,7 @@ export function initPassportForm({ onSealed }) {
     document.body.dataset.state = 'sellado';
 
     if (typeof onSealed === 'function') {
-      onSealed({ tierLabel: TIER_LABELS[tierValue] || TIER_LABELS.standard });
+      onSealed({ serial, tierLabel: TIER_LABELS[tierValue] || TIER_LABELS.standard });
     }
   });
 }
