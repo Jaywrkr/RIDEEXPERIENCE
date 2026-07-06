@@ -123,12 +123,17 @@ function initCoverTilt(cover) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const MAX_TILT = 10;
+  const sheen = document.getElementById('pasaporteSheen');
 
   cover.addEventListener('mousemove', (event) => {
     const rect = cover.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
     cover.style.transform = `perspective(1000px) rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg) scale(1.02)`;
+    if (sheen) {
+      sheen.style.setProperty('--sheen-x', `${((px + 0.5) * 100).toFixed(1)}%`);
+      sheen.style.setProperty('--sheen-y', `${((py + 0.5) * 100).toFixed(1)}%`);
+    }
   });
 
   cover.addEventListener('mouseleave', () => {

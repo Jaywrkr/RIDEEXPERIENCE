@@ -378,6 +378,14 @@ html { scroll-snap-type: y proximity; }
   pointer-events: none;
 }
 
+.pasaporte__texture {
+  position: absolute; inset: 0; z-index: 0;
+  filter: url(#grain);
+  opacity: .05;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
 .pasaporte__header {
   position: relative; z-index: 1;
   display: flex; justify-content: space-between; align-items: baseline;
@@ -462,7 +470,13 @@ html { scroll-snap-type: y proximity; }
 .paso--cover { text-align: center; perspective: 1000px; }
 
 .pasaporte__cover {
-  background: var(--tinta-soft);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.05), transparent 55%),
+    repeating-linear-gradient(135deg, rgba(0,0,0,.12) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 2px, transparent 2px 5px),
+    var(--tinta-soft);
   color: var(--arena-500);
   padding: 2.75rem 1.5rem;
   margin: -.25rem -.25rem 0;
@@ -480,10 +494,33 @@ html { scroll-snap-type: y proximity; }
   box-shadow: 0 22px 44px rgba(0,0,0,.45);
 }
 .pasaporte__cover:active { transition-duration: .1s; }
+
+.pasaporte__cover-grain {
+  position: absolute; inset: 0; z-index: 0;
+  filter: url(#grain);
+  opacity: .35;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.pasaporte__cover-sheen {
+  position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(circle at var(--sheen-x, 50%) var(--sheen-y, 30%), rgba(255,255,255,.55), transparent 45%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+  pointer-events: none;
+}
+.pasaporte__cover:hover .pasaporte__cover-sheen,
+.pasaporte__cover:focus-visible .pasaporte__cover-sheen {
+  opacity: 1;
+}
+
 .pasaporte__cover-emblem,
 .pasaporte__cover-title,
 .pasaporte__cover-issuer,
 .pasaporte__cover-kicker {
+  position: relative; z-index: 2;
   transform: translateZ(18px);
 }
 .pasaporte__cover-emblem { color: var(--dorado); display: inline-block; margin-bottom: 1rem; }
