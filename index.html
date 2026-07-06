@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Todo Terreno · Convención Nacional Shineray 2026 — Tanusas, Manabí</title>
-<meta name="description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. 25, 26 y 27 de septiembre · Tanusas, Manabí.">
+<title>A Todo Terreno · Convención Nacional Shineray 2026</title>
+<meta name="description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. 25, 26 y 27 de septiembre. El destino es sorpresa.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -40,8 +40,8 @@
       </svg>
       <span>SHINERAY</span>
     </div>
-    <h1 class="hero__title">LAS TANUSAS</h1>
-    <p class="hero__sub">A TODO TERRENO — 25, 26 Y 27 DE SEPTIEMBRE · MANABÍ</p>
+    <h1 class="hero__title">A TODO<br>TERRENO</h1>
+    <p class="hero__sub">CONVENCIÓN NACIONAL 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
     <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Bajá y empezá a entender por qué.</p>
     <button class="scroll-cue" id="scrollCue" data-target="bitacora-1" aria-label="Bajar a la bitácora">
       <span class="scroll-cue__line"></span>
@@ -63,7 +63,7 @@
   <p class="bitacora__linea reveal">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganás la calle todos los días.</p>
 </section>
 <section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2">
-  <p class="bitacora__linea reveal">Nadie sabe que va a Tanusas. Vos tampoco, todavía. Solo sabés la fecha, y que algo grande te espera del otro lado.</p>
+  <p class="bitacora__linea reveal">Nadie sabe a dónde va. Vos tampoco, todavía. Solo sabés la fecha, y que algo grande te espera del otro lado.</p>
 </section>
 <section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3">
   <p class="bitacora__linea reveal">El misterio no arranca en la playa. Arranca el día que abrís el sobre. Esto es lo que viene después de ese sobre.</p>
@@ -134,7 +134,7 @@
 
       <!-- PASO 1 · Portada -->
       <div class="paso paso--cover" data-step-panel="1">
-        <div class="pasaporte__cover">
+        <div class="pasaporte__cover" id="pasaporteCover" data-next role="button" tabindex="0" aria-label="Abrir pasaporte">
           <span class="pasaporte__cover-emblem" aria-hidden="true">
             <svg viewBox="0 0 48 48" width="56" height="56" role="presentation">
               <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -144,9 +144,9 @@
           </span>
           <p class="pasaporte__cover-kicker">Documento oficial de expedición</p>
           <p class="pasaporte__cover-title">PASAPORTE<br><em>de aventura</em></p>
-          <p class="pasaporte__cover-issuer">SHINERAY MOTORS · TANUSAS 2026</p>
+          <p class="pasaporte__cover-issuer">SHINERAY MOTORS · A TODO TERRENO 2026</p>
         </div>
-        <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia Tanusas. Confirmá y el conteo empieza para vos.</p>
+        <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino. Confirmá y el conteo empieza para vos.</p>
         <button type="button" class="btn-paso" data-next>Abrir pasaporte →</button>
       </div>
 
@@ -243,7 +243,7 @@
             <span>SELLAR MI LUGAR</span>
           </button>
         </div>
-        <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026 · Tanusas, Manabí.</p>
+        <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026.</p>
       </div>
     </form>
     </div>
@@ -257,7 +257,7 @@
 <section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
   <div class="sello" aria-hidden="true">SELLADO</div>
   <h2 id="confTitulo">Quedás sellado.</h2>
-  <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sube a Tanusas el 25 de septiembre.</p>
+  <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sale el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
   <dl class="confirmacion__datos">
     <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
     <div><dt>Categoría</dt><dd id="confTier">—</dd></div>
@@ -266,7 +266,7 @@
 
 <!-- ============ COUNTDOWN ============ -->
 <section class="countdown" id="countdown" hidden aria-label="Cuenta regresiva hasta el evento">
-  <p class="overline">CUENTA REGRESIVA HASTA QUE EL BUS PISE TANUSAS</p>
+  <p class="overline">CUENTA REGRESIVA HASTA EL DESTINO</p>
   <div class="countdown__grid" role="timer" aria-live="off">
     <div class="countdown__unit"><span id="cd-dias">00</span><small>días</small></div>
     <div class="countdown__unit"><span id="cd-horas">00</span><small>hs</small></div>
@@ -283,7 +283,7 @@
 </section>
 
 <footer class="footer">
-  <p>SHINERAY — CONVENCIÓN NACIONAL 2026 · TANUSAS, MANABÍ · Invitación no transferible</p>
+  <p>SHINERAY — CONVENCIÓN NACIONAL 2026 · A TODO TERRENO · Invitación no transferible</p>
 </footer>
 
 <script type="module" src="js/main.js"></script>

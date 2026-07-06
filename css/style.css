@@ -1,5 +1,5 @@
 /* =========================================================
-   LAS TANUSAS 2026 — SHINERAY
+   A TODO TERRENO 2026 — SHINERAY
    Paleta y tipografía extraídas del brief visual (Paso 0)
    ========================================================= */
 
@@ -459,7 +459,7 @@ html { scroll-snap-type: y proximity; }
 
 /* ---- Paso 1: portada del pasaporte ---- */
 
-.paso--cover { text-align: center; }
+.paso--cover { text-align: center; perspective: 1000px; }
 
 .pasaporte__cover {
   background: var(--tinta-soft);
@@ -469,6 +469,22 @@ html { scroll-snap-type: y proximity; }
   border: 1px solid rgba(185,138,58,.35);
   outline: 1px solid rgba(185,138,58,.2);
   outline-offset: -6px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  will-change: transform;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.pasaporte__cover:hover,
+.pasaporte__cover:focus-visible {
+  box-shadow: 0 22px 44px rgba(0,0,0,.45);
+}
+.pasaporte__cover:active { transition-duration: .1s; }
+.pasaporte__cover-emblem,
+.pasaporte__cover-title,
+.pasaporte__cover-issuer,
+.pasaporte__cover-kicker {
+  transform: translateZ(18px);
 }
 .pasaporte__cover-emblem { color: var(--dorado); display: inline-block; margin-bottom: 1rem; }
 .pasaporte__cover-kicker {

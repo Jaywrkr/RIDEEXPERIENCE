@@ -12,7 +12,7 @@ const CLUES = [
   },
   {
     umbralDias: 1,
-    texto: 'El bus pisa Tanusas mañana. Ahí, por fin, se rompe el misterio.',
+    texto: 'El bus llega a destino mañana. Ahí, por fin, se rompe el misterio.',
   },
 ];
 

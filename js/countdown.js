@@ -1,5 +1,5 @@
-// Cuenta regresiva hacia la llegada del bus a Tanusas.
-// Convención Nacional Shineray 2026: 25, 26 y 27 de septiembre — Tanusas, Manabí (UTC-5).
+// Cuenta regresiva hacia la llegada del bus al destino (secreto hasta el día del viaje).
+// Convención Nacional Shineray 2026: 25, 26 y 27 de septiembre (UTC-5).
 export const EVENT_DATE = new Date('2026-09-25T09:00:00-05:00');
 
 export function initCountdown(onTick) {

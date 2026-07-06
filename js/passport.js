@@ -116,6 +116,26 @@ function runDustDissolve(cardEl, canvas) {
   });
 }
 
+// Inclina la portada del pasaporte siguiendo el cursor, como si fuera un
+// objeto físico que se puede tomar entre las manos. Se omite con reduced-motion.
+function initCoverTilt(cover) {
+  if (!cover) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const MAX_TILT = 10;
+
+  cover.addEventListener('mousemove', (event) => {
+    const rect = cover.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    cover.style.transform = `perspective(1000px) rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg) scale(1.02)`;
+  });
+
+  cover.addEventListener('mouseleave', () => {
+    cover.style.transform = '';
+  });
+}
+
 export function initPassportForm({ onSealed }) {
   const form = document.getElementById('passportForm');
   const card = document.getElementById('manifiestoCard');
@@ -129,6 +149,8 @@ export function initPassportForm({ onSealed }) {
 
   const serial = generateSerial();
   if (serialEl) serialEl.textContent = serial;
+
+  initCoverTilt(document.getElementById('pasaporteCover'));
 
   let currentStep = 1;
 
@@ -158,6 +180,16 @@ export function initPassportForm({ onSealed }) {
     const panel = panels.find((p) => Number(p.dataset.stepPanel) === n);
     const firstInput = panel && panel.querySelector('input:not([type="radio"]), input[type="radio"]:checked');
     if (firstInput) firstInput.focus({ preventScroll: true });
+  }
+
+  const cover = document.getElementById('pasaporteCover');
+  if (cover) {
+    cover.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        cover.click();
+      }
+    });
   }
 
   form.addEventListener('click', (event) => {
