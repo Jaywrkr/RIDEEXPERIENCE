@@ -210,6 +210,99 @@ body {
   transform: translateY(0);
 }
 
+/* ========================= EXPLICADOR ========================= */
+
+.explicador {
+  position: relative;
+  background: #fff;
+  color: var(--tinta);
+  padding: 5rem 1.5rem 6rem;
+  overflow: hidden;
+}
+
+.explicador__bleed {
+  position: absolute; bottom: 0; width: 42%; height: 30%;
+  background-image: radial-gradient(circle, var(--rojo) 1.6px, transparent 1.8px);
+  background-size: 8px 8px;
+  opacity: .55;
+  pointer-events: none;
+}
+.explicador__bleed--left {
+  left: 0;
+  clip-path: polygon(0 40%, 60% 100%, 0 100%);
+}
+.explicador__bleed--right {
+  right: 0;
+  clip-path: polygon(100% 30%, 100% 100%, 30% 100%);
+}
+
+.explicador__head {
+  position: relative; z-index: 1;
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto 3rem;
+}
+.explicador__head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  margin: 0 0 .75rem;
+}
+.explicador__sub { opacity: .7; font-size: .92rem; margin: 0; }
+
+.explicador__grid {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.explicador__card {
+  background: var(--hueso);
+  border: 1px solid rgba(20,17,13,.1);
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 12px 30px rgba(20,17,13,.06);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.explicador__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(20,17,13,.12);
+}
+
+.explicador__num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem;
+  background: var(--rojo);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  border-radius: 50%;
+  margin-bottom: 1.25rem;
+}
+
+.explicador__card h3 {
+  font-size: 1.05rem;
+  margin: 0 0 .6rem;
+}
+
+.explicador__card p {
+  font-size: .88rem;
+  line-height: 1.55;
+  opacity: .75;
+  margin: 0;
+}
+
+.explicador__cta {
+  position: relative; z-index: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .1em;
+  color: var(--rojo-dark);
+  margin: 3rem 0 0;
+}
+
 /* ========================= MANIFIESTO ========================= */
 
 .manifiesto {
