@@ -1,26 +1,18 @@
 // Mecánica de pistas de ruta: cada pista se desbloquea sola al cruzar un umbral
 // de días restantes hacia el evento. No hay acción del usuario que las abra:
-// el terreno (el tiempo) decide, reforzando la narrativa de expedición.
+// el terreno (el tiempo) decide, reforzando la narrativa de "tres pistas, cero respuestas".
 const CLUES = [
   {
-    umbralDias: Infinity, // visible desde que el usuario queda sellado
-    texto: 'Las Tanusas quedan a menos de dos horas de asfalto del último surtidor. Cargá el tanque antes de salir del pueblo.',
+    umbralDias: 10, // se abre 15 de septiembre
+    texto: 'LA PISTA DE MALETAS · Preparate la maleta: repelente, bloqueador, ropa ligera, chanclas cómodas. Y lo más importante: no olvides tu pasaporte físico.',
   },
   {
-    umbralDias: 30,
-    texto: 'El tramo de arena blanda empieza después del segundo cruce de agua. Bajá la presión de las cubiertas ahí, no antes.',
+    umbralDias: 5,
+    texto: 'Va a haber fuego en la arena, y no es solo para calentarse. Llevá algo que quieras dejar atrás.',
   },
   {
-    umbralDias: 15,
-    texto: 'El campamento base no tiene señal. El punto de encuentro se confirma 48 horas antes por este mismo canal.',
-  },
-  {
-    umbralDias: 7,
-    texto: 'Cabeza de expedición sale un día antes que el resto. Si tu categoría es Elite, tu briefing llega por separado.',
-  },
-  {
-    umbralDias: 2,
-    texto: 'Última pista: llevá el manifiesto sellado. En Las Tanusas, el que no está en la lista, no entra al convoy.',
+    umbralDias: 1,
+    texto: 'El bus pisa Tanusas mañana. Ahí, por fin, se rompe el misterio.',
   },
 ];
 

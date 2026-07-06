@@ -1,10 +1,12 @@
-import { initReveal, initScrollCue } from './reveal.js';
+import { initReveal, initScrollCue, initTopbar, initHeroParallax } from './reveal.js';
 import { initPassportForm } from './passport.js';
 import { initCountdown } from './countdown.js';
 import { renderClues } from './clues.js';
 
 initReveal();
 initScrollCue();
+initTopbar();
+initHeroParallax();
 
 let stopCountdown = null;
 
