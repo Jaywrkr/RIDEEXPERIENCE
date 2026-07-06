@@ -4,6 +4,8 @@ const TIER_LABELS = {
   elite: 'ELITE — Cabeza de expedición',
 };
 
+const TOTAL_STEPS = 4;
+
 // Genera un número de pasaporte estable para esta sesión, con formato
 // consistente con la serie de la Convención Nacional Shineray 2026.
 function generateSerial() {
@@ -13,7 +15,29 @@ function generateSerial() {
   return `AT26-${n}`;
 }
 
-function validate(form) {
+// Arma una línea estilo MRZ (zona de lectura mecánica de un pasaporte real)
+// a partir de los datos cargados, puramente decorativa.
+function generateMrz({ nombre, serial, tier }) {
+  const clean = (s) =>
+    s
+      .toUpperCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Z ]/g, '')
+      .trim()
+      .replace(/\s+/g, '<');
+
+  const nameField = (clean(nombre) || 'TITULAR<DESCONOCIDO').slice(0, 30).padEnd(30, '<');
+  const line1 = `P<TAN${nameField}`.padEnd(44, '<').slice(0, 44);
+
+  const serialDigits = serial.replace(/\D/g, '').padEnd(9, '0').slice(0, 9);
+  const tierCode = (tier || 'STD').slice(0, 3).toUpperCase();
+  const line2 = `${serialDigits}ECU2609258${tierCode}<<<<<<<<<<<<<<`.slice(0, 44);
+
+  return `${line1}\n${line2}`;
+}
+
+function validateStep2(form) {
   let ok = true;
   const required = ['nombre', 'moto', 'ciudad'];
   required.forEach((name) => {
@@ -23,7 +47,7 @@ function validate(form) {
     if (!value) {
       ok = false;
       input.classList.add('invalid');
-      errorEl.textContent = 'Este dato es necesario para el manifiesto.';
+      errorEl.textContent = 'Este dato es necesario para el pasaporte.';
     } else {
       input.classList.remove('invalid');
       errorEl.textContent = '';
@@ -32,7 +56,7 @@ function validate(form) {
   return ok;
 }
 
-// Dispersa el manifiesto en partículas de arena que el viento se lleva.
+// Dispersa el pasaporte en partículas de arena que el viento se lleva.
 // Se omite si el usuario prefiere movimiento reducido: el cierre narrativo
 // pasa a ser puramente el fundido CSS (.is-dissolving), sin partículas.
 function runDustDissolve(cardEl, canvas) {
@@ -97,14 +121,60 @@ export function initPassportForm({ onSealed }) {
   const card = document.getElementById('manifiestoCard');
   const canvas = document.getElementById('dustCanvas');
   const serialEl = document.getElementById('passportSerial');
+  const progressEl = document.querySelector('.pasaporte__progress');
+  const stepLabel = document.getElementById('pasoLabel');
+  const stepDots = Array.from(document.querySelectorAll('.step-dot'));
+  const panels = Array.from(document.querySelectorAll('[data-step-panel]'));
   if (!form) return;
 
   const serial = generateSerial();
   if (serialEl) serialEl.textContent = serial;
 
+  let currentStep = 1;
+
+  function showStep(n) {
+    currentStep = n;
+    panels.forEach((panel) => {
+      panel.hidden = Number(panel.dataset.stepPanel) !== n;
+    });
+    stepDots.forEach((dot) => {
+      const dotStep = Number(dot.dataset.stepDot);
+      dot.classList.toggle('is-active', dotStep === n);
+      dot.classList.toggle('is-done', dotStep < n);
+    });
+    if (stepLabel) stepLabel.textContent = `PASO ${n} DE ${TOTAL_STEPS}`;
+    if (progressEl) progressEl.setAttribute('aria-valuenow', String(n));
+
+    if (n === TOTAL_STEPS) {
+      const tierValue = form.elements['tier'].value;
+      const nombre = form.elements['nombre'].value.trim();
+      document.getElementById('resumenNombre').textContent = nombre || '—';
+      document.getElementById('resumenMoto').textContent = form.elements['moto'].value.trim() || '—';
+      document.getElementById('resumenTier').textContent = TIER_LABELS[tierValue] || TIER_LABELS.standard;
+      const mrzEl = document.getElementById('pasaporteMrz');
+      if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial, tier: tierValue });
+    }
+
+    const panel = panels.find((p) => Number(p.dataset.stepPanel) === n);
+    const firstInput = panel && panel.querySelector('input:not([type="radio"]), input[type="radio"]:checked');
+    if (firstInput) firstInput.focus({ preventScroll: true });
+  }
+
+  form.addEventListener('click', (event) => {
+    const nextBtn = event.target.closest('[data-next]');
+    const prevBtn = event.target.closest('[data-prev]');
+
+    if (nextBtn) {
+      if (currentStep === 2 && !validateStep2(form)) return;
+      showStep(Math.min(currentStep + 1, TOTAL_STEPS));
+    } else if (prevBtn) {
+      showStep(Math.max(currentStep - 1, 1));
+    }
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!validate(form)) return;
+    if (currentStep !== TOTAL_STEPS) return;
 
     const tierValue = form.elements['tier'].value;
 

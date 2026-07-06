@@ -43,16 +43,29 @@
     <h1 class="hero__title">LAS TANUSAS</h1>
     <p class="hero__sub">A TODO TERRENO — 25, 26 Y 27 DE SEPTIEMBRE · MANABÍ</p>
     <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Bajá y empezá a entender por qué.</p>
-    <button class="scroll-cue" id="scrollCue" aria-label="Bajar a la bitácora">
+    <button class="scroll-cue" id="scrollCue" data-target="bitacora-1" aria-label="Bajar a la bitácora">
       <span class="scroll-cue__line"></span>
     </button>
   </div>
 </header>
 
-<!-- ============ BITÁCORA (storytelling) ============ -->
-<section class="bitacora" id="bitacora" aria-label="Bitácora de la expedición">
+<!-- ============ NAVEGACIÓN DE SLIDES (experiencia por pasos) ============ -->
+<nav class="slide-nav" id="slideNav" aria-label="Navegación de la experiencia">
+  <a href="#hero" data-slide-dot="hero" aria-label="Portada"><span></span></a>
+  <a href="#bitacora-1" data-slide-dot="bitacora-1" aria-label="Historia"><span></span></a>
+  <a href="#como-funciona" data-slide-dot="como-funciona" aria-label="Cómo funciona"><span></span></a>
+  <a href="#manifiesto" data-slide-dot="manifiesto" aria-label="Pasaporte"><span></span></a>
+  <a href="#confirmacion" data-slide-dot="confirmacion" aria-label="Tu viaje" id="navDotConfirmacion" hidden><span></span></a>
+</nav>
+
+<!-- ============ BITÁCORA (storytelling, un momento por pantalla) ============ -->
+<section class="bitacora" id="bitacora-1" aria-label="Bitácora de la expedición, parte 1">
   <p class="bitacora__linea reveal">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganás la calle todos los días.</p>
+</section>
+<section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2">
   <p class="bitacora__linea reveal">Nadie sabe que va a Tanusas. Vos tampoco, todavía. Solo sabés la fecha, y que algo grande te espera del otro lado.</p>
+</section>
+<section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3">
   <p class="bitacora__linea reveal">El misterio no arranca en la playa. Arranca el día que abrís el sobre. Esto es lo que viene después de ese sobre.</p>
 </section>
 
@@ -89,7 +102,7 @@
   <p class="explicador__cta">↓ Probalo vos mismo con tu pasaporte</p>
 </section>
 
-<!-- ============ MANIFIESTO (pasaporte digital de expedición) ============ -->
+<!-- ============ MANIFIESTO (pasaporte digital de expedición, por pasos) ============ -->
 <section class="manifiesto" id="manifiesto" aria-labelledby="manifiestoTitulo">
   <div class="pasaporte" id="manifiestoCard">
     <span class="pasaporte__watermark" aria-hidden="true">
@@ -104,21 +117,61 @@
       <span class="pasaporte__serial">N.º <span id="passportSerial">AT26-000000</span></span>
     </div>
 
+    <div class="pasaporte__progress" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-label="Progreso del pasaporte">
+      <span class="pasaporte__progress-label" id="pasoLabel">PASO 1 DE 4</span>
+      <span class="step-dots">
+        <i class="step-dot is-active" data-step-dot="1"></i>
+        <i class="step-dot" data-step-dot="2"></i>
+        <i class="step-dot" data-step-dot="3"></i>
+        <i class="step-dot" data-step-dot="4"></i>
+      </span>
+    </div>
+
     <div class="pasaporte__body">
-      <p class="overline">PASAPORTE DE AVENTURA</p>
-      <h2 id="manifiestoTitulo">Sellá tu lugar en el convoy</h2>
-      <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia Tanusas. Confirmá y el conteo empieza para vos.</p>
+    <h2 id="manifiestoTitulo" class="sr-only">Sellá tu lugar en el convoy</h2>
 
-      <form id="passportForm" novalidate>
-        <div class="field">
-          <label for="nombre">Nombre completo</label>
-          <input type="text" id="nombre" name="nombre" required autocomplete="name">
-          <span class="field__error" id="err-nombre" role="alert"></span>
+    <form id="passportForm" novalidate>
+
+      <!-- PASO 1 · Portada -->
+      <div class="paso paso--cover" data-step-panel="1">
+        <div class="pasaporte__cover">
+          <span class="pasaporte__cover-emblem" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="56" height="56" role="presentation">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="1"/>
+              <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="pasaporte__cover-kicker">Documento oficial de expedición</p>
+          <p class="pasaporte__cover-title">PASAPORTE<br><em>de aventura</em></p>
+          <p class="pasaporte__cover-issuer">SHINERAY MOTORS · TANUSAS 2026</p>
         </div>
+        <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia Tanusas. Confirmá y el conteo empieza para vos.</p>
+        <button type="button" class="btn-paso" data-next>Abrir pasaporte →</button>
+      </div>
 
-        <div class="field">
-          <label for="alias">Alias de radio <em>(opcional)</em></label>
-          <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
+      <!-- PASO 2 · Datos del titular -->
+      <div class="paso" data-step-panel="2" hidden>
+        <p class="overline">DATOS DEL TITULAR</p>
+        <div class="pasaporte__datapage">
+          <span class="pasaporte__photo" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="100%" height="100%" role="presentation">
+              <rect x="0" y="0" width="64" height="64" fill="none"/>
+              <circle cx="32" cy="24" r="12" fill="currentColor" opacity=".25"/>
+              <path d="M10 58c0-14 9.8-22 22-22s22 8 22 22" fill="currentColor" opacity=".25"/>
+            </svg>
+          </span>
+          <div class="pasaporte__fields">
+            <div class="field">
+              <label for="nombre">Nombre completo</label>
+              <input type="text" id="nombre" name="nombre" required autocomplete="name">
+              <span class="field__error" id="err-nombre" role="alert"></span>
+            </div>
+            <div class="field">
+              <label for="alias">Alias de radio <em>(opcional)</em></label>
+              <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
+            </div>
+          </div>
         </div>
 
         <div class="field field--split">
@@ -134,6 +187,14 @@
           </div>
         </div>
 
+        <div class="paso__nav">
+          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
+          <button type="button" class="btn-paso" data-next>Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- PASO 3 · Categoría de acceso -->
+      <div class="paso" data-step-panel="3" hidden>
         <fieldset class="tiers">
           <legend>Categoría de acceso</legend>
           <p class="tiers__nota">Tu categoría la define tu compra del trimestre. Elegí la que te confirmó tu asesor.</p>
@@ -160,11 +221,31 @@
           </label>
         </fieldset>
 
-        <button type="submit" class="btn-sellar">
-          <span>SELLAR MI LUGAR</span>
-        </button>
+        <div class="paso__nav">
+          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
+          <button type="button" class="btn-paso" data-next>Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- PASO 4 · Revisión y sello -->
+      <div class="paso" data-step-panel="4" hidden>
+        <p class="overline">REVISÁ TU PASAPORTE</p>
+        <dl class="pasaporte__resumen">
+          <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
+          <div><dt>Moto</dt><dd id="resumenMoto">—</dd></div>
+          <div><dt>Categoría</dt><dd id="resumenTier">—</dd></div>
+        </dl>
+        <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
+
+        <div class="paso__nav">
+          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
+          <button type="submit" class="btn-sellar">
+            <span>SELLAR MI LUGAR</span>
+          </button>
+        </div>
         <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026 · Tanusas, Manabí.</p>
-      </form>
+      </div>
+    </form>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { initReveal, initScrollCue, initTopbar, initHeroParallax } from './reveal.js';
+import { initReveal, initScrollCue, initTopbar, initHeroParallax, initSlideNav } from './reveal.js';
 import { initPassportForm } from './passport.js';
 import { initCountdown } from './countdown.js';
 import { renderClues } from './clues.js';
@@ -7,6 +7,7 @@ initReveal();
 initScrollCue();
 initTopbar();
 initHeroParallax();
+initSlideNav();
 
 let stopCountdown = null;
 
@@ -21,6 +22,9 @@ function revealPostSello({ serial, tierLabel }) {
   confirmacion.hidden = false;
   countdown.hidden = false;
   pistas.hidden = false;
+
+  const navDot = document.getElementById('navDotConfirmacion');
+  if (navDot) navDot.hidden = false;
 
   requestAnimationFrame(() => confirmacion.classList.add('is-visible'));
 

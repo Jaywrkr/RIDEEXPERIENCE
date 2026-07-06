@@ -25,11 +25,37 @@ export function initReveal() {
 
 export function initScrollCue() {
   const cue = document.getElementById('scrollCue');
-  const target = document.getElementById('bitacora');
-  if (!cue || !target) return;
+  if (!cue) return;
+  const target = document.getElementById(cue.dataset.target);
+  if (!target) return;
   cue.addEventListener('click', () => {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+}
+
+// Resalta el punto activo de la navegación de slides a medida que se cruza
+// cada escena, y revela el punto de "Tu viaje" una vez que el pasaporte se sella.
+export function initSlideNav() {
+  const dots = Array.from(document.querySelectorAll('#slideNav a'));
+  if (dots.length === 0 || !('IntersectionObserver' in window)) return;
+
+  const targets = dots
+    .map((dot) => document.getElementById(dot.dataset.slideDot))
+    .filter(Boolean);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        dots.forEach((dot) => {
+          dot.classList.toggle('is-active', dot.dataset.slideDot === entry.target.id);
+        });
+      });
+    },
+    { threshold: 0.6 }
+  );
+
+  targets.forEach((el) => observer.observe(el));
 }
 
 // Muestra la barra de marca persistente una vez que el hero sale de vista,
