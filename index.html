@@ -31,6 +31,13 @@
     <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.4 0"/>
     <feComposite operator="over" in2="SourceGraphic"/>
   </filter>
+  <!-- Erosiona el trazo como tinta de sello real: quita pedacitos del propio
+       elemento en vez de superponer ruido, así no deja caja de fondo -->
+  <filter id="inkstamp" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.1 0 0 0 -0.12" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+  </filter>
 </svg>
 <a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
 
@@ -247,6 +254,12 @@
           <button type="submit" class="btn-sellar">
             <span>SELLAR MI LUGAR</span>
           </button>
+
+          <!-- Sello de tinta que cae sobre la hoja al confirmar -->
+          <span class="sello-stamp" id="selloStamp" aria-hidden="true">
+            SELLADO
+            <small>A TODO TERRENO · 2026</small>
+          </span>
         </div>
 
       </div>

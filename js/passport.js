@@ -269,16 +269,24 @@ export function initPassportForm({ onSealed }) {
     });
   }
 
+  let sealing = false;
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (currentStep !== TOTAL_STEPS) return;
+    if (currentStep !== TOTAL_STEPS || sealing) return;
+    sealing = true;
 
     const tierValue = form.elements['tier'].value;
 
     document.body.dataset.state = 'sellando';
-    card.classList.add('is-stamped');
 
-    await new Promise((r) => setTimeout(r, 500));
+    // El sello cae sobre el papel como tinta; el pasaporte se sacude al impacto
+    // y se deja ver la marca antes de que el documento se disuelva.
+    const stamp = document.getElementById('selloStamp');
+    if (stamp) stamp.classList.add('is-landed');
+    setTimeout(() => card.classList.add('is-stamped'), 250);
+
+    await new Promise((r) => setTimeout(r, reduceMotion ? 400 : 1600));
 
     card.classList.add('is-dissolving');
     await runDustDissolve(card, canvas);
