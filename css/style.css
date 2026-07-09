@@ -374,7 +374,7 @@ body::after {
 
 .pasaporte {
   position: relative; z-index: 2;
-  width: 100%; max-width: 36rem;
+  width: 100%; max-width: 24rem;
   background: var(--hueso);
   background-image: linear-gradient(rgba(20,17,13,.02) 1px, transparent 1px);
   background-size: 100% 2rem;
@@ -455,12 +455,18 @@ body::after {
 
 #passportForm {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   perspective: 1600px;
 }
 
 .paso {
   grid-column: 1;
   grid-row: 1;
+  min-width: 0;
+  min-height: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   transform-origin: left center;
   backface-visibility: hidden;
   background-color: var(--hueso);
@@ -504,7 +510,7 @@ body::after {
 .pasaporte__cover {
   position: relative;
   overflow: hidden;
-  width: min(18rem, 100%);
+  width: 100%;
   aspect-ratio: .7;
   margin: 0 auto;
   display: flex; flex-direction: column; justify-content: center;
@@ -637,13 +643,12 @@ body::after {
 /* ---- Paso 4: resumen y MRZ ---- */
 
 .pasaporte__resumen {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem;
+  display: grid; grid-template-columns: 1fr; gap: .85rem;
   margin: 0 0 1.5rem;
   padding: 1rem 1.25rem;
   background: rgba(20,17,13,.03);
   border: 1px solid rgba(20,17,13,.12);
 }
-.pasaporte__resumen div:first-child { grid-column: 1 / -1; }
 .pasaporte__resumen dt {
   font-family: var(--font-mono);
   font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; opacity: .55;
@@ -655,8 +660,8 @@ body::after {
 
 .pasaporte__mrz {
   font-family: var(--font-mono);
-  font-size: clamp(.6rem, 2.4vw, .78rem);
-  letter-spacing: .12em;
+  font-size: .58rem;
+  letter-spacing: .02em;
   line-height: 1.7;
   color: rgba(35,55,75,.65);
   background: linear-gradient(rgba(215,227,238,.7), rgba(215,227,238,.7)), var(--hueso);
@@ -674,7 +679,7 @@ body::after {
 }
 
 .field { margin-bottom: 1.4rem; display: flex; flex-direction: column; }
-.field--split { flex-direction: row; gap: 1.5rem; }
+.field--split { flex-direction: column; gap: 1.4rem; }
 .field--split > div { flex: 1; display: flex; flex-direction: column; }
 
 label { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem; opacity: .65; }
@@ -962,8 +967,4 @@ input.invalid { border-bottom-color: var(--rojo); }
   font-size: .7rem;
   letter-spacing: .15em;
   padding: 1.5rem;
-}
-
-@media (max-width: 36rem) {
-  .field--split { flex-direction: column; gap: 1.25rem; }
 }
