@@ -155,6 +155,22 @@ html { scroll-snap-type: y proximity; }
   will-change: transform;
 }
 
+.hero__dune--back {
+  height: 55%;
+  opacity: .35;
+  clip-path: polygon(0% 70%, 12% 55%, 28% 68%, 42% 48%, 58% 66%, 74% 44%, 88% 62%, 100% 50%, 100% 100%, 0% 100%);
+  background-size: 10px 10px;
+}
+
+/* Viñeta sutil de cohesión visual, presente en todo el sitio */
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 60;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.16) 100%);
+  mix-blend-mode: multiply;
+}
+
 /* =========================== HERO =========================== */
 
 .hero {
@@ -696,6 +712,8 @@ input.invalid { border-bottom-color: var(--rojo); }
 .tier:has(input:checked) { border-left-style: solid; border-left-width: 4px; }
 
 .btn-sellar {
+  position: relative;
+  overflow: hidden;
   width: 100%;
   background: var(--rojo);
   color: #fff;
@@ -708,6 +726,15 @@ input.invalid { border-bottom-color: var(--rojo); }
   box-shadow: 0 10px 24px rgba(196,30,30,.25);
   transition: transform .15s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
 }
+.btn-sellar::before {
+  content: "";
+  position: absolute; top: 0; bottom: 0; left: -60%;
+  width: 40%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: skewX(-20deg);
+  transition: left .6s var(--ease);
+}
+.btn-sellar:hover::before { left: 130%; }
 .btn-sellar:hover {
   background: var(--rojo-dark);
   transform: translateY(-2px);

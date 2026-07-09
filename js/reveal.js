@@ -74,9 +74,11 @@ export function initTopbar() {
   observer.observe(hero);
 }
 
-// Parallax sutil de la duna del hero en scroll. Se omite con reduced-motion.
+// Parallax sutil de la duna del hero en scroll (dos capas a distinta velocidad
+// para dar profundidad). Se omite con reduced-motion.
 export function initHeroParallax() {
   const dune = document.getElementById('heroDune');
+  const duneBack = document.getElementById('heroDuneBack');
   if (!dune) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -87,6 +89,7 @@ export function initHeroParallax() {
     requestAnimationFrame(() => {
       const offset = Math.min(window.scrollY * 0.15, 80);
       dune.style.transform = `translateY(${offset}px)`;
+      if (duneBack) duneBack.style.transform = `translateY(${offset * 0.5}px)`;
       ticking = false;
     });
   }, { passive: true });
