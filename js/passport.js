@@ -141,6 +141,13 @@ function initCoverTilt(cover) {
   });
 }
 
+const STEP_CAPTIONS = {
+  1: 'Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino.',
+  2: 'Así queda tu nombre en el manifiesto de expedición: no hay vuelta atrás.',
+  3: 'Tu categoría define villa y accesos en el predio durante los tres días.',
+  4: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
+};
+
 export function initPassportForm({ onSealed }) {
   const form = document.getElementById('passportForm');
   const card = document.getElementById('manifiestoCard');
@@ -150,6 +157,9 @@ export function initPassportForm({ onSealed }) {
   const stepLabel = document.getElementById('pasoLabel');
   const stepDots = Array.from(document.querySelectorAll('.step-dot'));
   const panels = Array.from(document.querySelectorAll('[data-step-panel]'));
+  const caption = document.getElementById('pasoCaption');
+  const navPrev = document.getElementById('navPrev');
+  const navNext = document.getElementById('navNext');
   if (!form) return;
 
   const serial = generateSerial();
@@ -169,6 +179,15 @@ export function initPassportForm({ onSealed }) {
     });
     if (stepLabel) stepLabel.textContent = `PASO ${n} DE ${TOTAL_STEPS}`;
     if (progressEl) progressEl.setAttribute('aria-valuenow', String(n));
+    if (caption) caption.textContent = STEP_CAPTIONS[n] || '';
+
+    navPrev.hidden = n === 1;
+    if (n === TOTAL_STEPS) {
+      navNext.hidden = true;
+    } else {
+      navNext.hidden = false;
+      navNext.textContent = n === 1 ? 'Abrir pasaporte →' : 'Siguiente →';
+    }
 
     if (n === TOTAL_STEPS) {
       const tierValue = form.elements['tier'].value;
@@ -226,27 +245,28 @@ export function initPassportForm({ onSealed }) {
     };
   }
 
+  function goNext() {
+    if (currentStep === 2 && !validateStep2(form)) return;
+    if (currentStep < TOTAL_STEPS) showStep(currentStep + 1);
+  }
+
+  navNext.addEventListener('click', goNext);
+  navPrev.addEventListener('click', () => {
+    if (currentStep > 1) showStep(currentStep - 1);
+  });
+
   const cover = document.getElementById('pasaporteCover');
   if (cover) {
+    cover.addEventListener('click', () => {
+      if (currentStep === 1) goNext();
+    });
     cover.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
+      if ((event.key === 'Enter' || event.key === ' ') && currentStep === 1) {
         event.preventDefault();
-        cover.click();
+        goNext();
       }
     });
   }
-
-  form.addEventListener('click', (event) => {
-    const nextBtn = event.target.closest('[data-next]');
-    const prevBtn = event.target.closest('[data-prev]');
-
-    if (nextBtn) {
-      if (currentStep === 2 && !validateStep2(form)) return;
-      showStep(Math.min(currentStep + 1, TOTAL_STEPS));
-    } else if (prevBtn) {
-      showStep(Math.max(currentStep - 1, 1));
-    }
-  });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -269,4 +289,6 @@ export function initPassportForm({ onSealed }) {
       onSealed({ serial, tierLabel: TIER_LABELS[tierValue] || TIER_LABELS.standard });
     }
   });
+
+  updateChrome(1);
 }

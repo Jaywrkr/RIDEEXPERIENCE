@@ -148,10 +148,10 @@
     <h2 id="manifiestoTitulo" class="sr-only">Sella tu lugar en el convoy</h2>
 
     <form id="passportForm" novalidate>
+      <div class="pasaporte__pageframe">
 
-      <!-- PASO 1 · Portada -->
-      <div class="paso paso--cover" data-step-panel="1">
-        <div class="pasaporte__cover" id="pasaporteCover" data-next role="button" tabindex="0" aria-label="Abrir pasaporte">
+        <!-- PASO 1 · Portada -->
+        <div class="paso paso--cover" id="pasaporteCover" data-step-panel="1" role="button" tabindex="0" aria-label="Abrir pasaporte">
           <span class="pasaporte__cover-grain" aria-hidden="true"></span>
           <span class="pasaporte__cover-holo" aria-hidden="true"></span>
           <span class="pasaporte__cover-sheen" id="pasaporteSheen" aria-hidden="true"></span>
@@ -165,105 +165,97 @@
           <p class="pasaporte__cover-kicker">Documento oficial de expedición</p>
           <p class="pasaporte__cover-title">PASAPORTE<br><em>de aventura</em></p>
           <p class="pasaporte__cover-issuer">SHINERAY MOTORS · A TODO TERRENO 2026</p>
+          <p class="pasaporte__cover-hint">Toca para abrir →</p>
         </div>
-        <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino. Confirma y el conteo empieza para ti.</p>
-        <button type="button" class="btn-paso" data-next>Abrir pasaporte →</button>
-      </div>
 
-      <!-- PASO 2 · Datos del titular -->
-      <div class="paso" data-step-panel="2" hidden>
-        <p class="overline">DATOS DEL TITULAR</p>
-        <div class="pasaporte__datapage">
-          <span class="pasaporte__photo" aria-hidden="true">
-            <svg viewBox="0 0 64 64" width="100%" height="100%" role="presentation">
-              <rect x="0" y="0" width="64" height="64" fill="none"/>
-              <circle cx="32" cy="24" r="12" fill="currentColor" opacity=".25"/>
-              <path d="M10 58c0-14 9.8-22 22-22s22 8 22 22" fill="currentColor" opacity=".25"/>
-            </svg>
-          </span>
-          <div class="pasaporte__fields">
-            <div class="field">
-              <label for="nombre">Nombre completo</label>
-              <input type="text" id="nombre" name="nombre" required autocomplete="name">
-              <span class="field__error" id="err-nombre" role="alert"></span>
+        <!-- PASO 2 · Datos del titular -->
+        <div class="paso" data-step-panel="2" hidden>
+          <p class="overline">DATOS DEL TITULAR</p>
+          <div class="pasaporte__datapage">
+            <span class="pasaporte__photo" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="100%" height="100%" role="presentation">
+                <rect x="0" y="0" width="64" height="64" fill="none"/>
+                <circle cx="32" cy="24" r="12" fill="currentColor" opacity=".25"/>
+                <path d="M10 58c0-14 9.8-22 22-22s22 8 22 22" fill="currentColor" opacity=".25"/>
+              </svg>
+            </span>
+            <div class="pasaporte__fields">
+              <div class="field">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" required autocomplete="name">
+                <span class="field__error" id="err-nombre" role="alert"></span>
+              </div>
+              <div class="field">
+                <label for="alias">Alias de radio <em>(opcional)</em></label>
+                <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
+              </div>
             </div>
-            <div class="field">
-              <label for="alias">Alias de radio <em>(opcional)</em></label>
-              <input type="text" id="alias" name="alias" autocomplete="off" maxlength="24">
+          </div>
+
+          <div class="field field--split">
+            <div>
+              <label for="moto">Modelo de moto</label>
+              <input type="text" id="moto" name="moto" required>
+              <span class="field__error" id="err-moto" role="alert"></span>
+            </div>
+            <div>
+              <label for="ciudad">Ciudad de partida</label>
+              <input type="text" id="ciudad" name="ciudad" required>
+              <span class="field__error" id="err-ciudad" role="alert"></span>
             </div>
           </div>
         </div>
 
-        <div class="field field--split">
-          <div>
-            <label for="moto">Modelo de moto</label>
-            <input type="text" id="moto" name="moto" required>
-            <span class="field__error" id="err-moto" role="alert"></span>
-          </div>
-          <div>
-            <label for="ciudad">Ciudad de partida</label>
-            <input type="text" id="ciudad" name="ciudad" required>
-            <span class="field__error" id="err-ciudad" role="alert"></span>
-          </div>
+        <!-- PASO 3 · Categoría de acceso -->
+        <div class="paso" data-step-panel="3" hidden>
+          <fieldset class="tiers">
+            <legend>Categoría de acceso</legend>
+            <p class="tiers__nota">Tu categoría la define tu compra del trimestre.</p>
+
+            <label class="tier tier--standard">
+              <input type="radio" name="tier" value="standard" checked>
+              <span class="tier__mark" aria-hidden="true"></span>
+              <span class="tier__name">STANDARD <em>· Convoy</em></span>
+              <span class="tier__desc">Ruta compartida, villa estándar.</span>
+            </label>
+
+            <label class="tier tier--plus">
+              <input type="radio" name="tier" value="plus">
+              <span class="tier__mark" aria-hidden="true"></span>
+              <span class="tier__name">PLUS <em>· Avanzada</em></span>
+              <span class="tier__desc">Villa superior, zonas reservadas.</span>
+            </label>
+
+            <label class="tier tier--elite">
+              <input type="radio" name="tier" value="elite">
+              <span class="tier__mark" aria-hidden="true"></span>
+              <span class="tier__name">ELITE <em>· Cabeza de expedición</em></span>
+              <span class="tier__desc">Mejor villa, primera fila siempre.</span>
+            </label>
+          </fieldset>
         </div>
 
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
-          <button type="button" class="btn-paso" data-next>Siguiente →</button>
-        </div>
-      </div>
-
-      <!-- PASO 3 · Categoría de acceso -->
-      <div class="paso" data-step-panel="3" hidden>
-        <fieldset class="tiers">
-          <legend>Categoría de acceso</legend>
-          <p class="tiers__nota">Tu categoría la define tu compra del trimestre. Elige la que te confirmó tu asesor.</p>
-
-          <label class="tier tier--standard">
-            <input type="radio" name="tier" value="standard" checked>
-            <span class="tier__mark" aria-hidden="true"></span>
-            <span class="tier__name">STANDARD <em>· Convoy</em></span>
-            <span class="tier__desc">Ruta compartida, villa estándar. Entras al mismo terreno que todos: la sede se abre igual para ti.</span>
-          </label>
-
-          <label class="tier tier--plus">
-            <input type="radio" name="tier" value="plus">
-            <span class="tier__mark" aria-hidden="true"></span>
-            <span class="tier__name">PLUS <em>· Avanzada</em></span>
-            <span class="tier__desc">Tu pedido del trimestre te subió de categoría. Villa superior, acceso a zonas reservadas del predio.</span>
-          </label>
-
-          <label class="tier tier--elite">
-            <input type="radio" name="tier" value="elite">
-            <span class="tier__mark" aria-hidden="true"></span>
-            <span class="tier__name">ELITE <em>· Cabeza de expedición</em></span>
-            <span class="tier__desc">Los números más altos van al frente. Mejor villa, mejor acceso, primera fila en cada actividad.</span>
-          </label>
-        </fieldset>
-
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
-          <button type="button" class="btn-paso" data-next>Siguiente →</button>
-        </div>
-      </div>
-
-      <!-- PASO 4 · Revisión y sello -->
-      <div class="paso" data-step-panel="4" hidden>
-        <p class="overline">REVISA TU PASAPORTE</p>
-        <dl class="pasaporte__resumen">
-          <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
-          <div><dt>Moto</dt><dd id="resumenMoto">—</dd></div>
-          <div><dt>Categoría</dt><dd id="resumenTier">—</dd></div>
-        </dl>
-        <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
-
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
+        <!-- PASO 4 · Revisión y sello -->
+        <div class="paso" data-step-panel="4" hidden>
+          <p class="overline">REVISA TU PASAPORTE</p>
+          <dl class="pasaporte__resumen">
+            <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
+            <div><dt>Moto</dt><dd id="resumenMoto">—</dd></div>
+            <div><dt>Categoría</dt><dd id="resumenTier">—</dd></div>
+          </dl>
+          <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
           <button type="submit" class="btn-sellar">
             <span>SELLAR MI LUGAR</span>
           </button>
         </div>
-        <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026.</p>
+
+      </div>
+
+      <p class="manifiesto__intro" id="pasoCaption">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino.</p>
+
+      <div class="paso__nav">
+        <button type="button" class="btn-paso btn-paso--ghost" id="navPrev">← Atrás</button>
+        <button type="button" class="btn-paso" id="navNext">Abrir pasaporte →</button>
       </div>
     </form>
     </div>
