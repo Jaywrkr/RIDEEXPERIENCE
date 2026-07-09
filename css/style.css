@@ -374,7 +374,7 @@ body::after {
 
 .pasaporte {
   position: relative; z-index: 2;
-  width: 100%; max-width: 24rem;
+  width: 100%; max-width: 31rem;
   background: var(--hueso);
   background-image: linear-gradient(rgba(20,17,13,.02) 1px, transparent 1px);
   background-size: 100% 2rem;
@@ -464,9 +464,9 @@ body::after {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  width: min(18rem, 100%);
-  aspect-ratio: .7;
-  min-height: 26rem;
+  width: min(24rem, 100%);
+  aspect-ratio: .72;
+  min-height: 28rem;
   margin: 0 auto 1.5rem;
   perspective: 1600px;
   transform-style: preserve-3d;
@@ -481,7 +481,7 @@ body::after {
   min-width: 0;
   box-sizing: border-box;
   overflow: hidden;
-  padding: 1.2rem 1.1rem;
+  padding: 1.5rem 1.4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -650,7 +650,7 @@ body::after {
 .pasaporte__photo {
   position: relative;
   flex-shrink: 0;
-  width: 3rem; height: 3.6rem;
+  width: 3.5rem; height: 4.2rem;
   background: var(--arena-300);
   color: var(--tinta);
   border: 1px solid rgba(20,17,13,.3);
@@ -689,17 +689,17 @@ body::after {
 
 .pasaporte__mrz {
   font-family: var(--font-mono);
-  font-size: .58rem;
+  font-size: clamp(.4rem, 2vw, .62rem);
   letter-spacing: .02em;
   line-height: 1.7;
   color: rgba(35,55,75,.65);
   background: linear-gradient(rgba(215,227,238,.7), rgba(215,227,238,.7)), var(--hueso);
   border-top: 2px solid rgba(20,17,13,.15);
   border-bottom: 1px solid rgba(20,17,13,.1);
-  padding: .85rem 1rem;
-  margin: 0 0 1.5rem;
+  padding: .85rem .8rem;
+  margin: 0 0 1.25rem;
   white-space: pre;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .pasaporte__fineprint {
@@ -707,8 +707,8 @@ body::after {
   text-align: center; margin: 1rem 0 0;
 }
 
-.field { margin-bottom: .75rem; display: flex; flex-direction: column; }
-.field--split { flex-direction: column; gap: .75rem; }
+.field { margin-bottom: 1rem; display: flex; flex-direction: column; }
+.field--split { flex-direction: column; gap: 1rem; }
 .field--split > div { flex: 1; display: flex; flex-direction: column; }
 
 label { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .25rem; opacity: .65; }

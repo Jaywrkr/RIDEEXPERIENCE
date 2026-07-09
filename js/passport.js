@@ -27,12 +27,12 @@ function generateMrz({ nombre, serial, tier }) {
       .trim()
       .replace(/\s+/g, '<');
 
-  const nameField = (clean(nombre) || 'TITULAR<DESCONOCIDO').slice(0, 30).padEnd(30, '<');
-  const line1 = `P<TAN${nameField}`.padEnd(44, '<').slice(0, 44);
+  const nameField = (clean(nombre) || 'TITULAR<DESCONOCIDO').slice(0, 31).padEnd(31, '<');
+  const line1 = `P<TAN${nameField}`.slice(0, 36);
 
   const serialDigits = serial.replace(/\D/g, '').padEnd(9, '0').slice(0, 9);
   const tierCode = (tier || 'STD').slice(0, 3).toUpperCase();
-  const line2 = `${serialDigits}ECU2609258${tierCode}<<<<<<<<<<<<<<`.slice(0, 44);
+  const line2 = `${serialDigits}ECU2609258${tierCode}<<<<<<<<<<<<<<`.slice(0, 36);
 
   return `${line1}\n${line2}`;
 }
