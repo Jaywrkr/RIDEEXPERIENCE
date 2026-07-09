@@ -158,12 +158,10 @@ export function initPassportForm({ onSealed }) {
   initCoverTilt(document.getElementById('pasaporteCover'));
 
   let currentStep = 1;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FLIP_MS = 500;
 
-  function showStep(n) {
-    currentStep = n;
-    panels.forEach((panel) => {
-      panel.hidden = Number(panel.dataset.stepPanel) !== n;
-    });
+  function updateChrome(n) {
     stepDots.forEach((dot) => {
       const dotStep = Number(dot.dataset.stepDot);
       dot.classList.toggle('is-active', dotStep === n);
@@ -181,10 +179,51 @@ export function initPassportForm({ onSealed }) {
       const mrzEl = document.getElementById('pasaporteMrz');
       if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial, tier: tierValue });
     }
+  }
 
-    const panel = panels.find((p) => Number(p.dataset.stepPanel) === n);
+  function focusPanel(panel) {
     const firstInput = panel && panel.querySelector('input:not([type="radio"]), input[type="radio"]:checked');
     if (firstInput) firstInput.focus({ preventScroll: true });
+  }
+
+  // Cambia de página como si se hojeara un pasaporte real: la página saliente
+  // gira sobre el lomo hacia adentro mientras la entrante gira hacia afuera,
+  // sincronizadas para que nunca se vea el reverso de ninguna (backface-visibility).
+  function showStep(n) {
+    const oldPanel = panels.find((p) => Number(p.dataset.stepPanel) === currentStep);
+    const newPanel = panels.find((p) => Number(p.dataset.stepPanel) === n);
+    const forward = n > currentStep;
+    currentStep = n;
+    updateChrome(n);
+
+    if (!oldPanel || oldPanel === newPanel || reduceMotion || !newPanel.animate) {
+      panels.forEach((panel) => { panel.hidden = panel !== newPanel; });
+      focusPanel(newPanel);
+      return;
+    }
+
+    const sign = forward ? 1 : -1;
+    newPanel.hidden = false;
+    oldPanel.style.zIndex = '2';
+    newPanel.style.zIndex = '1';
+
+    oldPanel.animate(
+      [{ transform: 'rotateY(0deg)' }, { transform: `rotateY(${-sign * 130}deg)` }],
+      { duration: FLIP_MS, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' }
+    ).onfinish = () => {
+      oldPanel.hidden = true;
+      oldPanel.style.transform = '';
+      oldPanel.style.zIndex = '';
+    };
+
+    newPanel.animate(
+      [{ transform: `rotateY(${sign * 130}deg)` }, { transform: 'rotateY(0deg)' }],
+      { duration: FLIP_MS, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' }
+    ).onfinish = () => {
+      newPanel.style.transform = '';
+      newPanel.style.zIndex = '';
+      focusPanel(newPanel);
+    };
   }
 
   const cover = document.getElementById('pasaporteCover');
