@@ -24,7 +24,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body data-state="invitado">
+<body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <filter id="grain">
     <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
@@ -32,94 +32,16 @@
     <feComposite operator="over" in2="SourceGraphic"/>
   </filter>
 </svg>
-<a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
+<a class="skip-link" href="#libro">Ir al pasaporte</a>
 
-<!-- ============ TOPBAR (marca persistente, aparece al salir del hero) ============ -->
-<div class="topbar" id="topbar" aria-hidden="true">
-  <span class="topbar__wordmark"><em>A TODO</em> TERRENO</span>
-  <span class="topbar__event">CONVENCIÓN 2026</span>
-  <span class="topbar__brand">SHINERAY</span>
+<!-- Fondo de arena fijo detrás del libro -->
+<div class="libro-backdrop" aria-hidden="true">
+  <div class="libro-backdrop__grain"></div>
+  <div class="libro-backdrop__dune"></div>
 </div>
 
-<!-- ============ HERO ============ -->
-<header class="hero" id="hero">
-  <div class="hero__grain" aria-hidden="true"></div>
-  <div class="hero__dune hero__dune--back" id="heroDuneBack" aria-hidden="true"></div>
-  <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
-  <div class="hero__content">
-    <p class="overline">CONVENCIÓN NACIONAL SHINERAY</p>
-    <div class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
-        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/>
-        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-      <span>SHINERAY</span>
-    </div>
-    <h1 class="hero__title">A TODO<br>TERRENO</h1>
-    <p class="hero__sub">CONVENCIÓN NACIONAL 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
-    <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Baja y empieza a entender por qué.</p>
-    <button class="scroll-cue" id="scrollCue" data-target="bitacora-1" aria-label="Bajar a la bitácora">
-      <span class="scroll-cue__line"></span>
-    </button>
-  </div>
-</header>
-
-<!-- ============ NAVEGACIÓN DE SLIDES (experiencia por pasos) ============ -->
-<nav class="slide-nav" id="slideNav" aria-label="Navegación de la experiencia">
-  <a href="#hero" data-slide-dot="hero" aria-label="Portada"><span></span></a>
-  <a href="#bitacora-1" data-slide-dot="bitacora-1" aria-label="Historia"><span></span></a>
-  <a href="#como-funciona" data-slide-dot="como-funciona" aria-label="Cómo funciona"><span></span></a>
-  <a href="#manifiesto" data-slide-dot="manifiesto" aria-label="Pasaporte"><span></span></a>
-  <a href="#confirmacion" data-slide-dot="confirmacion" aria-label="Tu viaje" id="navDotConfirmacion" hidden><span></span></a>
-</nav>
-
-<!-- ============ BITÁCORA (storytelling, un momento por pantalla) ============ -->
-<section class="bitacora" id="bitacora-1" aria-label="Bitácora de la expedición, parte 1">
-  <p class="bitacora__linea reveal">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganas la calle todos los días.</p>
-</section>
-<section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2">
-  <p class="bitacora__linea reveal">Nadie sabe a dónde va. Tú tampoco, todavía. Solo sabes la fecha, y que algo grande te espera del otro lado.</p>
-</section>
-<section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3">
-  <p class="bitacora__linea reveal">El misterio no arranca en la playa. Arranca el día que abres el sobre. Esto es lo que viene después de ese sobre.</p>
-</section>
-
-<!-- ============ CÓMO FUNCIONA (demo de la experiencia de pasaporte digital) ============ -->
-<section class="explicador" id="como-funciona" aria-labelledby="explicadorTitulo">
-  <span class="explicador__bleed explicador__bleed--left" aria-hidden="true"></span>
-  <span class="explicador__bleed explicador__bleed--right" aria-hidden="true"></span>
-  <div class="explicador__head">
-    <p class="overline">DE FORMULARIO A PASAPORTE</p>
-    <h2 id="explicadorTitulo">Así se siente confirmar tu lugar</h2>
-    <p class="explicador__sub">Esto es exactamente lo que vas a vivir tú, ahora, al completar el pasaporte más abajo.</p>
-  </div>
-
-  <div class="explicador__grid">
-    <article class="explicador__card">
-      <span class="explicador__num">1</span>
-      <h3>Un pasaporte, no un form</h3>
-      <p>El QR de tu invitación abre esto: la primera hoja de tu pasaporte de aventura, no un formulario más.</p>
-    </article>
-
-    <article class="explicador__card">
-      <span class="explicador__num">2</span>
-      <h3>El desbloqueo</h3>
-      <p>Al confirmar, aparece un conteo regresivo real hacia el 25 de septiembre — y con él, tus pistas de ruta.</p>
-    </article>
-
-    <article class="explicador__card">
-      <span class="explicador__num">3</span>
-      <h3>El trato VIP se nota</h3>
-      <p>Quien más compra ve su categoría más alta: mejor villa, mejores accesos. Y el resto quiere subir.</p>
-    </article>
-  </div>
-
-  <p class="explicador__cta">↓ Pruébalo tú mismo con tu pasaporte</p>
-</section>
-
-<!-- ============ MANIFIESTO (pasaporte digital de expedición, por pasos) ============ -->
-<section class="manifiesto" id="manifiesto" aria-labelledby="manifiestoTitulo">
-  <div class="pasaporte" id="manifiestoCard">
+<main class="libro-wrap">
+  <div class="pasaporte" id="pasaporte">
     <span class="pasaporte__texture" aria-hidden="true"></span>
     <span class="pasaporte__spine" aria-hidden="true"></span>
     <span class="pasaporte__watermark" aria-hidden="true">
@@ -134,24 +56,19 @@
       <span class="pasaporte__serial">N.º <span id="passportSerial">AT26-000000</span></span>
     </div>
 
-    <div class="pasaporte__progress" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-label="Progreso del pasaporte">
-      <span class="pasaporte__progress-label" id="pasoLabel">PASO 1 DE 4</span>
-      <span class="step-dots">
-        <i class="step-dot is-active" data-step-dot="1"></i>
-        <i class="step-dot" data-step-dot="2"></i>
-        <i class="step-dot" data-step-dot="3"></i>
-        <i class="step-dot" data-step-dot="4"></i>
-      </span>
+    <div class="pasaporte__progress" role="progressbar" aria-valuemin="1" aria-valuemax="11" aria-valuenow="1" aria-label="Página del pasaporte">
+      <span class="pasaporte__progress-label" id="pasoLabel">PÁGINA 1 DE 11</span>
+      <span class="progress-bar"><span class="progress-bar__fill" id="progressFill"></span></span>
     </div>
 
     <div class="pasaporte__body">
-    <h2 id="manifiestoTitulo" class="sr-only">Sella tu lugar en el convoy</h2>
+    <h1 id="libro" class="sr-only">A Todo Terreno — Convención Nacional Shineray 2026</h1>
 
     <form id="passportForm" novalidate>
 
-      <!-- PASO 1 · Portada -->
-      <div class="paso paso--cover" data-step-panel="1">
-        <div class="pasaporte__cover" id="pasaporteCover" data-next role="button" tabindex="0" aria-label="Abrir pasaporte">
+      <!-- PÁGINA 1 · Portada -->
+      <div class="hoja hoja--cover" data-page="1">
+        <div class="pasaporte__cover" id="pasaporteCover" role="button" tabindex="0" aria-label="Abrir pasaporte">
           <span class="pasaporte__cover-grain" aria-hidden="true"></span>
           <span class="pasaporte__cover-holo" aria-hidden="true"></span>
           <span class="pasaporte__cover-sheen" id="pasaporteSheen" aria-hidden="true"></span>
@@ -166,12 +83,38 @@
           <p class="pasaporte__cover-title">PASAPORTE<br><em>de aventura</em></p>
           <p class="pasaporte__cover-issuer">SHINERAY MOTORS · A TODO TERRENO 2026</p>
         </div>
-        <p class="manifiesto__intro">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino. Confirma y el conteo empieza para ti.</p>
-        <button type="button" class="btn-paso" data-next>Abrir pasaporte →</button>
+        <p class="overline hoja__center">CONVENCIÓN NACIONAL SHINERAY</p>
+        <p class="hoja__fecha">25, 26 Y 27 DE SEPTIEMBRE 2026</p>
+        <p class="manifiesto__intro">Vas a subir a un bus sin saber a dónde te llevamos. Abrí el pasaporte y empezá a entender por qué.</p>
       </div>
 
-      <!-- PASO 2 · Datos del titular -->
-      <div class="paso" data-step-panel="2" hidden>
+      <!-- PÁGINA 2-4 · Bitácora -->
+      <div class="hoja hoja--bitacora" data-page="2" hidden>
+        <p class="overline hoja__center">BITÁCORA · 01</p>
+        <p class="hoja__linea">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganas la calle todos los días.</p>
+      </div>
+      <div class="hoja hoja--bitacora" data-page="3" hidden>
+        <p class="overline hoja__center">BITÁCORA · 02</p>
+        <p class="hoja__linea">Nadie sabe a dónde va. Tú tampoco, todavía. Solo sabes la fecha, y que algo grande te espera del otro lado.</p>
+      </div>
+      <div class="hoja hoja--bitacora" data-page="4" hidden>
+        <p class="overline hoja__center">BITÁCORA · 03</p>
+        <p class="hoja__linea">El misterio no arranca en la playa. Arranca el día que abres el sobre. Esto es lo que viene después de ese sobre.</p>
+      </div>
+
+      <!-- PÁGINA 5 · Cómo funciona -->
+      <div class="hoja" data-page="5" hidden>
+        <p class="overline">DE FORMULARIO A PASAPORTE</p>
+        <h2 class="hoja__h2">Así se siente confirmar tu lugar</h2>
+        <ol class="explicador__lista">
+          <li><span class="explicador__num">1</span><div><h3>Un pasaporte, no un form</h3><p>El QR de tu invitación abre esto: la primera hoja de tu pasaporte de aventura, no un formulario más.</p></div></li>
+          <li><span class="explicador__num">2</span><div><h3>El desbloqueo</h3><p>Al confirmar, aparece un conteo regresivo real hacia el 25 de septiembre — y con él, tus pistas de ruta.</p></div></li>
+          <li><span class="explicador__num">3</span><div><h3>El trato VIP se nota</h3><p>Quien más compra ve su categoría más alta: mejor villa, mejores accesos. Y el resto quiere subir.</p></div></li>
+        </ol>
+      </div>
+
+      <!-- PÁGINA 6 · Datos del titular -->
+      <div class="hoja" data-page="6" hidden>
         <p class="overline">DATOS DEL TITULAR</p>
         <div class="pasaporte__datapage">
           <span class="pasaporte__photo" aria-hidden="true">
@@ -206,15 +149,10 @@
             <span class="field__error" id="err-ciudad" role="alert"></span>
           </div>
         </div>
-
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
-          <button type="button" class="btn-paso" data-next>Siguiente →</button>
-        </div>
       </div>
 
-      <!-- PASO 3 · Categoría de acceso -->
-      <div class="paso" data-step-panel="3" hidden>
+      <!-- PÁGINA 7 · Categoría de acceso -->
+      <div class="hoja" data-page="7" hidden>
         <fieldset class="tiers">
           <legend>Categoría de acceso</legend>
           <p class="tiers__nota">Tu categoría la define tu compra del trimestre. Elige la que te confirmó tu asesor.</p>
@@ -240,15 +178,10 @@
             <span class="tier__desc">Los números más altos van al frente. Mejor villa, mejor acceso, primera fila en cada actividad.</span>
           </label>
         </fieldset>
-
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
-          <button type="button" class="btn-paso" data-next>Siguiente →</button>
-        </div>
       </div>
 
-      <!-- PASO 4 · Revisión y sello -->
-      <div class="paso" data-step-panel="4" hidden>
+      <!-- PÁGINA 8 · Revisión y sello -->
+      <div class="hoja" data-page="8" hidden>
         <p class="overline">REVISA TU PASAPORTE</p>
         <dl class="pasaporte__resumen">
           <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
@@ -256,51 +189,51 @@
           <div><dt>Categoría</dt><dd id="resumenTier">—</dd></div>
         </dl>
         <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
-
-        <div class="paso__nav">
-          <button type="button" class="btn-paso btn-paso--ghost" data-prev>← Atrás</button>
-          <button type="submit" class="btn-sellar">
-            <span>SELLAR MI LUGAR</span>
-          </button>
-        </div>
+        <button type="submit" class="btn-sellar" id="btnSellar">
+          <span>SELLAR MI LUGAR</span>
+        </button>
         <p class="pasaporte__fineprint">Documento válido únicamente para la Convención Nacional Shineray 2026.</p>
       </div>
+
+      <!-- PÁGINA 9 · Confirmación -->
+      <div class="hoja hoja--centrada" data-page="9" hidden>
+        <div class="sello" aria-hidden="true">SELLADO</div>
+        <h2 class="hoja__h2">Quedas sellado.</h2>
+        <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sale el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
+        <dl class="confirmacion__datos">
+          <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
+          <div><dt>Categoría</dt><dd id="confTier">—</dd></div>
+        </dl>
+      </div>
+
+      <!-- PÁGINA 10 · Cuenta regresiva -->
+      <div class="hoja hoja--centrada" data-page="10" hidden>
+        <p class="overline hoja__center">CUENTA REGRESIVA HASTA EL DESTINO</p>
+        <div class="countdown__grid" role="timer" aria-live="off">
+          <div class="countdown__unit"><span id="cd-dias">00</span><small>días</small></div>
+          <div class="countdown__unit"><span id="cd-horas">00</span><small>hs</small></div>
+          <div class="countdown__unit"><span id="cd-min">00</span><small>min</small></div>
+          <div class="countdown__unit"><span id="cd-seg">00</span><small>seg</small></div>
+        </div>
+      </div>
+
+      <!-- PÁGINA 11 · Pistas -->
+      <div class="hoja" data-page="11" hidden>
+        <p class="overline">TRES PISTAS, CERO RESPUESTAS</p>
+        <p class="pistas__intro">Desde el 1 de septiembre el terreno empieza a hablar. Se abren solas, no hay forma de adelantarlas.</p>
+        <ol class="pistas__lista" id="pistasLista"></ol>
+      </div>
+
     </form>
     </div>
   </div>
 
-  <!-- Canvas donde el pasaporte se disuelve en arena -->
-  <canvas id="dustCanvas" class="dust-canvas" aria-hidden="true"></canvas>
-</section>
-
-<!-- ============ CONFIRMACIÓN ============ -->
-<section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
-  <div class="sello" aria-hidden="true">SELLADO</div>
-  <h2 id="confTitulo">Quedas sellado.</h2>
-  <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sale el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
-  <dl class="confirmacion__datos">
-    <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
-    <div><dt>Categoría</dt><dd id="confTier">—</dd></div>
-  </dl>
-</section>
-
-<!-- ============ COUNTDOWN ============ -->
-<section class="countdown" id="countdown" hidden aria-label="Cuenta regresiva hasta el evento">
-  <p class="overline">CUENTA REGRESIVA HASTA EL DESTINO</p>
-  <div class="countdown__grid" role="timer" aria-live="off">
-    <div class="countdown__unit"><span id="cd-dias">00</span><small>días</small></div>
-    <div class="countdown__unit"><span id="cd-horas">00</span><small>hs</small></div>
-    <div class="countdown__unit"><span id="cd-min">00</span><small>min</small></div>
-    <div class="countdown__unit"><span id="cd-seg">00</span><small>seg</small></div>
-  </div>
-</section>
-
-<!-- ============ PISTAS ============ -->
-<section class="pistas" id="pistas" hidden aria-label="Pistas de ruta">
-  <p class="overline">TRES PISTAS, CERO RESPUESTAS</p>
-  <p class="pistas__intro">Desde el 1 de septiembre el terreno empieza a hablar. Se abren solas, no hay forma de adelantarlas.</p>
-  <ol class="pistas__lista" id="pistasLista"></ol>
-</section>
+  <!-- Navegación global del libro -->
+  <nav class="libro__nav" aria-label="Navegación del pasaporte">
+    <button type="button" class="btn-paso btn-paso--ghost" id="navPrev">← Atrás</button>
+    <button type="button" class="btn-paso" id="navNext">Abrir pasaporte →</button>
+  </nav>
+</main>
 
 <footer class="footer">
   <p>SHINERAY — CONVENCIÓN NACIONAL 2026 · A TODO TERRENO · Invitación no transferible</p>
