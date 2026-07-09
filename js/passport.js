@@ -4,10 +4,7 @@ const TIER_LABELS = {
   elite: 'ELITE — Cabeza de expedición',
 };
 
-const TOTAL_PAGES = 11;
-const DATOS_PAGE = 6;
-const SELLO_PAGE = 8;
-const CONFIRM_PAGE = 9;
+const TOTAL_STEPS = 4;
 
 // Genera un número de pasaporte estable para esta sesión, con formato
 // consistente con la serie de la Convención Nacional Shineray 2026.
@@ -40,7 +37,7 @@ function generateMrz({ nombre, serial, tier }) {
   return `${line1}\n${line2}`;
 }
 
-function validateDatos(form) {
+function validateStep2(form) {
   let ok = true;
   const required = ['nombre', 'moto', 'ciudad'];
   required.forEach((name) => {
@@ -57,6 +54,66 @@ function validateDatos(form) {
     }
   });
   return ok;
+}
+
+// Dispersa el pasaporte en partículas de arena que el viento se lleva.
+// Se omite si el usuario prefiere movimiento reducido: el cierre narrativo
+// pasa a ser puramente el fundido CSS (.is-dissolving), sin partículas.
+function runDustDissolve(cardEl, canvas) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || !canvas.getContext) return Promise.resolve();
+
+  const rect = cardEl.getBoundingClientRect();
+  const parentRect = canvas.parentElement.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  canvas.width = parentRect.width * dpr;
+  canvas.height = parentRect.height * dpr;
+  canvas.style.width = `${parentRect.width}px`;
+  canvas.style.height = `${parentRect.height}px`;
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const originX = rect.left - parentRect.left + rect.width / 2;
+  const originY = rect.top - parentRect.top + rect.height / 2;
+
+  const colors = ['#d3ac66', '#e4cb98', '#c41e1e'];
+  const particles = Array.from({ length: 140 }, () => ({
+    x: originX + (Math.random() - 0.5) * rect.width,
+    y: originY + (Math.random() - 0.5) * rect.height,
+    vx: (Math.random() - 0.3) * 3.2,
+    vy: -Math.random() * 2 - 0.4,
+    size: Math.random() * 3 + 1,
+    life: 1,
+    color: colors[Math.floor(Math.random() * colors.length)],
+  }));
+
+  return new Promise((resolve) => {
+    function frame() {
+      ctx.clearRect(0, 0, parentRect.width, parentRect.height);
+      let alive = false;
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.01;
+        p.life -= 0.012;
+        if (p.life > 0) {
+          alive = true;
+          ctx.globalAlpha = Math.max(p.life, 0);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+      });
+      if (alive) {
+        requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0, 0, parentRect.width, parentRect.height);
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
 }
 
 // Inclina la portada del pasaporte siguiendo el cursor, como si fuera un
@@ -84,16 +141,15 @@ function initCoverTilt(cover) {
   });
 }
 
-export function initPassportBook({ onSealed }) {
+export function initPassportForm({ onSealed }) {
   const form = document.getElementById('passportForm');
-  const card = document.getElementById('pasaporte');
+  const card = document.getElementById('manifiestoCard');
+  const canvas = document.getElementById('dustCanvas');
   const serialEl = document.getElementById('passportSerial');
   const progressEl = document.querySelector('.pasaporte__progress');
-  const pageLabel = document.getElementById('pasoLabel');
-  const progressFill = document.getElementById('progressFill');
-  const pages = Array.from(document.querySelectorAll('[data-page]'));
-  const navPrev = document.getElementById('navPrev');
-  const navNext = document.getElementById('navNext');
+  const stepLabel = document.getElementById('pasoLabel');
+  const stepDots = Array.from(document.querySelectorAll('.step-dot'));
+  const panels = Array.from(document.querySelectorAll('[data-step-panel]'));
   if (!form) return;
 
   const serial = generateSerial();
@@ -101,35 +157,20 @@ export function initPassportBook({ onSealed }) {
 
   initCoverTilt(document.getElementById('pasaporteCover'));
 
+  let currentStep = 1;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FLIP_MS = 500;
-  let currentPage = 1;
-  let sealed = false;
-  let sealing = false;
-
-  function pageEl(n) {
-    return pages.find((p) => Number(p.dataset.page) === n);
-  }
-
-  function navLabel(n) {
-    if (n === 1) return 'Abrir pasaporte →';
-    if (n === SELLO_PAGE && !sealed) return null; // el botón de sellar reemplaza a "Siguiente"
-    if (n === TOTAL_PAGES) return null;
-    return 'Siguiente →';
-  }
 
   function updateChrome(n) {
-    if (pageLabel) pageLabel.textContent = `PÁGINA ${n} DE ${TOTAL_PAGES}`;
+    stepDots.forEach((dot) => {
+      const dotStep = Number(dot.dataset.stepDot);
+      dot.classList.toggle('is-active', dotStep === n);
+      dot.classList.toggle('is-done', dotStep < n);
+    });
+    if (stepLabel) stepLabel.textContent = `PASO ${n} DE ${TOTAL_STEPS}`;
     if (progressEl) progressEl.setAttribute('aria-valuenow', String(n));
-    if (progressFill) progressFill.style.width = `${(n / TOTAL_PAGES) * 100}%`;
 
-    navPrev.hidden = n === 1;
-
-    const label = navLabel(n);
-    navNext.hidden = label === null;
-    if (label) navNext.textContent = label;
-
-    if (n === SELLO_PAGE) {
+    if (n === TOTAL_STEPS) {
       const tierValue = form.elements['tier'].value;
       const nombre = form.elements['nombre'].value.trim();
       document.getElementById('resumenNombre').textContent = nombre || '—';
@@ -140,24 +181,24 @@ export function initPassportBook({ onSealed }) {
     }
   }
 
-  function focusPage(panel) {
+  function focusPanel(panel) {
     const firstInput = panel && panel.querySelector('input:not([type="radio"]), input[type="radio"]:checked');
     if (firstInput) firstInput.focus({ preventScroll: true });
   }
 
-  // Cambia de página como si se hojeara un pasaporte real: la saliente gira
-  // sobre el lomo hacia adentro mientras la entrante gira hacia afuera,
-  // sincronizadas para que nunca se vea el reverso de ninguna.
-  function goToPage(n) {
-    const oldPanel = pageEl(currentPage);
-    const newPanel = pageEl(n);
-    const forward = n > currentPage;
-    currentPage = n;
+  // Cambia de página como si se hojeara un pasaporte real: la página saliente
+  // gira sobre el lomo hacia adentro mientras la entrante gira hacia afuera,
+  // sincronizadas para que nunca se vea el reverso de ninguna (backface-visibility).
+  function showStep(n) {
+    const oldPanel = panels.find((p) => Number(p.dataset.stepPanel) === currentStep);
+    const newPanel = panels.find((p) => Number(p.dataset.stepPanel) === n);
+    const forward = n > currentStep;
+    currentStep = n;
     updateChrome(n);
 
     if (!oldPanel || oldPanel === newPanel || reduceMotion || !newPanel.animate) {
-      pages.forEach((panel) => { panel.hidden = panel !== newPanel; });
-      focusPage(newPanel);
+      panels.forEach((panel) => { panel.hidden = panel !== newPanel; });
+      focusPanel(newPanel);
       return;
     }
 
@@ -181,61 +222,51 @@ export function initPassportBook({ onSealed }) {
     ).onfinish = () => {
       newPanel.style.transform = '';
       newPanel.style.zIndex = '';
-      focusPage(newPanel);
+      focusPanel(newPanel);
     };
   }
 
-  async function sealPassport() {
-    if (sealing || sealed) return;
-    sealing = true;
-    const tierValue = form.elements['tier'].value;
-
-    card.classList.add('is-stamped');
-    await new Promise((r) => setTimeout(r, 500));
-    card.classList.remove('is-stamped');
-
-    sealed = true;
-    sealing = false;
-    goToPage(CONFIRM_PAGE);
-
-    document.getElementById('confSerial').textContent = serial;
-    document.getElementById('confTier').textContent = TIER_LABELS[tierValue] || TIER_LABELS.standard;
-
-    if (typeof onSealed === 'function') onSealed();
-  }
-
-  navPrev.addEventListener('click', () => {
-    if (currentPage > 1) goToPage(currentPage - 1);
-  });
-
-  navNext.addEventListener('click', () => {
-    if (currentPage === DATOS_PAGE && !validateDatos(form)) return;
-    if (currentPage < TOTAL_PAGES) goToPage(currentPage + 1);
-  });
-
   const cover = document.getElementById('pasaporteCover');
   if (cover) {
-    cover.addEventListener('click', () => {
-      if (currentPage === 1) goToPage(2);
-    });
     cover.addEventListener('keydown', (event) => {
-      if ((event.key === 'Enter' || event.key === ' ') && currentPage === 1) {
+      if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        goToPage(2);
+        cover.click();
       }
     });
   }
 
-  document.addEventListener('keydown', (event) => {
-    if (event.target.matches('input, textarea')) return;
-    if (event.key === 'ArrowRight' && !navNext.hidden) navNext.click();
-    if (event.key === 'ArrowLeft' && !navPrev.hidden) navPrev.click();
+  form.addEventListener('click', (event) => {
+    const nextBtn = event.target.closest('[data-next]');
+    const prevBtn = event.target.closest('[data-prev]');
+
+    if (nextBtn) {
+      if (currentStep === 2 && !validateStep2(form)) return;
+      showStep(Math.min(currentStep + 1, TOTAL_STEPS));
+    } else if (prevBtn) {
+      showStep(Math.max(currentStep - 1, 1));
+    }
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (currentPage === SELLO_PAGE) sealPassport();
-  });
+    if (currentStep !== TOTAL_STEPS) return;
 
-  updateChrome(1);
+    const tierValue = form.elements['tier'].value;
+
+    document.body.dataset.state = 'sellando';
+    card.classList.add('is-stamped');
+
+    await new Promise((r) => setTimeout(r, 500));
+
+    card.classList.add('is-dissolving');
+    await runDustDissolve(card, canvas);
+
+    document.getElementById('manifiesto').style.display = 'none';
+    document.body.dataset.state = 'sellado';
+
+    if (typeof onSealed === 'function') {
+      onSealed({ serial, tierLabel: TIER_LABELS[tierValue] || TIER_LABELS.standard });
+    }
+  });
 }
