@@ -116,28 +116,29 @@ function runDustDissolve(cardEl, canvas) {
   });
 }
 
-// Inclina la portada del pasaporte siguiendo el cursor, como si fuera un
-// objeto físico que se puede tomar entre las manos. Se omite con reduced-motion.
-function initCoverTilt(cover) {
-  if (!cover) return;
+// Inclina el pasaporte entero siguiendo el cursor, como un objeto físico que
+// se puede tomar entre las manos — en cualquiera de sus hojas, no solo la
+// portada. Se omite con reduced-motion.
+function initBookTilt(frame) {
+  if (!frame) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const MAX_TILT = 10;
+  const MAX_TILT = 7;
   const sheen = document.getElementById('pasaporteSheen');
 
-  cover.addEventListener('mousemove', (event) => {
-    const rect = cover.getBoundingClientRect();
+  frame.addEventListener('mousemove', (event) => {
+    const rect = frame.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width - 0.5;
     const py = (event.clientY - rect.top) / rect.height - 0.5;
-    cover.style.transform = `perspective(1000px) rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg) scale(1.02)`;
+    frame.style.transform = `rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg)`;
     if (sheen) {
       sheen.style.setProperty('--sheen-x', `${((px + 0.5) * 100).toFixed(1)}%`);
       sheen.style.setProperty('--sheen-y', `${((py + 0.5) * 100).toFixed(1)}%`);
     }
   });
 
-  cover.addEventListener('mouseleave', () => {
-    cover.style.transform = '';
+  frame.addEventListener('mouseleave', () => {
+    frame.style.transform = '';
   });
 }
 
@@ -165,7 +166,7 @@ export function initPassportForm({ onSealed }) {
   const serial = generateSerial();
   if (serialEl) serialEl.textContent = serial;
 
-  initCoverTilt(document.getElementById('pasaporteCover'));
+  initBookTilt(document.querySelector('.pasaporte__pageframe'));
 
   let currentStep = 1;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
