@@ -89,6 +89,164 @@ html { scroll-snap-type: y proximity; }
   margin: 0 0 .5rem;
 }
 
+html.no-scroll { overflow: hidden; height: 100%; }
+
+/* =========== Bienvenida: nubes de arena a pantalla completa =========== */
+
+.welcome {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: var(--tinta);
+  cursor: pointer;
+}
+.welcome[hidden] { display: none; }
+
+.welcome__grain {
+  position: absolute; inset: 0;
+  filter: url(#grain);
+  opacity: .35;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.welcome__clouds {
+  position: absolute; inset: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.welcome__cloud {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(3.5rem);
+  opacity: .55;
+  will-change: transform, opacity;
+  animation: cloud-drift 18s ease-in-out infinite alternate;
+}
+.welcome__cloud--1 {
+  width: 34rem; height: 34rem; top: -12%; left: -14%;
+  background: radial-gradient(circle, var(--arena-500), transparent 70%);
+  animation-duration: 17s;
+}
+.welcome__cloud--2 {
+  width: 26rem; height: 26rem; top: 24%; right: -12%;
+  background: radial-gradient(circle, var(--dorado), transparent 70%);
+  animation-duration: 21s; animation-delay: -4s;
+}
+.welcome__cloud--3 {
+  width: 30rem; height: 30rem; bottom: -16%; left: 12%;
+  background: radial-gradient(circle, var(--rojo), transparent 70%);
+  opacity: .4;
+  animation-duration: 19s; animation-delay: -9s;
+}
+.welcome__cloud--4 {
+  width: 22rem; height: 22rem; bottom: 2%; right: 8%;
+  background: radial-gradient(circle, var(--arena-300), transparent 70%);
+  animation-duration: 23s; animation-delay: -2s;
+}
+.welcome__cloud--5 {
+  width: 40rem; height: 40rem; top: 42%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--arena-300), transparent 70%);
+  opacity: .3;
+  animation-name: cloud-drift-center;
+  animation-duration: 27s;
+}
+@keyframes cloud-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(4%, -3%) scale(1.08); }
+}
+@keyframes cloud-drift-center {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to { transform: translate(calc(-50% + 3%), calc(-50% - 3%)) scale(1.1); }
+}
+
+.welcome__canvas {
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+}
+
+.welcome__content {
+  position: relative; z-index: 3;
+  padding: 2rem 1.5rem;
+  max-width: 34rem;
+  transition: opacity .5s var(--ease), transform .5s var(--ease);
+}
+
+.welcome__brand {
+  display: inline-flex; align-items: center; gap: .45rem;
+  color: var(--rojo);
+  font-family: var(--font-display);
+  font-size: .95rem;
+  letter-spacing: .05em;
+  margin-bottom: 1.5rem;
+}
+
+.welcome__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: .01em;
+  color: var(--hueso);
+  margin: 0 0 1.4rem;
+  filter: url(#inkrough);
+}
+.welcome__title span { color: var(--rojo); }
+
+.welcome__hint {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .12em;
+  color: var(--arena-300);
+  opacity: .75;
+  margin: 0 0 1.75rem;
+  animation: hint-pulse 2.2s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+  0%, 100% { opacity: .5; }
+  50% { opacity: .95; }
+}
+
+.welcome__cta {
+  position: relative; z-index: 3;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: .06em;
+  background: var(--rojo);
+  color: #fff;
+  border: 0;
+  border-radius: 3px;
+  padding: .8rem 2.1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(120,30,20,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: background .2s var(--ease), transform .15s var(--ease), box-shadow .2s var(--ease);
+}
+.welcome__cta:hover {
+  background: var(--rojo-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(120,30,20,.5), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.welcome__cta:active { transform: scale(.97); }
+.welcome__cta:focus-visible { outline: 3px solid var(--hueso); outline-offset: 3px; }
+
+/* Al hacer clic, las nubes se disipan cada una hacia un lado distinto, como
+   si el viento se las llevara, mientras el contenido se desvanece detrás. */
+.welcome.is-dispersing .welcome__content {
+  opacity: 0;
+  transform: scale(.94) translateY(-8px);
+}
+.welcome.is-dispersing .welcome__cloud {
+  transition: transform 1.1s cubic-bezier(.16,1,.3,1), opacity 1.1s ease;
+  opacity: 0;
+}
+.welcome.is-dispersing .welcome__cloud--1 { transform: translate(-55vw, -30vh) scale(1.4); }
+.welcome.is-dispersing .welcome__cloud--2 { transform: translate(60vw, -20vh) scale(1.4); transition-delay: .05s; }
+.welcome.is-dispersing .welcome__cloud--3 { transform: translate(-45vw, 45vh) scale(1.5); transition-delay: .1s; }
+.welcome.is-dispersing .welcome__cloud--4 { transform: translate(55vw, 40vh) scale(1.4); transition-delay: .05s; }
+.welcome.is-dispersing .welcome__cloud--5 { transform: translate(-50%, -50%) scale(2.2); transition-delay: .15s; }
+
 /* =========== Topbar de marca persistente =========== */
 
 .topbar {
