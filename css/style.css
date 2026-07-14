@@ -648,33 +648,7 @@ body::after {
   margin-bottom: 1.1rem;
 }
 
-/* ---- Paso 2: datos del titular ---- */
-
-.pasaporte__datapage {
-  display: flex; flex-direction: column; gap: .35rem; align-items: flex-start;
-  margin-bottom: .35rem;
-}
-.pasaporte__photo {
-  position: relative;
-  flex-shrink: 0;
-  width: 3.5rem; height: 4.2rem;
-  background: var(--arena-300);
-  color: var(--tinta);
-  border: 1px solid rgba(20,17,13,.3);
-  padding: .3rem;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.4), 2px 3px 6px rgba(20,17,13,.25);
-  overflow: hidden;
-}
-.pasaporte__photo::after {
-  content: "";
-  position: absolute; top: -.6rem; right: -.6rem;
-  width: 1.4rem; height: 1.4rem;
-  background: linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,0) 60%);
-  transform: rotate(45deg);
-  box-shadow: -1px 1px 2px rgba(20,17,13,.2);
-}
-.pasaporte__fields { flex: 1; }
-.pasaporte__fields .field:last-child { margin-bottom: 0; }
+/* ---- Paso 2: página de datos ---- */
 
 /* Fechas de emisión/expiración: decorativas, no editables, mismo trazo que un input real */
 .field__readonly {
@@ -682,15 +656,52 @@ body::after {
   font-size: .95rem;
   margin: 0;
   padding: .3rem .1rem .35rem;
-  border-bottom: 1.5px solid rgba(20,17,13,.3);
+  border-bottom: 1.5px dotted rgba(20,17,13,.55);
 }
-.field--dates { margin-top: -.2rem; }
+.field--dates-row { flex-direction: row; gap: .8rem; }
+.field--dates-row > div { flex: 1; min-width: 0; }
 
-/* Página de datos: más compacta que las demás para que quepan campos +
-   fechas + pie decorativo sin desbordar el marco del pasaporte. */
-.paso--datapage { padding-top: 1rem; padding-bottom: .75rem; justify-content: flex-start; }
-.paso--datapage .field { margin-bottom: .45rem; }
-.paso--datapage .field--split { flex-direction: row; gap: .8rem; }
+/* Página de datos: réplica del cuadernillo "Pasaporte de Aventura" físico,
+   fondo kraft con venas rojas de mapa en vez del papel hueso de las demás
+   hojas, y más compacta para que quepan campos + fechas + pie sin desbordar. */
+.paso--datapage {
+  position: relative;
+  padding-top: .85rem; padding-bottom: .6rem;
+  justify-content: flex-start;
+  background-color: #ddcda3;
+  background-image:
+    repeating-linear-gradient(115deg, rgba(20,17,13,.035) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(25deg, rgba(20,17,13,.025) 0 1px, transparent 1px 7px);
+}
+.paso--datapage .field { margin-bottom: .2rem; }
+.paso--datapage label { margin-bottom: .1rem; }
+.paso--datapage input[type="text"],
+.paso--datapage .field__readonly { padding-top: .15rem; padding-bottom: .2rem; }
+.paso--datapage .field--dp input,
+.paso--datapage input {
+  border-bottom-style: dotted;
+  border-bottom-color: rgba(20,17,13,.55);
+}
+.paso--datapage label { color: var(--tinta); font-weight: 700; opacity: .8; }
+.paso--datapage .overline {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: .03em;
+  font-size: clamp(.72rem, 4.4cqw, .95rem);
+  line-height: 1.2;
+  margin-bottom: .7rem;
+  color: var(--tinta);
+}
+
+/* Venas rojas tipo mapa/capilar de fondo, como en la ilustración de referencia */
+.datapage__veins {
+  position: absolute; inset: 0; z-index: 0;
+  opacity: .32;
+  pointer-events: none;
+}
+.datapage__veins svg { width: 100%; height: 100%; }
+.paso--datapage > *:not(.datapage__veins) { position: relative; z-index: 1; }
 
 /* En marcos angostos no entran las dos líneas del rótulo bilingüe: se
    conserva solo el español y el inglés queda como title/atributo visual. */
@@ -703,34 +714,34 @@ body::after {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
   align-items: end;
-  gap: .5rem;
+  gap: .4rem;
   margin-top: auto;
-  padding-top: .5rem;
+  padding-top: .3rem;
   color: var(--tinta);
 }
 .datapage__barcode {
   grid-column: 1 / -1;
   width: 100%;
-  height: 1.6rem;
+  height: 1.3rem;
   color: var(--tinta);
 }
 .datapage__barcode-serial {
   grid-column: 1 / -1;
   font-family: var(--font-mono);
-  font-size: .6rem;
+  font-size: .58rem;
   letter-spacing: .25em;
   opacity: .7;
-  margin-top: -.3rem;
-  margin-bottom: .2rem;
+  margin-top: -.25rem;
+  margin-bottom: .1rem;
 }
 .datapage__moto,
 .datapage__compass {
-  width: 2rem; height: 2rem;
+  width: 1.7rem; height: 1.7rem;
   color: var(--tinta);
   opacity: .75;
 }
 .datapage__stamp {
-  width: 2.7rem; height: 2.7rem;
+  width: 2.3rem; height: 2.3rem;
   color: var(--rojo);
   opacity: .85;
   justify-self: end;
@@ -776,10 +787,6 @@ body::after {
 }
 
 .field { margin-bottom: 1rem; display: flex; flex-direction: column; }
-.field--split { flex-direction: column; gap: 1rem; }
-.field--split > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.field--split input,
-.field--split .field__readonly { min-width: 0; }
 
 label { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .25rem; opacity: .65; }
 label em { text-transform: none; letter-spacing: 0; opacity: .8; font-style: normal; }
