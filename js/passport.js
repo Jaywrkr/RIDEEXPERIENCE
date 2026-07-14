@@ -183,12 +183,9 @@ export function initPassportForm({ onSealed }) {
     if (caption) caption.textContent = STEP_CAPTIONS[n] || '';
 
     navPrev.hidden = n === 1;
-    if (n === TOTAL_STEPS) {
-      navNext.hidden = true;
-    } else {
-      navNext.hidden = false;
-      navNext.textContent = n === 1 ? 'Abrir pasaporte →' : 'Siguiente →';
-    }
+    // En la portada el registro se abre con el botón de la propia tapa;
+    // en la última página manda el botón de sellar.
+    navNext.hidden = n === 1 || n === TOTAL_STEPS;
 
     if (n === TOTAL_STEPS) {
       const tierValue = form.elements['tier'].value;
@@ -256,16 +253,10 @@ export function initPassportForm({ onSealed }) {
     if (currentStep > 1) showStep(currentStep - 1);
   });
 
-  const cover = document.getElementById('pasaporteCover');
-  if (cover) {
-    cover.addEventListener('click', () => {
+  const coverCta = document.getElementById('coverCta');
+  if (coverCta) {
+    coverCta.addEventListener('click', () => {
       if (currentStep === 1) goNext();
-    });
-    cover.addEventListener('keydown', (event) => {
-      if ((event.key === 'Enter' || event.key === ' ') && currentStep === 1) {
-        event.preventDefault();
-        goNext();
-      }
     });
   }
 

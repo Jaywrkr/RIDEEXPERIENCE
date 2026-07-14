@@ -539,7 +539,6 @@ body::after {
   padding: 1.6rem 1.25rem 1.1rem;
   border: 0;
   border-radius: 6px;
-  cursor: pointer;
   transform-style: preserve-3d;
   will-change: transform;
   box-shadow:
@@ -556,20 +555,30 @@ body::after {
     inset 0 0 0 1px rgba(90,65,35,.18);
 }
 
-.pasaporte__cover-hint {
-  position: absolute; z-index: 3;
-  bottom: .45rem; left: 0; right: 0;
-  font-family: var(--font-mono);
-  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
-  color: var(--rojo-dark);
-  opacity: 0;
-  margin: 0;
-  transition: opacity .25s var(--ease);
+/* Botón de registro dentro de la propia tapa */
+.cover-cta {
+  position: relative; z-index: 3;
+  align-self: center;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: .06em;
+  background: var(--rojo);
+  color: #fff;
+  border: 0;
+  border-radius: 3px;
+  padding: .8rem 1.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(120,30,20,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: background .2s var(--ease), transform .15s var(--ease), box-shadow .2s var(--ease);
+  margin-bottom: .9rem;
 }
-.paso--cover:hover .pasaporte__cover-hint,
-.paso--cover:focus-visible .pasaporte__cover-hint {
-  opacity: .9;
+.cover-cta:hover {
+  background: var(--rojo-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(120,30,20,.5), inset 0 1px 0 rgba(255,255,255,.18);
 }
+.cover-cta:active { transform: scale(.97); }
+.cover-cta:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
 
 .pasaporte__cover-grain {
   position: absolute; inset: 0; z-index: 2;
@@ -595,7 +604,7 @@ body::after {
 }
 .cover-brand span {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.9rem;
   letter-spacing: .02em;
 }
 
@@ -607,12 +616,12 @@ body::after {
 }
 .cover-atodo {
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 9cqw, 1.9rem);
-  letter-spacing: .55em;
-  text-indent: .55em;
+  font-size: clamp(1.3rem, 11cqw, 2.3rem);
+  letter-spacing: .48em;
+  text-indent: .48em;
   color: var(--rojo);
   line-height: 1;
-  margin-bottom: -.42em;
+  margin-bottom: -.48em;
 }
 .cover-terreno {
   font-family: var(--font-display);
