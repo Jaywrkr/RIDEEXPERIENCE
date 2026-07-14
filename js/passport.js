@@ -149,6 +149,30 @@ const STEP_CAPTIONS = {
   4: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
 };
 
+// Dibuja barras de código de barras pseudoaleatorias pero estables para este
+// número de serie, puramente decorativas (no codifican datos reales).
+function renderBarcode(container, serial) {
+  if (!container) return;
+  const seed = serial.replace(/\D/g, '') || '0';
+  let x = 2;
+  let bars = '';
+  for (let i = 0; i < 46 && x < 158; i += 1) {
+    const digit = Number(seed[i % seed.length]);
+    const width = 1 + (digit % 3);
+    if (digit % 2 === 0) {
+      bars += `<rect x="${x}" y="0" width="${width}" height="34"/>`;
+    }
+    x += width + 1;
+  }
+  container.innerHTML = bars;
+}
+
+const FECHA_FMT = new Intl.DateTimeFormat('es', { day: '2-digit', month: 'short', year: 'numeric' });
+
+function formatFecha(date) {
+  return FECHA_FMT.format(date).replace('.', '').toUpperCase();
+}
+
 export function initPassportForm({ onSealed }) {
   const form = document.getElementById('passportForm');
   const card = document.getElementById('manifiestoCard');
@@ -165,6 +189,15 @@ export function initPassportForm({ onSealed }) {
 
   const serial = generateSerial();
   if (serialEl) serialEl.textContent = serial;
+
+  const barcodeSerialEl = document.getElementById('barcodeSerial');
+  if (barcodeSerialEl) barcodeSerialEl.textContent = serial;
+  renderBarcode(document.getElementById('barcodeBars'), serial);
+
+  const fechaEmisionEl = document.getElementById('fechaEmision');
+  if (fechaEmisionEl) fechaEmisionEl.textContent = formatFecha(new Date());
+  const fechaExpiracionEl = document.getElementById('fechaExpiracion');
+  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(new Date('2026-09-25T09:00:00-05:00'));
 
   initBookTilt(document.querySelector('.pasaporte__pageframe'));
 
