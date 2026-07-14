@@ -37,18 +37,61 @@ function validateStep2(form) {
   const required = ['apellidos', 'nombres', 'nacionalidad'];
   required.forEach((name) => {
     const input = form.elements[name];
+    if (!input) return;
     const errorEl = document.getElementById(`err-${name}`);
     const value = input.value.trim();
     if (!value) {
       ok = false;
       input.classList.add('invalid');
-      errorEl.textContent = 'Este dato es necesario para el pasaporte.';
+      if (errorEl) errorEl.textContent = 'Este dato es necesario para el pasaporte.';
     } else {
       input.classList.remove('invalid');
-      errorEl.textContent = '';
+      if (errorEl) errorEl.textContent = '';
     }
   });
   return ok;
+}
+
+// Guarda un borrador de los datos del titular para que un refresh a mitad
+// del formulario no borre lo ya escrito. sessionStorage puede no estar
+// disponible (modo privado de Safari, políticas de cookies, etc.): si
+// falla, el pasaporte sigue funcionando, simplemente sin recordar nada.
+const DRAFT_KEY = 'atr-passport-draft';
+const DRAFT_FIELDS = ['apellidos', 'nombres', 'nacionalidad'];
+
+function saveDraft(form) {
+  try {
+    const draft = {};
+    DRAFT_FIELDS.forEach((name) => {
+      const input = form.elements[name];
+      if (input) draft[name] = input.value;
+    });
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    // Almacenamiento no disponible: se ignora, no es crítico para el flujo.
+  }
+}
+
+function restoreDraft(form) {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    DRAFT_FIELDS.forEach((name) => {
+      const input = form.elements[name];
+      if (input && typeof draft[name] === 'string') input.value = draft[name];
+    });
+  } catch {
+    // Borrador corrupto o storage no disponible: se arranca en blanco.
+  }
+}
+
+function clearDraft() {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // No hay nada que limpiar si el storage no está disponible.
+  }
 }
 
 // Dispersa el pasaporte en partículas de arena que el viento se lleva.
@@ -56,7 +99,9 @@ function validateStep2(form) {
 // pasa a ser puramente el fundido CSS (.is-dissolving), sin partículas.
 function runDustDissolve(cardEl, canvas) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion || !canvas.getContext) return Promise.resolve();
+  if (reduceMotion || !cardEl || !canvas || !canvas.getContext || !canvas.parentElement) {
+    return Promise.resolve();
+  }
 
   const rect = cardEl.getBoundingClientRect();
   const parentRect = canvas.parentElement.getBoundingClientRect();
@@ -179,7 +224,15 @@ export function initPassportForm({ onSealed }) {
   const caption = document.getElementById('pasoCaption');
   const navPrev = document.getElementById('navPrev');
   const navNext = document.getElementById('navNext');
-  if (!form) return;
+  // Sin estos tres elementos el stepper no puede avanzar de forma segura:
+  // mejor no arrancar nada a que reviente a mitad de una interacción.
+  if (!form || !navPrev || !navNext) return;
+
+  restoreDraft(form);
+  DRAFT_FIELDS.forEach((name) => {
+    const input = form.elements[name];
+    if (input) input.addEventListener('input', () => saveDraft(form));
+  });
 
   const serial = generateSerial();
   if (serialEl) serialEl.textContent = serial;
@@ -215,11 +268,13 @@ export function initPassportForm({ onSealed }) {
     navNext.hidden = n === 1 || n === TOTAL_STEPS;
 
     if (n === TOTAL_STEPS) {
-      const apellidos = form.elements['apellidos'].value.trim();
-      const nombres = form.elements['nombres'].value.trim();
-      const nacionalidad = form.elements['nacionalidad'].value.trim();
-      document.getElementById('resumenNombre').textContent = `${apellidos} ${nombres}`.trim() || '—';
-      document.getElementById('resumenNacionalidad').textContent = nacionalidad || '—';
+      const apellidos = (form.elements['apellidos'] || {}).value?.trim() || '';
+      const nombres = (form.elements['nombres'] || {}).value?.trim() || '';
+      const nacionalidad = (form.elements['nacionalidad'] || {}).value?.trim() || '';
+      const resumenNombreEl = document.getElementById('resumenNombre');
+      const resumenNacionalidadEl = document.getElementById('resumenNacionalidad');
+      if (resumenNombreEl) resumenNombreEl.textContent = `${apellidos} ${nombres}`.trim() || '—';
+      if (resumenNacionalidadEl) resumenNacionalidadEl.textContent = nacionalidad || '—';
       const mrzEl = document.getElementById('pasaporteMrz');
       if (mrzEl) mrzEl.textContent = generateMrz({ apellidos, nombres, serial });
     }
@@ -300,15 +355,17 @@ export function initPassportForm({ onSealed }) {
     // y se deja ver la marca antes de que el documento se disuelva.
     const stamp = document.getElementById('selloStamp');
     if (stamp) stamp.classList.add('is-landed');
-    setTimeout(() => card.classList.add('is-stamped'), 250);
+    if (card) setTimeout(() => card.classList.add('is-stamped'), 250);
 
     await new Promise((r) => setTimeout(r, reduceMotion ? 400 : 1600));
 
-    card.classList.add('is-dissolving');
+    if (card) card.classList.add('is-dissolving');
     await runDustDissolve(card, canvas);
 
-    document.getElementById('manifiesto').style.display = 'none';
+    const manifiestoEl = document.getElementById('manifiesto');
+    if (manifiestoEl) manifiestoEl.style.display = 'none';
     document.body.dataset.state = 'sellado';
+    clearDraft();
 
     if (typeof onSealed === 'function') {
       onSealed({ serial });
