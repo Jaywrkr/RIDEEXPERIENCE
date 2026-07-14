@@ -684,6 +684,10 @@ body::after {
 }
 .paso--datapage label { color: var(--tinta); font-weight: 700; opacity: .8; }
 .paso--datapage .overline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .5rem;
   font-family: var(--font-display);
   font-style: normal;
   font-weight: 400;
@@ -692,6 +696,13 @@ body::after {
   line-height: 1.2;
   margin-bottom: .7rem;
   color: var(--tinta);
+}
+.datapage__globe {
+  flex-shrink: 0;
+  width: 1.3rem; height: 1.3rem;
+  margin-top: .1rem;
+  color: var(--tinta);
+  opacity: .7;
 }
 
 /* Venas rojas tipo mapa/capilar de fondo, como en la ilustración de referencia */
