@@ -2,7 +2,9 @@ import { initReveal, initScrollCue, initTopbar, initHeroParallax, initSlideNav }
 import { initPassportForm } from './passport.js';
 import { initCountdown } from './countdown.js';
 import { renderClues } from './clues.js';
+import { initWelcome } from './welcome.js';
 
+initWelcome();
 initReveal();
 initScrollCue();
 initTopbar();
