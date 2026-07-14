@@ -38,18 +38,28 @@
     <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.1 0 0 0 -0.12" result="mask"/>
     <feComposite in="SourceGraphic" in2="mask" operator="in"/>
   </filter>
+  <!-- Igual que inkstamp pero casi opaco: para titulares grandes tipo serigrafía,
+       con mordidas ocasionales en vez de velo gris -->
+  <filter id="inkrough" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  3 0 0 0 -0.55" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+  </filter>
 </svg>
 <a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
 
+<!-- ============ SECCIONES OCULTAS TEMPORALMENTE: por ahora la experiencia
+     arranca directo en el pasaporte. Quitar `hidden` para restaurarlas. ============ -->
+
 <!-- ============ TOPBAR (marca persistente, aparece al salir del hero) ============ -->
-<div class="topbar" id="topbar" aria-hidden="true">
+<div class="topbar" id="topbar" aria-hidden="true" hidden>
   <span class="topbar__wordmark"><em>A TODO</em> TERRENO</span>
   <span class="topbar__event">CONVENCIÓN 2026</span>
   <span class="topbar__brand">SHINERAY</span>
 </div>
 
 <!-- ============ HERO ============ -->
-<header class="hero" id="hero">
+<header class="hero" id="hero" hidden>
   <div class="hero__grain" aria-hidden="true"></div>
   <div class="hero__dune hero__dune--back" id="heroDuneBack" aria-hidden="true"></div>
   <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
@@ -72,7 +82,7 @@
 </header>
 
 <!-- ============ NAVEGACIÓN DE SLIDES (experiencia por pasos) ============ -->
-<nav class="slide-nav" id="slideNav" aria-label="Navegación de la experiencia">
+<nav class="slide-nav" id="slideNav" aria-label="Navegación de la experiencia" hidden>
   <a href="#hero" data-slide-dot="hero" aria-label="Portada"><span></span></a>
   <a href="#bitacora-1" data-slide-dot="bitacora-1" aria-label="Historia"><span></span></a>
   <a href="#como-funciona" data-slide-dot="como-funciona" aria-label="Cómo funciona"><span></span></a>
@@ -81,18 +91,18 @@
 </nav>
 
 <!-- ============ BITÁCORA (storytelling, un momento por pantalla) ============ -->
-<section class="bitacora" id="bitacora-1" aria-label="Bitácora de la expedición, parte 1">
+<section class="bitacora" id="bitacora-1" aria-label="Bitácora de la expedición, parte 1" hidden>
   <p class="bitacora__linea reveal">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganas la calle todos los días.</p>
 </section>
-<section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2">
+<section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2" hidden>
   <p class="bitacora__linea reveal">Nadie sabe a dónde va. Tú tampoco, todavía. Solo sabes la fecha, y que algo grande te espera del otro lado.</p>
 </section>
-<section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3">
+<section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3" hidden>
   <p class="bitacora__linea reveal">El misterio no arranca en la playa. Arranca el día que abres el sobre. Esto es lo que viene después de ese sobre.</p>
 </section>
 
 <!-- ============ CÓMO FUNCIONA (demo de la experiencia de pasaporte digital) ============ -->
-<section class="explicador" id="como-funciona" aria-labelledby="explicadorTitulo">
+<section class="explicador" id="como-funciona" aria-labelledby="explicadorTitulo" hidden>
   <span class="explicador__bleed explicador__bleed--left" aria-hidden="true"></span>
   <span class="explicador__bleed explicador__bleed--right" aria-hidden="true"></span>
   <div class="explicador__head">
@@ -157,21 +167,44 @@
     <form id="passportForm" novalidate>
       <div class="pasaporte__pageframe">
 
-        <!-- PASO 1 · Portada -->
+        <!-- PASO 1 · Portada (réplica del cuadernillo kraft físico) -->
         <div class="paso paso--cover" id="pasaporteCover" data-step-panel="1" role="button" tabindex="0" aria-label="Abrir pasaporte">
           <span class="pasaporte__cover-grain" aria-hidden="true"></span>
-          <span class="pasaporte__cover-holo" aria-hidden="true"></span>
-          <span class="pasaporte__cover-sheen" id="pasaporteSheen" aria-hidden="true"></span>
-          <span class="pasaporte__cover-emblem" aria-hidden="true">
-            <svg viewBox="0 0 48 48" width="56" height="56" role="presentation">
-              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2"/>
-              <circle cx="24" cy="24" r="17" fill="none" stroke="currentColor" stroke-width="1"/>
-              <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Dunas en semitono rojo con camino de arena, como la ilustración de la tapa -->
+          <svg class="cover-dunes" viewBox="0 0 300 170" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <pattern id="ht-front" width="5.5" height="5.5" patternUnits="userSpaceOnUse">
+                <circle cx="2.75" cy="2.75" r="1.9" fill="#b23020"/>
+              </pattern>
+              <pattern id="ht-back" width="7.5" height="7.5" patternUnits="userSpaceOnUse">
+                <circle cx="3.75" cy="3.75" r="1.7" fill="#b23020"/>
+              </pattern>
+            </defs>
+            <path d="M0,75 Q70,18 145,52 T300,30 L300,170 L0,170 Z" fill="url(#ht-back)" opacity=".75"/>
+            <path d="M0,105 Q65,58 140,90 T300,72 L300,170 L0,170 Z" fill="url(#ht-front)"/>
+            <path d="M96,172 C 130,150 96,132 138,118"
+                  fill="none" stroke="#cbb494" stroke-width="17" stroke-linecap="round"/>
+            <path d="M132,120 C 168,108 152,94 196,84"
+                  fill="none" stroke="#cbb494" stroke-width="11" stroke-linecap="round"/>
+            <path d="M190,86 C 226,78 218,68 252,60"
+                  fill="none" stroke="#cbb494" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+
+          <div class="cover-brand" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="26" height="26" role="presentation">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/>
+              <path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
             </svg>
-          </span>
-          <p class="pasaporte__cover-kicker">Documento oficial de expedición</p>
-          <p class="pasaporte__cover-title">PASAPORTE<br><em>de aventura</em></p>
-          <p class="pasaporte__cover-issuer">SHINERAY MOTORS · A TODO TERRENO 2026</p>
+            <span>Shineray</span>
+          </div>
+
+          <div class="cover-title">
+            <span class="cover-atodo">A TODO</span>
+            <span class="cover-terreno">TERRENO</span>
+          </div>
+
+          <span class="cover-label" aria-hidden="true">CONVENCIÓN 2026</span>
           <p class="pasaporte__cover-hint">Toca para abrir →</p>
         </div>
 
