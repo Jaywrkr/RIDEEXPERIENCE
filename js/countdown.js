@@ -20,10 +20,10 @@ export function initCountdown(onTick) {
     const min = Math.floor((diff % 3600000) / 60000);
     const seg = Math.floor((diff % 60000) / 1000);
 
-    els.dias.textContent = String(dias).padStart(2, '0');
-    els.horas.textContent = String(horas).padStart(2, '0');
-    els.min.textContent = String(min).padStart(2, '0');
-    els.seg.textContent = String(seg).padStart(2, '0');
+    if (els.dias) els.dias.textContent = String(dias).padStart(2, '0');
+    if (els.horas) els.horas.textContent = String(horas).padStart(2, '0');
+    if (els.min) els.min.textContent = String(min).padStart(2, '0');
+    if (els.seg) els.seg.textContent = String(seg).padStart(2, '0');
 
     if (typeof onTick === 'function') onTick(diffMs);
   }

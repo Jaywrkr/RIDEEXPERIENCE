@@ -15,21 +15,23 @@ function revealPostSello({ serial }) {
   const confirmacion = document.getElementById('confirmacion');
   const countdown = document.getElementById('countdown');
   const pistas = document.getElementById('pistas');
+  const confSerialEl = document.getElementById('confSerial');
 
-  document.getElementById('confSerial').textContent = serial;
+  if (confSerialEl) confSerialEl.textContent = serial;
 
-  confirmacion.hidden = false;
-  countdown.hidden = false;
-  pistas.hidden = false;
+  if (confirmacion) confirmacion.hidden = false;
+  if (countdown) countdown.hidden = false;
+  if (pistas) pistas.hidden = false;
 
   const navDot = document.getElementById('navDotConfirmacion');
   if (navDot) navDot.hidden = false;
 
-  requestAnimationFrame(() => confirmacion.classList.add('is-visible'));
+  if (confirmacion) {
+    requestAnimationFrame(() => confirmacion.classList.add('is-visible'));
+    confirmacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   stopCountdown = initCountdown((diffMs) => renderClues(diffMs));
-
-  confirmacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 initPassportForm({
