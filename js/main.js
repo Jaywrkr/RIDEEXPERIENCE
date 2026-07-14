@@ -11,13 +11,12 @@ initSlideNav();
 
 let stopCountdown = null;
 
-function revealPostSello({ serial, tierLabel }) {
+function revealPostSello({ serial }) {
   const confirmacion = document.getElementById('confirmacion');
   const countdown = document.getElementById('countdown');
   const pistas = document.getElementById('pistas');
 
   document.getElementById('confSerial').textContent = serial;
-  document.getElementById('confTier').textContent = tierLabel;
 
   confirmacion.hidden = false;
   countdown.hidden = false;
