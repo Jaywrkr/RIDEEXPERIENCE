@@ -1,10 +1,4 @@
-const TIER_LABELS = {
-  standard: 'STANDARD — Convoy',
-  plus: 'PLUS — Avanzada',
-  elite: 'ELITE — Cabeza de expedición',
-};
-
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3;
 
 // Genera un número de pasaporte estable para esta sesión, con formato
 // consistente con la serie de la Convención Nacional Shineray 2026.
@@ -17,7 +11,7 @@ function generateSerial() {
 
 // Arma una línea estilo MRZ (zona de lectura mecánica de un pasaporte real)
 // a partir de los datos cargados, puramente decorativa.
-function generateMrz({ apellidos, nombres, serial, tier }) {
+function generateMrz({ apellidos, nombres, serial }) {
   const clean = (s) =>
     s
       .toUpperCase()
@@ -33,8 +27,7 @@ function generateMrz({ apellidos, nombres, serial, tier }) {
   const line1 = `P<TAN${nameField}`.slice(0, 36);
 
   const serialDigits = serial.replace(/\D/g, '').padEnd(9, '0').slice(0, 9);
-  const tierCode = (tier || 'STD').slice(0, 3).toUpperCase();
-  const line2 = `${serialDigits}ECU2609258${tierCode}<<<<<<<<<<<<<<`.slice(0, 36);
+  const line2 = `${serialDigits}ECU2609258STD<<<<<<<<<<<<<<`.slice(0, 36);
 
   return `${line1}\n${line2}`;
 }
@@ -147,8 +140,7 @@ function initBookTilt(frame) {
 const STEP_CAPTIONS = {
   1: 'Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino.',
   2: 'Así queda tu nombre en el manifiesto de expedición: no hay vuelta atrás.',
-  3: 'Tu categoría define villa y accesos en el predio durante los tres días.',
-  4: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
+  3: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
 };
 
 // Dibuja barras de código de barras pseudoaleatorias pero estables para este
@@ -223,15 +215,13 @@ export function initPassportForm({ onSealed }) {
     navNext.hidden = n === 1 || n === TOTAL_STEPS;
 
     if (n === TOTAL_STEPS) {
-      const tierValue = form.elements['tier'].value;
       const apellidos = form.elements['apellidos'].value.trim();
       const nombres = form.elements['nombres'].value.trim();
       const nacionalidad = form.elements['nacionalidad'].value.trim();
       document.getElementById('resumenNombre').textContent = `${apellidos} ${nombres}`.trim() || '—';
       document.getElementById('resumenNacionalidad').textContent = nacionalidad || '—';
-      document.getElementById('resumenTier').textContent = TIER_LABELS[tierValue] || TIER_LABELS.standard;
       const mrzEl = document.getElementById('pasaporteMrz');
-      if (mrzEl) mrzEl.textContent = generateMrz({ apellidos, nombres, serial, tier: tierValue });
+      if (mrzEl) mrzEl.textContent = generateMrz({ apellidos, nombres, serial });
     }
   }
 
@@ -304,8 +294,6 @@ export function initPassportForm({ onSealed }) {
     if (currentStep !== TOTAL_STEPS || sealing) return;
     sealing = true;
 
-    const tierValue = form.elements['tier'].value;
-
     document.body.dataset.state = 'sellando';
 
     // El sello cae sobre el papel como tinta; el pasaporte se sacude al impacto
@@ -323,7 +311,7 @@ export function initPassportForm({ onSealed }) {
     document.body.dataset.state = 'sellado';
 
     if (typeof onSealed === 'function') {
-      onSealed({ serial, tierLabel: TIER_LABELS[tierValue] || TIER_LABELS.standard });
+      onSealed({ serial });
     }
   });
 
