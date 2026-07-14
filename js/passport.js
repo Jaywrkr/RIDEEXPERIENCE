@@ -17,7 +17,7 @@ function generateSerial() {
 
 // Arma una línea estilo MRZ (zona de lectura mecánica de un pasaporte real)
 // a partir de los datos cargados, puramente decorativa.
-function generateMrz({ nombre, serial, tier }) {
+function generateMrz({ apellidos, nombres, serial, tier }) {
   const clean = (s) =>
     s
       .toUpperCase()
@@ -27,7 +27,9 @@ function generateMrz({ nombre, serial, tier }) {
       .trim()
       .replace(/\s+/g, '<');
 
-  const nameField = (clean(nombre) || 'TITULAR<DESCONOCIDO').slice(0, 31).padEnd(31, '<');
+  const surnameField = clean(apellidos) || 'DESCONOCIDO';
+  const givenField = clean(nombres) || 'TITULAR';
+  const nameField = `${surnameField}<<${givenField}`.slice(0, 31).padEnd(31, '<');
   const line1 = `P<TAN${nameField}`.slice(0, 36);
 
   const serialDigits = serial.replace(/\D/g, '').padEnd(9, '0').slice(0, 9);
@@ -39,7 +41,7 @@ function generateMrz({ nombre, serial, tier }) {
 
 function validateStep2(form) {
   let ok = true;
-  const required = ['nombre', 'moto', 'ciudad'];
+  const required = ['apellidos', 'nombres', 'nacionalidad'];
   required.forEach((name) => {
     const input = form.elements[name];
     const errorEl = document.getElementById(`err-${name}`);
@@ -222,12 +224,14 @@ export function initPassportForm({ onSealed }) {
 
     if (n === TOTAL_STEPS) {
       const tierValue = form.elements['tier'].value;
-      const nombre = form.elements['nombre'].value.trim();
-      document.getElementById('resumenNombre').textContent = nombre || '—';
-      document.getElementById('resumenMoto').textContent = form.elements['moto'].value.trim() || '—';
+      const apellidos = form.elements['apellidos'].value.trim();
+      const nombres = form.elements['nombres'].value.trim();
+      const nacionalidad = form.elements['nacionalidad'].value.trim();
+      document.getElementById('resumenNombre').textContent = `${apellidos} ${nombres}`.trim() || '—';
+      document.getElementById('resumenNacionalidad').textContent = nacionalidad || '—';
       document.getElementById('resumenTier').textContent = TIER_LABELS[tierValue] || TIER_LABELS.standard;
       const mrzEl = document.getElementById('pasaporteMrz');
-      if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial, tier: tierValue });
+      if (mrzEl) mrzEl.textContent = generateMrz({ apellidos, nombres, serial, tier: tierValue });
     }
   }
 
