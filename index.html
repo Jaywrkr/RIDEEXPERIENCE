@@ -231,6 +231,12 @@
             <span class="cover-terreno">TERRENO</span>
           </div>
 
+          <div class="field field--codigo">
+            <label for="codigoAcceso">Tu código de acceso</label>
+            <input type="text" id="codigoAcceso" name="codigoAcceso" autocomplete="off" placeholder="SHN26-XXXXX">
+            <span class="field__error" id="err-codigoAcceso" role="alert"></span>
+          </div>
+
           <button type="button" class="cover-cta" id="coverCta">Regístrate aquí</button>
 
           <span class="cover-label" aria-hidden="true">CONVENCIÓN 2026</span>
@@ -272,6 +278,11 @@
             <label for="nacionalidad">Nacionalidad <em>/ Nationality</em></label>
             <input type="text" id="nacionalidad" name="nacionalidad" required autocomplete="off">
             <span class="field__error" id="err-nacionalidad" role="alert"></span>
+          </div>
+          <div class="field field--dp">
+            <label for="email">Correo electrónico <em>/ Email</em></label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+            <span class="field__error" id="err-email" role="alert"></span>
           </div>
 
           <div class="field field--dates-row" aria-hidden="true">
@@ -372,6 +383,7 @@
   <dl class="confirmacion__datos">
     <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
   </dl>
+  <ul class="confirmacion__sellos" id="confSellosLista" aria-label="Estado de tus sellos"></ul>
 </section>
 
 <!-- ============ COUNTDOWN ============ -->

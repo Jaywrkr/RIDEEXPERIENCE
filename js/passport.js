@@ -34,7 +34,7 @@ function generateMrz({ apellidos, nombres, serial }) {
 
 function validateStep2(form) {
   let ok = true;
-  const required = ['apellidos', 'nombres', 'nacionalidad'];
+  const required = ['apellidos', 'nombres', 'nacionalidad', 'email'];
   required.forEach((name) => {
     const input = form.elements[name];
     if (!input) return;
@@ -212,7 +212,7 @@ function formatFecha(date) {
   return FECHA_FMT.format(date).replace('.', '').toUpperCase();
 }
 
-export function initPassportForm({ onSealed }) {
+export function initPassportForm({ onSealed, onYaRegistrado }) {
   const form = document.getElementById('passportForm');
   const card = document.getElementById('manifiestoCard');
   const canvas = document.getElementById('dustCanvas');
@@ -335,11 +335,61 @@ export function initPassportForm({ onSealed }) {
     if (currentStep > 1) showStep(currentStep - 1);
   });
 
+  // El código de acceso identifica a la persona: sin uno válido no se puede
+  // avanzar del todo. Se valida contra la base de datos antes de dejar
+  // pasar al formulario, y si esa persona ya selló antes, se salta el
+  // stepper entero y se le muestra directamente el estado de su pasaporte.
+  let codigoConfirmado = null;
+
+  async function validarCodigoYAvanzar(codigoForzado) {
+    const codigoInput = document.getElementById('codigoAcceso');
+    const errorEl = document.getElementById('err-codigoAcceso');
+    const codigo = (codigoForzado ?? codigoInput?.value ?? '').trim();
+
+    if (!codigo) {
+      if (errorEl) errorEl.textContent = 'Ingresa tu código para continuar.';
+      return;
+    }
+    if (errorEl) errorEl.textContent = '';
+    if (coverCta) coverCta.disabled = true;
+
+    try {
+      const resp = await fetch(`/api/estado?codigo=${encodeURIComponent(codigo)}`);
+      if (resp.status === 404) {
+        if (errorEl) errorEl.textContent = 'Código no reconocido. Revisa que esté bien escrito.';
+        return;
+      }
+      if (!resp.ok) throw new Error('estado_error');
+
+      const estado = await resp.json();
+      codigoConfirmado = estado.codigo;
+
+      if (estado.sellos['1'].desbloqueado) {
+        if (typeof onYaRegistrado === 'function') onYaRegistrado(estado);
+        return;
+      }
+      goNext();
+    } catch {
+      if (errorEl) errorEl.textContent = 'No pudimos validar tu código. Intenta de nuevo.';
+    } finally {
+      if (coverCta) coverCta.disabled = false;
+    }
+  }
+
   const coverCta = document.getElementById('coverCta');
   if (coverCta) {
     coverCta.addEventListener('click', () => {
-      if (currentStep === 1) goNext();
+      if (currentStep === 1) validarCodigoYAvanzar();
     });
+  }
+
+  // Si llegó por el link/QR personal (?codigo=...), se valida solo, sin
+  // esperar a que escriba nada.
+  const codigoUrl = new URLSearchParams(window.location.search).get('codigo');
+  if (codigoUrl) {
+    const codigoInput = document.getElementById('codigoAcceso');
+    if (codigoInput) codigoInput.value = codigoUrl;
+    validarCodigoYAvanzar(codigoUrl);
   }
 
   let sealing = false;
@@ -347,8 +397,41 @@ export function initPassportForm({ onSealed }) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (currentStep !== TOTAL_STEPS || sealing) return;
-    sealing = true;
+    if (!codigoConfirmado) return;
 
+    const emailInput = form.elements['email'];
+    const email = emailInput ? emailInput.value.trim() : '';
+    const sellarBtn = form.querySelector('.btn-sellar');
+    const emailErrorEl = document.getElementById('err-email');
+
+    if (sellarBtn) sellarBtn.disabled = true;
+
+    let estadoRegistrado;
+    try {
+      const resp = await fetch('/api/validar-codigo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: codigoConfirmado, email }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        if (emailErrorEl) {
+          emailErrorEl.textContent =
+            data.error === 'email_invalido'
+              ? 'Ingresa un correo válido.'
+              : 'No pudimos registrar tu pasaporte. Intenta de nuevo.';
+        }
+        if (sellarBtn) sellarBtn.disabled = false;
+        return;
+      }
+      estadoRegistrado = data;
+    } catch {
+      if (emailErrorEl) emailErrorEl.textContent = 'No pudimos conectar. Revisa tu conexión e intenta de nuevo.';
+      if (sellarBtn) sellarBtn.disabled = false;
+      return;
+    }
+
+    sealing = true;
     document.body.dataset.state = 'sellando';
 
     // El sello cae sobre el papel como tinta; el pasaporte se sacude al impacto
@@ -368,7 +451,7 @@ export function initPassportForm({ onSealed }) {
     clearDraft();
 
     if (typeof onSealed === 'function') {
-      onSealed({ serial });
+      onSealed({ serial, estado: estadoRegistrado });
     }
   });
 
