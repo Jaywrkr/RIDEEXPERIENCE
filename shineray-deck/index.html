@@ -155,29 +155,46 @@
   .deck__install svg { width: 14px; height: 14px; }
   .deck__install:hover { transform: translateX(-50%) scale(1.05); background: var(--rojo-dark); }
 
-  /* ============ BOTTOM APP BAR ============ */
+  /* ============ BOTTOM APP TAB BAR ============ */
   .deck__bottombar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 22;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    padding: .9rem max(1.1rem, env(safe-area-inset-left)) calc(.9rem + env(safe-area-inset-bottom)) max(1.1rem, env(safe-area-inset-right));
-    background: linear-gradient(to top, rgba(20,17,13,.92), rgba(20,17,13,.72) 70%, transparent);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch;
+    padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(20,17,13,.94);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-top: 1px solid rgba(243,238,226,.12);
+    box-shadow: 0 -8px 24px rgba(0,0,0,.35);
     pointer-events: auto;
   }
-  .deck__pill {
-    display: flex; align-items: center; gap: .4rem;
-    background: rgba(243,238,226,.08); color: var(--hueso);
-    border: 1px solid rgba(243,238,226,.16); border-radius: 999px;
-    padding: .6rem 1.1rem; font-family: var(--font-mono); font-weight: 700;
-    font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: background .2s var(--ease), transform .2s var(--ease-back), opacity .2s var(--ease), border-color .2s var(--ease);
+  .deck__tab {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .28rem; padding: .65rem .5rem .5rem; background: none; border: none; cursor: pointer;
+    color: var(--arena-500);
+    font-family: var(--font-mono); font-weight: 700; font-size: .58rem;
+    letter-spacing: .07em; text-transform: uppercase;
+    transition: color .2s var(--ease), transform .15s var(--ease);
+    -webkit-tap-highlight-color: transparent;
   }
-  .deck__pill svg { width: 14px; height: 14px; }
-  .deck__pill:hover:not(:disabled) { background: var(--rojo); border-color: var(--rojo); transform: translateY(-2px); }
-  .deck__pill:disabled { opacity: .25; cursor: default; }
+  .deck__tab svg { width: 20px; height: 20px; transition: transform .2s var(--ease-back); }
+  .deck__tab:active:not(:disabled) svg { transform: scale(.85); }
+  .deck__tab:hover:not(:disabled) { color: var(--hueso); }
+  .deck__tab:disabled { opacity: .25; cursor: default; }
+  .deck__tab--prev { justify-self: stretch; }
+  .deck__tab--next { justify-self: stretch; }
+
+  .deck__tabcenter {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: .5rem .75rem; gap: .3rem; min-width: 5.5rem;
+  }
   .deck__dots {
-    display: flex; gap: .6rem;
+    display: flex; gap: .5rem;
     pointer-events: auto;
+  }
+  .deck__tabcenter .deck__count-mini {
+    font-family: var(--font-mono); font-size: .56rem; letter-spacing: .08em;
+    color: var(--arena-500); opacity: .7; font-variant-numeric: tabular-nums;
   }
   .deck__dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -581,10 +598,9 @@
     .timeline__paso::before { display: none; }
     .flujo-objetos { flex-direction: column; }
     .flecha-mid { transform: rotate(90deg); }
-    .deck__arrow { width: 2.2rem; height: 2.2rem; }
-    .deck__pill span { display: none; }
-    .deck__pill { padding: .65rem; }
+    .deck__arrow { display: none; }
     .deck__install { top: 1rem; padding: .4rem .8rem; font-size: .6rem; }
+    .deck__tab { font-size: .54rem; padding: .55rem .3rem .45rem; }
   }
 </style>
 
@@ -769,17 +785,20 @@
     </button>
   </div>
 
-  <div class="deck__bottombar">
-    <button class="deck__pill deck__pill--prev" id="prevPill" aria-label="Diapositiva anterior">
+  <nav class="deck__bottombar" aria-label="Navegación del deck">
+    <button class="deck__tab deck__tab--prev" id="prevPill" aria-label="Diapositiva anterior">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Anterior</span>
     </button>
-    <div class="deck__dots" id="dots"></div>
-    <button class="deck__pill deck__pill--next" id="nextPill" aria-label="Siguiente diapositiva">
-      <span>Siguiente</span>
+    <div class="deck__tabcenter">
+      <div class="deck__dots" id="dots"></div>
+      <span class="deck__count-mini" id="countMini">1 / 9</span>
+    </div>
+    <button class="deck__tab deck__tab--next" id="nextPill" aria-label="Siguiente diapositiva">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Siguiente</span>
     </button>
-  </div>
+  </nav>
 
   <div class="deck__hint" id="hint">
     <span>usa ← →</span><span>·</span><span>o desliza</span>
@@ -793,6 +812,7 @@
     var total = slides.length;
     var index = 0;
     var countEl = document.getElementById('count');
+    var countMiniEl = document.getElementById('countMini');
     var dotsEl = document.getElementById('dots');
     var prevBtn = document.getElementById('prev');
     var nextBtn = document.getElementById('next');
@@ -814,6 +834,7 @@
     function render() {
       track.style.transform = 'translateX(-' + (index * 100) + 'vw)';
       countEl.textContent = (index + 1) + ' / ' + total;
+      countMiniEl.textContent = (index + 1) + ' / ' + total;
       dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
       prevBtn.disabled = index === 0;
       nextBtn.disabled = index === total - 1;
