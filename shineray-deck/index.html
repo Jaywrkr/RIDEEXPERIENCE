@@ -530,6 +530,31 @@
     100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(.3); }
   }
 
+  /* ============ SLIDE · MENSAJE REAL (notificaciones) ============ */
+  .slide--notifs { background: var(--tinta); }
+  .slide--notifs .eyebrow { color: var(--arena-500); margin-bottom: .9rem; }
+  .slide--notifs h2 { font-size: clamp(1.4rem, 3.6vw, 2rem); color: var(--hueso); max-width: 24ch; margin-bottom: 1.8rem; }
+  .notif-stack { display: flex; flex-direction: column; gap: .8rem; max-width: 30rem; width: 100%; }
+  .notif-card {
+    background: var(--hueso); border-radius: 16px; padding: .8rem 1rem .85rem 1.1rem;
+    text-align: left; box-shadow: 0 14px 30px rgba(0,0,0,.35); position: relative; overflow: hidden;
+    opacity: 0; transform: translateX(28px);
+    transition: opacity .5s var(--ease), transform .5s var(--ease);
+  }
+  .notif-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--rojo); }
+  .slide.is-active .notif-card { opacity: 1; transform: translateX(0); }
+  .slide.is-active .notif-card:nth-child(1) { transition-delay: .45s; }
+  .slide.is-active .notif-card:nth-child(2) { transition-delay: .58s; }
+  .slide.is-active .notif-card:nth-child(3) { transition-delay: .71s; }
+  .notif-card__head { display: flex; align-items: center; gap: .4rem; margin-bottom: .32rem; }
+  .notif-card__icon {
+    width: 20px; height: 20px; border-radius: 6px; background: var(--rojo);
+    display: flex; align-items: center; justify-content: center; font-size: .68rem; flex-shrink: 0;
+  }
+  .notif-card__app { font-family: var(--font-mono); font-weight: 700; font-size: .6rem; letter-spacing: .07em; text-transform: uppercase; color: var(--rojo-dark); flex: 1; }
+  .notif-card__tag { font-family: var(--font-mono); font-size: .54rem; letter-spacing: .05em; text-transform: uppercase; color: var(--dorado); }
+  .notif-card__body { margin: 0; font-size: .8rem; line-height: 1.42; color: var(--tinta); opacity: .85; }
+
   /* ============ SLIDE · CÓMO FUNCIONA ============ */
   .slide--como { background: var(--tinta); }
   .slide--como .eyebrow { color: var(--arena-500); margin-bottom: .9rem; }
@@ -605,6 +630,16 @@
     .slide {
       padding: calc(var(--safe-top) + 3.4rem) 6vw calc(var(--safe-bottom) + var(--tabbar-h) + .75rem);
     }
+    /* El mensaje real: notificaciones más compactas */
+    .slide--notifs .eyebrow { margin-bottom: .5rem; }
+    .slide--notifs h2 { font-size: 1.18rem; margin-bottom: 1rem; }
+    .notif-stack { gap: .5rem; }
+    .notif-card { padding: .55rem .7rem .6rem .8rem; }
+    .notif-card__icon { width: 17px; height: 17px; font-size: .58rem; }
+    .notif-card__app { font-size: .54rem; }
+    .notif-card__tag { font-size: .48rem; }
+    .notif-card__body { font-size: .68rem; line-height: 1.3; }
+
     /* Cómo funciona / Web vs. app: 2×2 compact grid instead of a tall 4-row stack */
     .slide--como .eyebrow, .slide--valor .eyebrow { margin-bottom: .5rem; }
     .slide--como h2, .slide--valor h2 { font-size: 1.28rem; max-width: 20ch; margin-bottom: 1.1rem; }
@@ -783,6 +818,37 @@
       </div>
     </section>
 
+    <section class="slide slide--notifs slide--scrollable" data-label="El mensaje real">
+      <span class="eyebrow">Cómo lo conseguimos</span>
+      <h2>El mensaje exacto que recibe en cada sello</h2>
+      <div class="notif-stack">
+        <div class="notif-card">
+          <div class="notif-card__head">
+            <span class="notif-card__icon" aria-hidden="true">🔔</span>
+            <span class="notif-card__app">A todo terreno</span>
+            <span class="notif-card__tag">Sello 1</span>
+          </div>
+          <p class="notif-card__body">Ya estás dentro de la aventura A TODO TERRENO. Nos moveremos hacia un terreno cálido, donde el horizonte se ve infinito y el ritmo lo marca el viento.</p>
+        </div>
+        <div class="notif-card">
+          <div class="notif-card__head">
+            <span class="notif-card__icon" aria-hidden="true">🔔</span>
+            <span class="notif-card__app">A todo terreno</span>
+            <span class="notif-card__tag">Sello 2</span>
+          </div>
+          <p class="notif-card__body">Es hora de preparar la maleta. Guarda ropa cómoda, gafas de sol y tu mejor outfit blanco para la noche de gala. Pista: los vestidos fluidos y las guayaberas se sienten increíble en este destino.</p>
+        </div>
+        <div class="notif-card">
+          <div class="notif-card__head">
+            <span class="notif-card__icon" aria-hidden="true">🔔</span>
+            <span class="notif-card__app">A todo terreno</span>
+            <span class="notif-card__tag">Sello 3</span>
+          </div>
+          <p class="notif-card__body">Faltan 3 días para tu aventura A TODO TERRENO. Y esto es solo el comienzo… Al llegar al destino, recibirás tu Pasaporte de Aventura, que te acompañará durante toda la experiencia y será la guía de todo lo que está por venir.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide slide--como" data-label="Cómo funciona">
       <span class="eyebrow">Cómo funciona</span>
       <h2>Cuatro momentos, un mismo código</h2>
@@ -850,7 +916,7 @@
       <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/><path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg>
       <span>Shineray<span class="deck__brand-sub"> · Propuesta</span></span>
     </div>
-    <div class="deck__count" id="count">1 / 9</div>
+    <div class="deck__count" id="count">1 / 10</div>
     <button class="deck__arrow deck__arrow--prev" id="prev" aria-label="Anterior">‹</button>
     <button class="deck__arrow deck__arrow--next" id="next" aria-label="Siguiente">›</button>
   </div>
@@ -862,7 +928,7 @@
     </button>
     <div class="deck__tabcenter">
       <div class="deck__dots" id="dots"></div>
-      <span class="deck__count-mini" id="countMini">1 / 9</span>
+      <span class="deck__count-mini" id="countMini">1 / 10</span>
     </div>
     <button class="deck__tab deck__tab--next" id="nextPill" aria-label="Siguiente diapositiva">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
