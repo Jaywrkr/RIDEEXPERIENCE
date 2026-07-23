@@ -118,7 +118,21 @@
     padding: 5rem 6vw 6rem;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
   }
+  /* Slides whose content can outgrow a small phone screen: scrollable,
+     but still visually centered when it fits (auto-margin trick) so the
+     top of the content is never unreachable behind justify-content:center. */
+  .slide--scrollable {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scrollbar-width: none;
+  }
+  .slide--scrollable::-webkit-scrollbar { display: none; }
+  .slide--scrollable > *:first-child { margin-top: auto; }
+  .slide--scrollable > *:last-child { margin-bottom: auto; }
+
   .slide > * {
     opacity: 0;
     transform: translateY(18px);
@@ -590,17 +604,26 @@
   }
 
   @media (max-width: 720px) {
-    .slide { padding: 4.5rem 6vw 5.5rem; }
+    :root { --tabbar-h: 3.6rem; }
+    .slide {
+      padding: calc(var(--safe-top) + 3.4rem) 6vw calc(var(--safe-bottom) + var(--tabbar-h) + .75rem);
+    }
     .pasos-grid, .valor-grid { grid-template-columns: 1fr; }
-    .timeline { flex-direction: column; align-items: center; gap: 2rem; }
+    .timeline { flex-direction: column; align-items: center; gap: 1.5rem; }
+    .timeline__paso { max-width: 20rem; }
     .timeline__paso::before { display: none; }
     .flujo-objetos { flex-direction: column; }
     .flecha-mid { transform: rotate(90deg); }
     .deck__arrow { display: none; }
     .deck__count { display: none; }
     .deck__brand-sub { display: none; }
-    .deck__brand { top: calc(var(--safe-top) + .9rem); left: calc(var(--safe-left) + 1rem); font-size: .6rem; }
-    .deck__tab { font-size: .54rem; padding: .55rem .3rem .45rem; }
+    .deck__brand { top: calc(var(--safe-top) + .8rem); left: calc(var(--safe-left) + 1rem); font-size: .58rem; }
+    .deck__tab { gap: .16rem; font-size: .5rem; padding: .4rem .3rem calc(var(--safe-bottom) * 0 + .35rem); }
+    .deck__tab svg { width: 17px; height: 17px; }
+    .deck__tabcenter { padding: .35rem .6rem; gap: .22rem; min-width: 4.5rem; }
+    .deck__dots { gap: .4rem; }
+    .deck__dot { width: 5px; height: 5px; }
+    .deck__count-mini { font-size: .5rem; }
   }
 </style>
 
@@ -687,7 +710,7 @@
       </div>
     </section>
 
-    <section class="slide slide--cadencia" data-label="Cadencia">
+    <section class="slide slide--cadencia slide--scrollable" data-label="Cadencia">
       <span class="eyebrow">Cadencia (ilustrativa)</span>
       <h2>Tres momentos, tres niveles de intriga</h2>
       <p class="nota">Toca cada sello para ver cómo se revela la pista · las fechas se ajustan al calendario real</p>
@@ -759,7 +782,7 @@
       </div>
     </section>
 
-    <section class="slide slide--valor" data-label="Web vs. app">
+    <section class="slide slide--valor slide--scrollable" data-label="Web vs. app">
       <span class="eyebrow">Por qué app web, no app nativa</span>
       <h2>Un evento de dos días no necesita quedarse instalado en su celular</h2>
       <div class="valor-grid">
@@ -879,13 +902,18 @@
       if (e.key === 'ArrowLeft') { goTo(index - 1); }
     });
 
-    var touchStartX = null;
-    track.addEventListener('touchstart', function (e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+    var touchStartX = null, touchStartY = null;
+    track.addEventListener('touchstart', function (e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
     track.addEventListener('touchend', function (e) {
       if (touchStartX === null) return;
       var dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 50) { goTo(index + (dx < 0 ? 1 : -1)); }
+      var dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) { goTo(index + (dx < 0 ? 1 : -1)); }
       touchStartX = null;
+      touchStartY = null;
     }, { passive: true });
 
     /* cursor spotlight */
