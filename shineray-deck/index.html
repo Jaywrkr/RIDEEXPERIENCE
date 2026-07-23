@@ -604,26 +604,57 @@
   }
 
   @media (max-width: 720px) {
-    :root { --tabbar-h: 3.6rem; }
+    :root { --tabbar-h: 2.75rem; }
     .slide {
       padding: calc(var(--safe-top) + 3.4rem) 6vw calc(var(--safe-bottom) + var(--tabbar-h) + .75rem);
     }
-    .pasos-grid, .valor-grid { grid-template-columns: 1fr; }
-    .timeline { flex-direction: column; align-items: center; gap: 1.5rem; }
-    .timeline__paso { max-width: 20rem; }
+    /* Cómo funciona / Web vs. app: 2×2 compact grid instead of a tall 4-row stack */
+    .slide--como .eyebrow, .slide--valor .eyebrow { margin-bottom: .5rem; }
+    .slide--como h2, .slide--valor h2 { font-size: 1.28rem; max-width: 20ch; margin-bottom: 1.1rem; }
+    .pasos-grid, .valor-grid {
+      grid-template-columns: repeat(2, 1fr); gap: .6rem; max-width: 24rem; width: 100%;
+    }
+    .paso-card { padding: .7rem .65rem; }
+    .paso-card .num { font-size: 1.15rem; margin-bottom: .1rem; }
+    .paso-card h3 { font-size: .6rem; margin-bottom: .25rem; }
+    .paso-card p { font-size: .66rem; line-height: 1.3; }
+    .valor-card { padding: .7rem .65rem; }
+    .valor-card .tag { font-size: .56rem; gap: .3rem; margin-bottom: .3rem; }
+    .valor-icon { width: .85rem; height: .85rem; }
+    .valor-card p { font-size: .66rem; line-height: 1.3; }
+    /* Timeline: compact horizontal rows instead of stacked centered cards */
+    .slide--cadencia .nota { font-size: .66rem; margin-bottom: 1.1rem; }
+    .slide--cadencia h2 { margin-bottom: .35rem; }
+    .timeline { flex-direction: column; align-items: stretch; gap: .55rem; max-width: 24rem; width: 100%; }
+    .timeline__paso {
+      display: flex; flex-direction: row; align-items: flex-start; text-align: left;
+      gap: .65rem; max-width: none; width: 100%; padding: 0;
+    }
     .timeline__paso::before { display: none; }
+    .timeline__punto { width: 20px; height: 20px; margin: .05rem 0 0; flex-shrink: 0; }
+    .timeline__punto svg { width: 9px; height: 9px; }
+    .timeline__cuando { font-size: .54rem; margin-bottom: .05rem; }
+    .timeline__sello { font-size: .82rem; margin-bottom: .08rem; }
+    .timeline__desc-wrap { min-height: 0; }
+    .timeline__desc { font-size: .68rem; line-height: 1.25; }
+    .timeline__cta { font-size: .54rem; }
     .flujo-objetos { flex-direction: column; }
     .flecha-mid { transform: rotate(90deg); }
     .deck__arrow { display: none; }
     .deck__count { display: none; }
     .deck__brand-sub { display: none; }
     .deck__brand { top: calc(var(--safe-top) + .8rem); left: calc(var(--safe-left) + 1rem); font-size: .58rem; }
-    .deck__tab { gap: .16rem; font-size: .5rem; padding: .4rem .3rem calc(var(--safe-bottom) * 0 + .35rem); }
-    .deck__tab svg { width: 17px; height: 17px; }
-    .deck__tabcenter { padding: .35rem .6rem; gap: .22rem; min-width: 4.5rem; }
-    .deck__dots { gap: .4rem; }
+
+    /* Bottom bar collapses to one slim row: icon-only buttons, no stacked label */
+    .deck__tab {
+      flex-direction: row; gap: 0; padding: .5rem .9rem;
+    }
+    .deck__tab span { display: none; }
+    .deck__tab svg { width: 18px; height: 18px; }
+    .deck__tabcenter { flex-direction: row; padding: .5rem .5rem; gap: .45rem; min-width: auto; }
+    .deck__dots { gap: .32rem; }
     .deck__dot { width: 5px; height: 5px; }
-    .deck__count-mini { font-size: .5rem; }
+    .deck__count-mini { font-size: .52rem; }
   }
 </style>
 
