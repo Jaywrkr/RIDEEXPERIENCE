@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro al evento</title>
+  <meta name="theme-color" content="#14110d" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="envoltorio">
+
+    <div id="pantalla-carga" class="pantalla-carga">
+      <p>Cargando información del evento…</p>
+    </div>
+
+    <div id="pantalla-error" class="tarjeta oculto">
+      <p id="texto-error-carga">No se pudo cargar la información del evento.</p>
+    </div>
+
+    <div id="pantalla-form" class="oculto">
+      <div class="encabezado">
+        <h1 id="evento-nombre"></h1>
+        <p class="lugar-fecha" id="evento-lugar-fecha"></p>
+        <p class="descripcion oculto" id="evento-descripcion"></p>
+      </div>
+
+      <form id="form-registro" class="tarjeta" novalidate>
+        <div class="mensaje-error" id="mensaje-error-form"></div>
+
+        <div class="campo">
+          <label for="cedula">Cédula</label>
+          <input type="text" id="cedula" inputmode="numeric" maxlength="10" placeholder="10 dígitos" required />
+        </div>
+
+        <div class="campo">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" required />
+        </div>
+
+        <div class="campo">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" required />
+          <span class="ayuda">Aquí llegarán tus notificaciones del evento.</span>
+        </div>
+
+        <div class="campo">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" placeholder="0991234567" required />
+        </div>
+
+        <button type="submit" class="boton-primario" id="boton-registrar">Registrarme</button>
+      </form>
+    </div>
+
+    <div id="pantalla-confirmacion" class="pantalla-confirmacion oculto">
+      <div class="sello">✓</div>
+      <h2>¡Registro confirmado!</h2>
+      <p>
+        Ya estás inscrito. Te avisaremos por correo a
+        <strong id="correo-confirmado"></strong>
+        cuando haya novedades del evento.
+      </p>
+    </div>
+
+    <p class="pie">Instalá esta página como acceso directo desde el menú de tu navegador.</p>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
