@@ -27,10 +27,15 @@
   --hueso: #f3eee2;
   --dorado: #b98a3a;
 
-  --font-display: "Discota", "Anton", "Arial Narrow", sans-serif;
-  --font-heavy: "DIN Pro Black", "Anton", "Arial Narrow", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --font-serif: "Playfair Display", Georgia, serif;
+  /* Únicas dos fuentes de marca en todo el sitio: Discota para
+     titulares de impacto, DIN Pro Black para todo lo demás (texto,
+     etiquetas, botones). Las variables font-mono y font-serif se
+     mantienen para no reescribir cada regla, pero ya no apuntan a
+     JetBrains Mono ni Playfair Display. */
+  --font-display: "Discota", "Arial Narrow", sans-serif;
+  --font-heavy: "DIN Pro Black", Arial, sans-serif;
+  --font-mono: "DIN Pro Black", Arial, sans-serif;
+  --font-serif: "Discota", "Arial Narrow", sans-serif;
 
   --ease: cubic-bezier(.22,.68,0,1);
 }
@@ -48,6 +53,18 @@ body {
   color: var(--hueso);
   font-family: var(--font-mono);
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Topografía de fondo, fija y sutil, cosiendo visualmente toda la
+   experiencia (bienvenida, bitácora, pasaporte, confirmación) con el
+   mismo relieve de "terreno" en vez de un fondo plano. */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -1;
+  background: var(--tinta) url("../assets/brand/montanas-topografia.png") center 12% / 140% auto no-repeat;
+  opacity: .16;
+  pointer-events: none;
 }
 
 .skip-link {
@@ -792,7 +809,7 @@ body::after {
   position: relative; z-index: 1;
   display: flex; flex-direction: column; align-items: center;
   margin: auto 0;
-  filter: url(#inkrough);
+  text-shadow: 0 2px 10px rgba(20,17,13,.25);
 }
 .cover-atodo {
   font-family: var(--font-display);
