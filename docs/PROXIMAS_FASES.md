@@ -29,19 +29,30 @@
   (hay copy ya validado para esto en `shineray-deck/index.html`, slide
   "El mensaje real").
 
-## Decisión pendiente: el pasaporte viejo (código de acceso)
+## Limpieza de proyectos Vercel (2026-08-24, resuelto en esta sesión)
 
-- [ ] Decidir qué hacer con `index.html` + `api/` + `lib/` + `db/` en
-  la raíz del repo y con el proyecto de Vercel `rideexperience.vercel.app`,
-  que todavía los sirve. Ya no es el sistema que usa el cliente (lo
-  reemplazó `registro/` en `atodoterreno.vercel.app`), pero sigue
-  activo. Opciones:
-  - Dejarlo como está (no molesta, pero es codigo/infra sin uso real).
-  - Pausar el proyecto de Vercel (`pause_project`, reversible) para que
-    no siga corriendo builds/tráfico.
-  - Borrar el código de la raíz del repo (requiere confirmación
-    explícita — tiene su propia base de datos con posibles registros
-    reales de gente que ya se inscribió con código).
+Había 5 proyectos de Vercel ligados al repo; solo 3 hacen algo real
+(`rideexperience-api`, `rideexperience-admin`, `atodoterreno`). Los
+otros 2 se **pausaron** (reversible, `pause_project` — no borra código
+ni base de datos, solo deja de servir tráfico y de correr builds):
+
+- ✅ `rideexperience-registro` — era un duplicado exacto de
+  `atodoterreno` (mismo `registro/`, creado el mismo día que
+  admin/api, nunca se usó). Pausado.
+- ✅ `rideexperience` — el pasaporte viejo con código de acceso, ya
+  reemplazado por `atodoterreno`. Pausado (no borrado — su base de
+  datos puede tener inscripciones reales de gente que usó un código
+  antes; sigue pendiente decidir si se borra el código de la raíz del
+  repo, eso sí requiere confirmación explícita tuya).
+
+- [ ] **Ignored Build Step en los 3 proyectos activos** — para que
+  ningún push a ninguna rama dispare un redeploy solo. No hay forma de
+  configurarlo por API/MCP, hay que hacerlo a mano una vez por
+  proyecto: Vercel → proyecto → Settings → Git → "Ignored Build Step"
+  → pegar `exit 0` → Save. Repetir en `atodoterreno`,
+  `rideexperience-admin`, `rideexperience-api`. Una vez puesto, para
+  deployar algo puntual se usa el botón "Redeploy" del dashboard (o un
+  Deploy Hook).
 
 ## Cierre / producción definitiva
 
