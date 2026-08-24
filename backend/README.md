@@ -1,16 +1,15 @@
 # Backend — Sistema Web de Inscripción y Gestión de Asistentes
 
-API REST en NestJS + Prisma/PostgreSQL. Corresponde a la **Semana 1** del
-plan en [`../docs/COMPARATIVA_Y_PLAN.md`](../docs/COMPARATIVA_Y_PLAN.md):
-proyecto base, esquema de base de datos, registro de asistentes y login de
-administrador.
+API REST en NestJS + Prisma/PostgreSQL. Cubre las Semanas 1 y 4 del plan
+en [`../docs/COMPARATIVA_Y_PLAN.md`](../docs/COMPARATIVA_Y_PLAN.md):
+proyecto base + esquema de base de datos + registro/login (Semana 1), y
+notificaciones automáticas de correo (Semana 4). El panel admin
+(`../admin/`) y el sitio de registro (`../registro/`) son las Semanas 2-3.
 
 ## Qué incluye
 
 - **Esquema Prisma** (`prisma/schema.prisma`): `Admin`, `Evento`,
-  `Asistente`, `Notificacion` — esta última deja preparado el terreno para
-  la Semana 4 (notificaciones automáticas), sin implementar el envío
-  todavía.
+  `Asistente`, `Notificacion`.
 - **Auth**: `POST /api/auth/login` con JWT. No hay endpoint de registro de
   admin (se crea por seed, ver abajo) — el alcance cotizado es un panel por
   cliente, no un sistema multi-tenant.
@@ -21,12 +20,19 @@ administrador.
   formulario de inscripción — valida cédula ecuatoriana real con dígito
   verificador, no solo formato), `GET /api/eventos/:eventoId/asistentes`,
   `GET .../total` y `GET .../:asistenteId` (protegidos, panel).
+- **Notificaciones** (`src/notificaciones/`, ver
+  [`../docs/SEMANA_4.md`](../docs/SEMANA_4.md)): cron cada minuto que
+  procesa las notificaciones `PENDIENTE` (confirmación, aviso previo,
+  aviso final) y las envía por correo vía Resend. Sin `RESEND_API_KEY`
+  configurada, solo las loguea (no falla). `POST /api/notificaciones/procesar`
+  (protegido) dispara el procesamiento a mano.
 
-## Qué NO incluye todavía (semanas siguientes del plan)
+## Qué NO incluye todavía
 
-- Frontend del panel administrativo y del sitio de registro (Semanas 2-3).
-- Envío real de correos y programador de tareas (Semana 4).
-- Hosting/dominio de producción (Semana 4-5).
+- Hosting/dominio de producción (Semana 4-5) — hoy corre en local.
+- Reintentos automáticos de notificaciones fallidas.
+- Cuenta real de Resend configurada — ver
+  [`../docs/PENDIENTES_CLIENTE.md`](../docs/PENDIENTES_CLIENTE.md).
 
 ## Cómo correr en local
 

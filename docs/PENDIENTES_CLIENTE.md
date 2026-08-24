@@ -46,6 +46,28 @@
   eran solo para verificar que todo funcionara — no quedan en ningún
   lado, la base de datos de prueba se borró.
 
+## Para que los correos salgan de verdad (Semana 4)
+
+- [ ] **Crear cuenta en [Resend](https://resend.com)** (o decirme si
+  preferís otro proveedor — queda todo detrás de un solo archivo,
+  `backend/src/notificaciones/mailer.service.ts`, cambiarlo es rápido).
+  Ya se usa Resend en el backend del pasaporte de Las Tanusas
+  (`lib/mailer.js`), así que si ya tenés esa cuenta podés reusarla.
+- [ ] **Verificar tu dominio de envío en Resend** (o usar su dominio de
+  pruebas mientras tanto) y generar una API key.
+- [ ] Poner esa key en `RESEND_API_KEY` y el remitente en
+  `RESEND_FROM_EMAIL` en el `.env` del backend de producción. Sin esto,
+  el sistema sigue registrando gente y creando las notificaciones en la
+  base de datos, pero no manda ningún correo real — solo lo loguea.
+- [ ] Opcional: `REGISTRO_SITIO_URL` con la URL pública del sitio de
+  registro, para que los correos incluyan un link "Ver información del
+  evento".
+- [ ] **Revisar/reemplazar el copy de los 3 correos** en
+  `backend/src/notificaciones/templates/correos.ts` si querés el tono
+  específico de marca (por ejemplo, el ya validado para Shineray en
+  `shineray-deck/index.html`, slide "El mensaje real") en vez del texto
+  genérico actual.
+
 ## Antes de publicar cada evento/sitio de registro
 
 - [ ] Editar `registro/js/config.js`:
@@ -85,6 +107,9 @@
   asistentes) — Semana 2.
 - ✅ Sitio público de registro conectado de verdad, PWA instalable —
   Semana 3.
+- ✅ Notificaciones automáticas de correo (confirmación, aviso previo,
+  aviso final) con cron real cada minuto — Semana 4. Falta solo la
+  cuenta de Resend real (ítem arriba) para que salgan de verdad.
 - ✅ Ramas de trabajo unidas a la rama por defecto del repo.
 
 ## Documentos relacionados
@@ -93,4 +118,5 @@
 - [`PROPUESTA_OFRECIDA.md`](./PROPUESTA_OFRECIDA.md)
 - [`COMPARATIVA_Y_PLAN.md`](./COMPARATIVA_Y_PLAN.md) — plan completo de
   5 semanas y la tabla de brecha original.
-- [`SEMANA_3.md`](./SEMANA_3.md) — detalle de lo construido esta semana.
+- [`SEMANA_3.md`](./SEMANA_3.md) — sitio de registro (Semana 3).
+- [`SEMANA_4.md`](./SEMANA_4.md) — notificaciones de correo (Semana 4).
