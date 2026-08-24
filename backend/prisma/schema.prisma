@@ -8,7 +8,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // DATABASE_URL: conexion pooled, la usa el cliente en runtime.
+  // DATABASE_URL_UNPOOLED: conexion directa, la usan las migraciones
+  // (Neon/Vercel Postgres inyectan ambas automaticamente al conectar la
+  // integracion; en local, si solo definis DATABASE_URL, Prisma cae de
+  // vuelta a esa misma para directUrl tambien).
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // Administrador del panel (login del organizador del evento).
