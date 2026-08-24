@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Panel administrativo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <strong>Panel administrativo</strong>
+    <div>
+      <span id="nombre-admin" style="margin-right: 12px; color: var(--text-muted); font-size: 0.9rem;"></span>
+      <button class="boton-secundario" id="boton-salir">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <div class="fila-cabecera">
+      <h1 style="margin: 0; font-size: 1.3rem;">Evento</h1>
+      <select class="selector-evento" id="selector-evento"></select>
+    </div>
+
+    <div id="sin-eventos" class="tarjeta oculto">
+      <p class="vacio">Todavía no hay eventos creados. Crea el primero abajo.</p>
+    </div>
+
+    <div class="tarjetas-stats" id="bloque-stats">
+      <div class="stat">
+        <div class="valor" id="stat-total">—</div>
+        <div class="etiqueta">Asistentes registrados</div>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Datos del evento</h2>
+      <div class="mensaje-error" id="mensaje-error-evento"></div>
+      <form id="form-evento">
+        <div class="campo">
+          <label for="ev-nombre">Nombre</label>
+          <input type="text" id="ev-nombre" required />
+        </div>
+        <div class="campo">
+          <label for="ev-descripcion">Descripción</label>
+          <textarea id="ev-descripcion" rows="2"></textarea>
+        </div>
+        <div class="campo">
+          <label for="ev-lugar">Lugar</label>
+          <input type="text" id="ev-lugar" required />
+        </div>
+        <div class="grid-2">
+          <div class="campo">
+            <label for="ev-fecha-inicio">Fecha de inicio</label>
+            <input type="datetime-local" id="ev-fecha-inicio" required />
+          </div>
+          <div class="campo">
+            <label for="ev-fecha-fin">Fecha de fin</label>
+            <input type="datetime-local" id="ev-fecha-fin" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="campo">
+            <label for="ev-aviso-previo">Aviso previo (2ª notificación)</label>
+            <input type="datetime-local" id="ev-aviso-previo" />
+          </div>
+          <div class="campo">
+            <label for="ev-aviso-final">Aviso final (3ª notificación)</label>
+            <input type="datetime-local" id="ev-aviso-final" />
+          </div>
+        </div>
+        <button type="submit" class="boton-primario" id="boton-guardar-evento" style="width: auto;">
+          Guardar cambios
+        </button>
+      </form>
+    </div>
+
+    <div class="tarjeta" id="tarjeta-crear-evento">
+      <h2>Crear nuevo evento</h2>
+      <button type="button" class="boton-secundario" id="boton-mostrar-crear">+ Nuevo evento</button>
+      <form id="form-crear-evento" class="oculto" style="margin-top: 16px;">
+        <div class="mensaje-error" id="mensaje-error-crear"></div>
+        <div class="campo">
+          <label for="nuevo-nombre">Nombre</label>
+          <input type="text" id="nuevo-nombre" required />
+        </div>
+        <div class="campo">
+          <label for="nuevo-lugar">Lugar</label>
+          <input type="text" id="nuevo-lugar" required />
+        </div>
+        <div class="campo">
+          <label for="nuevo-fecha-inicio">Fecha de inicio</label>
+          <input type="datetime-local" id="nuevo-fecha-inicio" required />
+        </div>
+        <button type="submit" class="boton-primario" style="width: auto;">Crear evento</button>
+      </form>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Asistentes</h2>
+      <div id="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Cédula</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Estado</th>
+              <th>Registrado</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-asistentes-body"></tbody>
+        </table>
+        <p class="vacio oculto" id="tabla-vacia">Todavía no hay asistentes registrados en este evento.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
