@@ -120,3 +120,5 @@
   5 semanas y la tabla de brecha original.
 - [`SEMANA_3.md`](./SEMANA_3.md) — sitio de registro (Semana 3).
 - [`SEMANA_4.md`](./SEMANA_4.md) — notificaciones de correo (Semana 4).
+- [`GUIA_PRUEBAS_LOCAL.md`](./GUIA_PRUEBAS_LOCAL.md) — paso a paso para
+  correr y probar todo esto vos mismo, en tu máquina.
