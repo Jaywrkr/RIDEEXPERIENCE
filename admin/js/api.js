@@ -2,7 +2,10 @@
 // Sin build step ni dependencias, a proposito: el resto del sitio es
 // HTML/CSS/JS plano, y el panel admin sigue esa misma linea.
 
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
+// Por defecto apunta al backend ya desplegado en Vercel (deploy de
+// prueba, ver docs/DESPLIEGUE_VERCEL.md). Para desarrollo local, definir
+// window.API_BASE_URL = 'http://localhost:3000/api' antes de este script.
+const API_BASE_URL = window.API_BASE_URL || 'https://rideexperience-api.vercel.app/api';
 const TOKEN_KEY = 'rideexperience_admin_token';
 const ADMIN_KEY = 'rideexperience_admin_info';
 

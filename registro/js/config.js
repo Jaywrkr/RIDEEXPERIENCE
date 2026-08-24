@@ -3,9 +3,9 @@
 
 window.SITIO_CONFIG = {
   // URL base de la API del backend (backend/), sin barra final.
-  // En local: 'http://localhost:3000/api'. En produccion: la URL del
-  // backend ya desplegado (ver docs/SEMANA_3.md).
-  API_BASE_URL: 'http://localhost:3000/api',
+  // Apunta al deploy de prueba en Vercel (ver docs/DESPLIEGUE_VERCEL.md).
+  // En local: cambiar a 'http://localhost:3000/api'.
+  API_BASE_URL: 'https://rideexperience-api.vercel.app/api',
 
   // ID del evento (UUID) que este sitio muestra e inscribe. Se obtiene
   // creandolo desde el panel administrativo (admin/) y copiando el "id"

@@ -6,7 +6,15 @@
 > es código pendiente, es lo que falta de tu lado para poder desplegar
 > esto de verdad.
 
-## Urgente / bloquea producción
+## Urgente / bloquea el deploy de prueba
+
+- [ ] **Terminar de configurar `rideexperience-api` en Vercel** — ya está
+  desplegado en https://rideexperience-api.vercel.app pero le faltan 2
+  variables de entorno para arrancar (confirmado en los logs reales del
+  deploy). Los 4 pasos exactos, todos desde el dashboard de Vercel, sin
+  instalar nada: ver [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md).
+  Resumen: conectar una base Postgres desde la pestaña Storage, agregar
+  `DATABASE_URL` y `JWT_SECRET`, y volver a desplegar.
 
 - [ ] **Borrar 2 ramas de GitHub que ya están fusionadas** y no se
   pudieron borrar automáticamente (el token de esta sesión no tiene
@@ -18,33 +26,18 @@
   Borrarlas es seguro. Se hace desde GitHub → pestaña "Branches", o desde
   el botón "Delete branch" que queda en cada Pull Request ya mergeado.
 
-- [ ] **Decidir dónde alojar el backend** (`backend/`, NestJS). Necesita
-  un servidor Node.js corriendo permanentemente (no es un sitio estático
-  como el resto del repo). Opciones típicas: Railway, Render, un VPS
-  propio, o Vercel con funciones serverless (como ya se usa en
-  `api/` para el backend del pasaporte de Las Tanusas — mismo patrón se
-  podría reusar, pero NestJS normalmente corre mejor como servidor
-  persistente que como funciones sueltas).
-
-- [ ] **Crear la base de datos PostgreSQL de producción** (Railway,
-  Supabase, Neon, RDS, o el motor que prefieras) y poner esa cadena de
-  conexión real en la variable `DATABASE_URL` del backend en producción.
-  Hoy solo existe la de desarrollo local, que se descarta cada vez.
-
-- [ ] **Generar un `JWT_SECRET` propio y seguro** para producción. El de
-  `backend/.env.example` es un valor de ejemplo — no usarlo tal cual.
-  Cualquier generador de cadenas aleatorias largas sirve (ej.
-  `openssl rand -hex 32`).
+## Antes de que esto sea producción de verdad (no solo prueba)
 
 - [ ] **Crear el/los administrador(es) real(es) del panel**, con su
-  correo y contraseña definitivos, corriendo el seed en el entorno de
-  producción:
-  ```
-  ADMIN_EMAIL=correo-real@... ADMIN_PASSWORD=una-clave-segura npx prisma db seed
-  ```
-  Los valores que usé para las pruebas (`admin@test.com` / `password123`)
-  eran solo para verificar que todo funcionara — no quedan en ningún
-  lado, la base de datos de prueba se borró.
+  correo y contraseña definitivos — los de prueba (`admin@test.com` /
+  `password123`) solo existieron en bases locales que ya se borraron. En
+  cuanto configures `DATABASE_URL` (paso de arriba), avisame y te creo
+  el tuyo, o lo hacés vos mismo corriendo
+  `ADMIN_EMAIL=... ADMIN_PASSWORD=... npx prisma db seed` desde donde
+  tengas Node instalado.
+- [ ] El `JWT_SECRET` que uses en el paso de arriba puede quedar como
+  está una vez generado — no hace falta rotarlo salvo sospecha de fuga.
+- [ ] Dominio propio en vez de `*.vercel.app` (opcional, cosmético).
 
 ## Para que los correos salgan de verdad (Semana 4)
 
@@ -111,6 +104,9 @@
   aviso final) con cron real cada minuto — Semana 4. Falta solo la
   cuenta de Resend real (ítem arriba) para que salgan de verdad.
 - ✅ Ramas de trabajo unidas a la rama por defecto del repo.
+- ✅ Los 3 componentes desplegados en Vercel en URLs reales
+  (`rideexperience-api`, `-admin`, `-registro`), auto-desplegando en cada
+  push. Falta solo terminar de configurarlo (ítem "Urgente" arriba).
 
 ## Documentos relacionados
 
@@ -120,5 +116,7 @@
   5 semanas y la tabla de brecha original.
 - [`SEMANA_3.md`](./SEMANA_3.md) — sitio de registro (Semana 3).
 - [`SEMANA_4.md`](./SEMANA_4.md) — notificaciones de correo (Semana 4).
+- [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) — URLs del deploy de
+  prueba y los pasos exactos que faltan para activarlo.
 - [`GUIA_PRUEBAS_LOCAL.md`](./GUIA_PRUEBAS_LOCAL.md) — paso a paso para
   correr y probar todo esto vos mismo, en tu máquina.
