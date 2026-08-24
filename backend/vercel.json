@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "crons": [{ "path": "/api/notificaciones/cron", "schedule": "0 0 * * *" }],
   "headers": [
     {
