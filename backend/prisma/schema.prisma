@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Administrador del panel (login del organizador del evento).
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  nombre       String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+// Evento/congreso gestionado desde el panel (agenda, lugar, fecha).
+model Evento {
+  id          String   @id @default(uuid())
+  nombre      String
+  descripcion String?
+  lugar       String
+  fechaInicio DateTime @map("fecha_inicio")
+  fechaFin    DateTime? @map("fecha_fin")
+
+  // Fechas configurables de los 2 avisos programados (el de confirmacion
+  // es inmediato, no se configura). Ver Notificacion.tipo.
+  fechaAvisoPrevio DateTime? @map("fecha_aviso_previo")
+  fechaAvisoFinal  DateTime? @map("fecha_aviso_final")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  asistentes     Asistente[]
+  notificaciones Notificacion[]
+
+  @@map("eventos")
+}
+
+enum EstadoRegistro {
+  REGISTRADO
+  CANCELADO
+}
+
+// Persona inscrita a un evento.
+model Asistente {
+  id        String         @id @default(uuid())
+  cedula    String
+  nombre    String
+  correo    String
+  telefono  String
+  estado    EstadoRegistro @default(REGISTRADO)
+
+  eventoId String @map("evento_id")
+  evento   Evento @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  notificaciones Notificacion[]
+
+  // La cedula solo tiene que ser unica dentro de un mismo evento: la misma
+  // persona puede registrarse a congresos distintos.
+  @@unique([eventoId, cedula], name: "evento_cedula_unico")
+  @@map("asistentes")
+}
+
+enum TipoNotificacion {
+  CONFIRMACION
+  AVISO_PREVIO
+  AVISO_FINAL
+}
+
+enum EstadoNotificacion {
+  PENDIENTE
+  ENVIADA
+  FALLIDA
+}
+
+// Registro de las 3 notificaciones de correo prometidas en la cotizacion.
+// Se crea en el registro del asistente; el envio real (Semana 4) lo
+// completa un job/cron que lee estado = PENDIENTE.
+model Notificacion {
+  id     String             @id @default(uuid())
+  tipo   TipoNotificacion
+  estado EstadoNotificacion @default(PENDIENTE)
+
+  programadaPara DateTime? @map("programada_para")
+  enviadaEn      DateTime? @map("enviada_en")
+
+  eventoId    String    @map("evento_id")
+  evento      Evento    @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  asistenteId String    @map("asistente_id")
+  asistente   Asistente @relation(fields: [asistenteId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notificaciones")
+}
