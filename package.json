@@ -1,0 +1,17 @@
+{
+  "name": "rideexperience",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "generar-codigos": "node scripts/generar-codigos.mjs"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "nanoid": "^5.0.9",
+    "qrcode": "^1.5.4"
+  }
+}

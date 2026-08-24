@@ -960,7 +960,8 @@ body::after {
 label { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .25rem; opacity: .65; }
 label em { text-transform: none; letter-spacing: 0; opacity: .8; font-style: normal; }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"] {
   font-family: var(--font-mono);
   font-size: .95rem;
   padding: .3rem .1rem .35rem;
@@ -971,12 +972,28 @@ input[type="text"] {
   border-radius: 0;
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="email"]:focus {
   outline: none;
   border-bottom-color: var(--rojo);
   box-shadow: 0 1.5px 0 0 var(--rojo);
 }
 input.invalid { border-bottom-color: var(--rojo); }
+
+.field--codigo {
+  align-self: center;
+  width: 100%;
+  max-width: 220px;
+  margin-bottom: 1rem;
+}
+.field--codigo label { color: var(--rojo); opacity: .75; }
+.field--codigo input {
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--rojo-dark, var(--rojo));
+  border-bottom-color: rgba(90,30,20,.35);
+}
+.field--codigo .field__error { text-align: center; }
 
 .field__error {
   color: var(--rojo);
@@ -1136,6 +1153,19 @@ input.invalid { border-bottom-color: var(--rojo); }
   color: var(--rojo-dark);
   letter-spacing: .04em;
 }
+
+.confirmacion__sellos {
+  display: inline-flex; flex-direction: column; gap: .5rem;
+  list-style: none;
+  margin: 1rem auto 0;
+  padding: 1rem 1.75rem;
+  background: var(--hueso);
+  border: 1px solid rgba(20,17,13,.15);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: .85rem;
+}
+.confirmacion__sellos strong { color: var(--rojo-dark); }
 
 /* ========================= COUNTDOWN (notificación) ========================= */
 
