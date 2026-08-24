@@ -3,6 +3,19 @@
    Paleta y tipografía extraídas del brief visual (Paso 0)
    ========================================================= */
 
+@font-face {
+  font-family: "Discota";
+  src: url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DIN Pro Black";
+  src: url("../assets/fonts/DINPro-Black.otf") format("opentype");
+  font-weight: 900;
+  font-display: swap;
+}
+
 :root {
   --arena-100: #f3ead5;
   --arena-300: #e4cb98;
@@ -14,7 +27,8 @@
   --hueso: #f3eee2;
   --dorado: #b98a3a;
 
-  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-display: "Discota", "Anton", "Arial Narrow", sans-serif;
+  --font-heavy: "DIN Pro Black", "Anton", "Arial Narrow", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-serif: "Playfair Display", Georgia, serif;
 
@@ -304,20 +318,18 @@ html.no-scroll { overflow: hidden; height: 100%; }
 }
 
 .hero__dune {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
-  background: var(--rojo);
-  clip-path: polygon(0% 55%, 8% 45%, 20% 60%, 34% 38%, 50% 58%, 66% 34%, 80% 55%, 100% 40%, 100% 100%, 0% 100%);
-  background-image: radial-gradient(circle, var(--rojo-dark) 1.4px, transparent 1.6px);
-  background-size: 7px 7px;
-  background-blend-mode: multiply;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 42%;
+  background-image: url("../assets/brand/montanas-halftone.png");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover;
   will-change: transform;
 }
 
 .hero__dune--back {
-  height: 55%;
-  opacity: .35;
-  clip-path: polygon(0% 70%, 12% 55%, 28% 68%, 42% 48%, 58% 66%, 74% 44%, 88% 62%, 100% 50%, 100% 100%, 0% 100%);
-  background-size: 10px 10px;
+  height: 52%;
+  opacity: .4;
+  background-image: url("../assets/brand/montanas-halftone-alt.png");
 }
 
 /* Viñeta sutil de cohesión visual, presente en todo el sitio */
@@ -347,11 +359,9 @@ body::after {
 }
 
 .brand-mark {
-  display: inline-flex; align-items: center; gap: .5rem;
-  color: var(--rojo);
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  letter-spacing: .05em;
+  display: inline-block;
+  width: clamp(11rem, 22vw, 16rem);
+  height: auto;
   margin-bottom: 2rem;
 }
 
@@ -692,7 +702,10 @@ body::after {
   background:
     radial-gradient(circle at 28% 18%, rgba(255,255,255,.14), transparent 55%),
     radial-gradient(circle at 75% 80%, rgba(120,90,50,.12), transparent 50%),
-    #cbb494;
+    linear-gradient(rgba(203,180,148,.72), rgba(203,180,148,.72)),
+    url("../assets/brand/textura-arena.jpg");
+  background-size: auto, auto, cover, cover;
+  background-position: center;
   color: var(--rojo);
   padding: 1.6rem 1.25rem 1.1rem;
   border: 0;
@@ -752,18 +765,27 @@ body::after {
   left: 0; right: 0; bottom: 0;
   width: 100%; height: 46%;
   pointer-events: none;
+  overflow: hidden;
+}
+.cover-dunes img {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: bottom;
+}
+.cover-dunes__back { opacity: .55; }
+.cover-dunes__ruta {
+  height: 60%;
+  object-fit: contain; object-position: bottom center;
+  opacity: .5;
+  mix-blend-mode: multiply;
 }
 
 .cover-brand {
   position: relative; z-index: 1;
-  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
-  color: var(--rojo);
-  margin: .4rem 0 0;
-}
-.cover-brand span {
-  font-family: var(--font-display);
-  font-size: 1.9rem;
-  letter-spacing: .02em;
+  display: block;
+  width: clamp(9rem, 40%, 12rem);
+  height: auto;
+  margin: .4rem auto 0;
 }
 
 .cover-title {
@@ -1051,20 +1073,17 @@ input.invalid { border-bottom-color: var(--rojo); }
   top: 42%; left: 50%;
   z-index: 6;
   display: inline-flex; flex-direction: column; align-items: center; gap: .3rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 7vw, 2.1rem);
-  letter-spacing: .16em;
-  line-height: 1;
   color: var(--rojo);
-  border: 4px solid var(--rojo);
-  outline: 2px solid var(--rojo);
-  outline-offset: 5px;
-  padding: .7rem 1.4rem .6rem;
   transform: translate(-50%, -50%) rotate(-20deg) scale(2.8);
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: multiply;
   filter: url(#inkstamp);
+}
+.sello-stamp img {
+  display: block;
+  width: clamp(5.5rem, 20vw, 8.75rem);
+  height: auto;
 }
 .sello-stamp small {
   font-family: var(--font-mono);
@@ -1110,19 +1129,16 @@ input.invalid { border-bottom-color: var(--rojo); }
 
 .sello {
   display: inline-block;
-  font-family: var(--font-display);
-  color: var(--rojo);
-  border: 3px solid var(--rojo);
-  outline: 1px solid var(--rojo);
-  outline-offset: 3px;
-  padding: .5rem 1.25rem;
-  letter-spacing: .15em;
   transform: rotate(-6deg);
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
   opacity: .9;
   filter: url(#inkstamp);
   mix-blend-mode: multiply;
+}
+.sello img {
+  display: block;
+  width: 5.6rem;
+  height: auto;
 }
 
 .confirmacion h2 {
