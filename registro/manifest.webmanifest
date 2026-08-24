@@ -1,7 +1,7 @@
 {
-  "name": "Registro al evento",
-  "short_name": "Registro",
-  "description": "Inscripción al evento — registrate y recibí las notificaciones por correo.",
+  "name": "A Todo Terreno — Shineray",
+  "short_name": "A Todo Terreno",
+  "description": "Pasaporte de aventura para la Convención Nacional Shineray 2026.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -9,6 +9,6 @@
   "background_color": "#14110d",
   "theme_color": "#14110d",
   "icons": [
-    { "src": "icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "assets/favicon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

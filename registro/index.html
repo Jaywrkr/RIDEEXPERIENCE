@@ -1,75 +1,407 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro al evento</title>
-  <meta name="theme-color" content="#14110d" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Todo Terreno · Convención Nacional Shineray 2026</title>
+<meta name="description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. 25, 26 y 27 de septiembre. El destino es sorpresa.">
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14110d">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="A Todo Terreno · Convención Nacional Shineray 2026">
+<meta property="og:description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. 25, 26 y 27 de septiembre. El destino es sorpresa.">
+<meta property="og:image" content="assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A Todo Terreno · Convención Nacional Shineray 2026">
+<meta name="twitter:description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. El destino es sorpresa.">
+<meta name="twitter:image" content="assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div class="envoltorio">
+<body data-state="invitado">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="grain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.4 0"/>
+    <feComposite operator="over" in2="SourceGraphic"/>
+  </filter>
+  <filter id="inkstamp" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.1 0 0 0 -0.12" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+  </filter>
+  <filter id="inkrough" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  3 0 0 0 -0.55" result="mask"/>
+    <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+  </filter>
+</svg>
 
-    <div id="pantalla-carga" class="pantalla-carga">
-      <p>Cargando información del evento…</p>
+<!-- ============ BIENVENIDA (nubes de arena a pantalla completa) ============ -->
+<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <span class="welcome__grain" aria-hidden="true"></span>
+  <div class="welcome__clouds" aria-hidden="true">
+    <span class="welcome__cloud welcome__cloud--1"></span>
+    <span class="welcome__cloud welcome__cloud--2"></span>
+    <span class="welcome__cloud welcome__cloud--3"></span>
+    <span class="welcome__cloud welcome__cloud--4"></span>
+    <span class="welcome__cloud welcome__cloud--5"></span>
+  </div>
+  <canvas id="welcomeDustCanvas" class="welcome__canvas" aria-hidden="true"></canvas>
+
+  <div class="welcome__content">
+    <div class="welcome__brand" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="30" height="30" role="presentation">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/>
+        <path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+      </svg>
+      <span>SHINERAY</span>
     </div>
+    <p class="overline">CONVENCIÓN NACIONAL 2026</p>
+    <h1 class="welcome__title" id="welcomeTitle">BIENVENIDO<br><span>A TODO TERRENO</span></h1>
+    <p class="welcome__hint">Toca para que el polvo se asiente</p>
+    <button class="welcome__cta" id="welcomeCta" type="button">ENTRAR →</button>
+  </div>
+</div>
 
-    <div id="pantalla-error" class="tarjeta oculto">
-      <p id="texto-error-carga">No se pudo cargar la información del evento.</p>
+<a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
+
+<div class="topbar" id="topbar" aria-hidden="true" hidden>
+  <span class="topbar__wordmark"><em>A TODO</em> TERRENO</span>
+  <span class="topbar__event">CONVENCIÓN 2026</span>
+  <span class="topbar__brand">SHINERAY</span>
+</div>
+
+<header class="hero" id="hero" hidden>
+  <div class="hero__grain" aria-hidden="true"></div>
+  <div class="hero__dune hero__dune--back" id="heroDuneBack" aria-hidden="true"></div>
+  <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
+  <div class="hero__content">
+    <p class="overline">CONVENCIÓN NACIONAL SHINERAY</p>
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <span>SHINERAY</span>
     </div>
+    <h1 class="hero__title">A TODO<br>TERRENO</h1>
+    <p class="hero__sub">CONVENCIÓN NACIONAL 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
+    <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Baja y empieza a entender por qué.</p>
+    <button class="scroll-cue" id="scrollCue" data-target="bitacora-1" aria-label="Bajar a la bitácora">
+      <span class="scroll-cue__line"></span>
+    </button>
+  </div>
+</header>
 
-    <div id="pantalla-form" class="oculto">
-      <div class="encabezado">
-        <h1 id="evento-nombre"></h1>
-        <p class="lugar-fecha" id="evento-lugar-fecha"></p>
-        <p class="descripcion oculto" id="evento-descripcion"></p>
-      </div>
+<nav class="slide-nav" id="slideNav" aria-label="Navegación de la experiencia" hidden>
+  <a href="#hero" data-slide-dot="hero" aria-label="Portada"><span></span></a>
+  <a href="#bitacora-1" data-slide-dot="bitacora-1" aria-label="Historia"><span></span></a>
+  <a href="#como-funciona" data-slide-dot="como-funciona" aria-label="Cómo funciona"><span></span></a>
+  <a href="#manifiesto" data-slide-dot="manifiesto" aria-label="Pasaporte"><span></span></a>
+  <a href="#confirmacion" data-slide-dot="confirmacion" aria-label="Tu viaje" id="navDotConfirmacion" hidden><span></span></a>
+</nav>
 
-      <form id="form-registro" class="tarjeta" novalidate>
-        <div class="mensaje-error" id="mensaje-error-form"></div>
+<section class="bitacora" id="bitacora-1" aria-label="Bitácora de la expedición, parte 1" hidden>
+  <p class="bitacora__linea reveal">A Todo Terreno no es la moto de enduro. Es la que no falla a las 6&nbsp;AM, bajo la lluvia — la misma con la que te ganas la calle todos los días.</p>
+</section>
+<section class="bitacora" id="bitacora-2" aria-label="Bitácora de la expedición, parte 2" hidden>
+  <p class="bitacora__linea reveal">Nadie sabe a dónde va. Tú tampoco, todavía. Solo sabes la fecha, y que algo grande te espera del otro lado.</p>
+</section>
+<section class="bitacora" id="bitacora-3" aria-label="Bitácora de la expedición, parte 3" hidden>
+  <p class="bitacora__linea reveal">El misterio no arranca en la playa. Arranca el día que abres el sobre. Esto es lo que viene después de ese sobre.</p>
+</section>
 
-        <div class="campo">
-          <label for="cedula">Cédula</label>
-          <input type="text" id="cedula" inputmode="numeric" maxlength="10" placeholder="10 dígitos" required />
-        </div>
-
-        <div class="campo">
-          <label for="nombre">Nombre completo</label>
-          <input type="text" id="nombre" required />
-        </div>
-
-        <div class="campo">
-          <label for="correo">Correo electrónico</label>
-          <input type="email" id="correo" required />
-          <span class="ayuda">Aquí llegarán tus notificaciones del evento.</span>
-        </div>
-
-        <div class="campo">
-          <label for="telefono">Teléfono</label>
-          <input type="tel" id="telefono" placeholder="0991234567" required />
-        </div>
-
-        <button type="submit" class="boton-primario" id="boton-registrar">Registrarme</button>
-      </form>
-    </div>
-
-    <div id="pantalla-confirmacion" class="pantalla-confirmacion oculto">
-      <div class="sello">✓</div>
-      <h2>¡Registro confirmado!</h2>
-      <p>
-        Ya estás inscrito. Te avisaremos por correo a
-        <strong id="correo-confirmado"></strong>
-        cuando haya novedades del evento.
-      </p>
-    </div>
-
-    <p class="pie">Instalá esta página como acceso directo desde el menú de tu navegador.</p>
+<section class="explicador" id="como-funciona" aria-labelledby="explicadorTitulo" hidden>
+  <span class="explicador__bleed explicador__bleed--left" aria-hidden="true"></span>
+  <span class="explicador__bleed explicador__bleed--right" aria-hidden="true"></span>
+  <div class="explicador__head">
+    <p class="overline">DE FORMULARIO A PASAPORTE</p>
+    <h2 id="explicadorTitulo">Así se siente confirmar tu lugar</h2>
+    <p class="explicador__sub">Esto es exactamente lo que vas a vivir tú, ahora, al completar el pasaporte más abajo.</p>
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/main.js"></script>
+  <div class="explicador__grid">
+    <article class="explicador__card">
+      <span class="explicador__num">1</span>
+      <h3>Un pasaporte, no un form</h3>
+      <p>El QR de tu invitación abre esto: la primera hoja de tu pasaporte de aventura, no un formulario más.</p>
+    </article>
+
+    <article class="explicador__card">
+      <span class="explicador__num">2</span>
+      <h3>El desbloqueo</h3>
+      <p>Al confirmar, aparece un conteo regresivo real hacia el 25 de septiembre — y con él, tus pistas de ruta.</p>
+    </article>
+
+    <article class="explicador__card">
+      <span class="explicador__num">3</span>
+      <h3>El trato VIP se nota</h3>
+      <p>Quien más compra ve su categoría más alta: mejor villa, mejores accesos. Y el resto quiere subir.</p>
+    </article>
+  </div>
+
+  <p class="explicador__cta">↓ Pruébalo tú mismo con tu pasaporte</p>
+</section>
+
+<!-- ============ MANIFIESTO (pasaporte digital de expedición, por pasos) ============ -->
+<section class="manifiesto" id="manifiesto" aria-labelledby="manifiestoTitulo">
+  <div class="pasaporte" id="manifiestoCard">
+    <span class="pasaporte__texture" aria-hidden="true"></span>
+    <span class="pasaporte__spine" aria-hidden="true"></span>
+    <span class="pasaporte__watermark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="220" height="220" role="presentation">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+
+    <div class="pasaporte__header">
+      <span class="pasaporte__emisor">SHINERAY MOTORS · DOCUMENTO DE EXPEDICIÓN</span>
+      <span class="pasaporte__serial">N.º <span id="passportSerial">AT26-000000</span></span>
+    </div>
+
+    <div class="pasaporte__progress" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" aria-label="Progreso del pasaporte">
+      <span class="pasaporte__progress-label" id="pasoLabel">PASO 1 DE 3</span>
+      <span class="step-dots">
+        <i class="step-dot is-active" data-step-dot="1"></i>
+        <i class="step-dot" data-step-dot="2"></i>
+        <i class="step-dot" data-step-dot="3"></i>
+      </span>
+    </div>
+
+    <div class="pasaporte__body">
+    <h2 id="manifiestoTitulo" class="sr-only">Sella tu lugar en el convoy</h2>
+
+    <form id="passportForm" novalidate>
+      <div class="pasaporte__pageframe">
+
+        <!-- PASO 1 · Portada (réplica del cuadernillo kraft físico) -->
+        <div class="paso paso--cover" id="pasaporteCover" data-step-panel="1">
+          <span class="pasaporte__cover-grain" aria-hidden="true"></span>
+
+          <svg class="cover-dunes" viewBox="0 0 300 170" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <pattern id="ht-front" width="5" height="5" patternUnits="userSpaceOnUse">
+                <circle cx="2.5" cy="2.5" r="1.9" fill="#b23020"/>
+              </pattern>
+              <pattern id="ht-back" width="7.5" height="7.5" patternUnits="userSpaceOnUse">
+                <circle cx="3.75" cy="3.75" r="1.6" fill="#b23020"/>
+              </pattern>
+            </defs>
+            <path d="M0,68 Q45,30 95,52 Q140,70 180,44 Q235,12 300,40 L300,170 L0,170 Z" fill="url(#ht-back)" opacity=".8"/>
+            <path d="M0,110 Q50,66 105,92 Q150,112 200,84 Q250,58 300,80 L300,170 L0,170 Z" fill="url(#ht-front)"/>
+            <path d="M96,172 C 130,150 96,132 138,118"
+                  fill="none" stroke="#cbb494" stroke-width="17" stroke-linecap="round"/>
+            <path d="M132,120 C 168,108 152,94 196,84"
+                  fill="none" stroke="#cbb494" stroke-width="11" stroke-linecap="round"/>
+            <path d="M190,86 C 226,78 218,68 252,60"
+                  fill="none" stroke="#cbb494" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+
+          <div class="cover-brand" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
+              <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/>
+              <path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+            </svg>
+            <span>Shineray</span>
+          </div>
+
+          <div class="cover-title">
+            <span class="cover-atodo">A TODO</span>
+            <span class="cover-terreno">TERRENO</span>
+          </div>
+
+          <button type="button" class="cover-cta" id="coverCta">Regístrate aquí</button>
+
+          <span class="cover-label" aria-hidden="true">CONVENCIÓN 2026</span>
+        </div>
+
+        <!-- PASO 2 · Página de datos, réplica directa del "Pasaporte de Aventura" físico -->
+        <div class="paso paso--datapage" data-step-panel="2" hidden>
+          <span class="datapage__veins" aria-hidden="true">
+            <svg viewBox="0 0 300 400" preserveAspectRatio="none" role="presentation">
+              <path d="M40,0 C60,40 20,70 50,110 C75,145 30,170 55,205 C75,232 40,260 60,300 C75,325 45,355 60,400" fill="none" stroke="#b23020" stroke-width="2"/>
+              <path d="M50,110 C90,120 100,90 140,100" fill="none" stroke="#b23020" stroke-width="1.4"/>
+              <path d="M55,205 C100,210 110,180 150,195 C175,204 190,180 220,190" fill="none" stroke="#b23020" stroke-width="1.4"/>
+              <path d="M60,300 C110,305 120,270 165,285 C195,295 205,265 240,275" fill="none" stroke="#b23020" stroke-width="1.2"/>
+              <path d="M260,0 C240,50 275,85 250,130 C230,165 265,195 245,235 C228,265 260,300 240,340 C225,368 250,385 240,400" fill="none" stroke="#b23020" stroke-width="1.6"/>
+              <path d="M250,130 C210,140 200,110 165,120" fill="none" stroke="#b23020" stroke-width="1.1"/>
+            </svg>
+          </span>
+
+          <p class="overline">
+            <span>PASAPORTE DE AVENTURA — A TODO TERRENO</span>
+            <svg class="datapage__globe" viewBox="0 0 32 32" role="presentation" aria-hidden="true">
+              <circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              <ellipse cx="16" cy="16" rx="6" ry="13" fill="none" stroke="currentColor" stroke-width="1.1"/>
+              <path d="M3 16h26M5.5 8h21M5.5 24h21" fill="none" stroke="currentColor" stroke-width="1.1"/>
+            </svg>
+          </p>
+
+          <div class="field field--dp">
+            <label for="cedula">Cédula <em>/ ID Number</em></label>
+            <input type="text" id="cedula" name="cedula" required inputmode="numeric" maxlength="10" placeholder="10 dígitos" autocomplete="off">
+            <span class="field__error" id="err-cedula" role="alert"></span>
+          </div>
+          <div class="field field--dp">
+            <label for="nombre">Nombre completo <em>/ Full Name</em></label>
+            <input type="text" id="nombre" name="nombre" required autocomplete="name">
+            <span class="field__error" id="err-nombre" role="alert"></span>
+          </div>
+          <div class="field field--dp">
+            <label for="telefono">Teléfono <em>/ Phone</em></label>
+            <input type="tel" id="telefono" name="telefono" required placeholder="0991234567" autocomplete="tel">
+            <span class="field__error" id="err-telefono" role="alert"></span>
+          </div>
+          <div class="field field--dp">
+            <label for="email">Correo electrónico <em>/ Email</em></label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+            <span class="field__error" id="err-email" role="alert"></span>
+          </div>
+
+          <div class="field field--dates-row" aria-hidden="true">
+            <div class="field--dp">
+              <label>Fecha de emisión <em>/ Date of issue</em></label>
+              <p class="field__readonly" id="fechaEmision">—</p>
+            </div>
+            <div class="field--dp">
+              <label>Fecha de expiración <em>/ Date of expiry</em></label>
+              <p class="field__readonly" id="fechaExpiracion">—</p>
+            </div>
+          </div>
+
+          <!-- Pie decorativo: código de barras, silueta de moto, rosa de los vientos y sello -->
+          <div class="datapage__foot" aria-hidden="true">
+            <svg class="datapage__barcode" viewBox="0 0 160 34" preserveAspectRatio="none" role="presentation">
+              <g id="barcodeBars" fill="var(--tinta)"></g>
+            </svg>
+            <span class="datapage__barcode-serial" id="barcodeSerial">AT26-000000</span>
+
+            <svg class="datapage__moto" viewBox="0 0 64 40" role="presentation">
+              <circle cx="14" cy="30" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="50" cy="30" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M14 30 L26 14 H38 L50 30 M26 14 L22 22 M38 14 L44 22 M14 30 H30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M38 14 H46" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+
+            <svg class="datapage__compass" viewBox="0 0 64 64" role="presentation">
+              <circle cx="32" cy="32" r="27" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M32 8 L37 32 L32 56 L27 32 Z" fill="currentColor" opacity=".85"/>
+              <path d="M8 32 L32 27 L56 32 L32 37 Z" fill="currentColor" opacity=".5"/>
+              <text x="32" y="10" text-anchor="middle" font-size="7" fill="currentColor">N</text>
+              <text x="32" y="61" text-anchor="middle" font-size="7" fill="currentColor">S</text>
+              <text x="6" y="35" text-anchor="middle" font-size="7" fill="currentColor">O</text>
+              <text x="58" y="35" text-anchor="middle" font-size="7" fill="currentColor">E</text>
+            </svg>
+
+            <span class="datapage__stamp">
+              <svg viewBox="0 0 90 90" role="presentation">
+                <defs>
+                  <path id="stampArcTop" d="M 10,45 A 35,35 0 0 1 80,45"/>
+                  <path id="stampArcBottom" d="M 14,55 A 31,31 0 0 0 76,55"/>
+                </defs>
+                <circle cx="45" cy="45" r="42" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="45" cy="45" r="36" fill="none" stroke="currentColor" stroke-width="1"/>
+                <path d="M32 33 L45 46 L58 33 M32 46 L45 59 L58 46" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <text font-size="8.5" letter-spacing="2" fill="currentColor">
+                  <textPath href="#stampArcTop" startOffset="50%" text-anchor="middle">VERIFICADO</textPath>
+                </text>
+                <text font-size="7" letter-spacing="1.5" fill="currentColor">
+                  <textPath href="#stampArcBottom" startOffset="50%" text-anchor="middle">A TODO TERRENO</textPath>
+                </text>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <!-- PASO 3 · Revisión y sello -->
+        <div class="paso" data-step-panel="3" hidden>
+          <p class="overline">REVISA TU PASAPORTE</p>
+          <dl class="pasaporte__resumen">
+            <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
+            <div><dt>Cédula</dt><dd id="resumenCedula">—</dd></div>
+          </dl>
+          <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
+          <span class="field__error" id="err-sellar" role="alert"></span>
+          <button type="submit" class="btn-sellar">
+            <span>SELLAR MI LUGAR</span>
+          </button>
+
+          <!-- Sello de tinta que cae sobre la hoja al confirmar -->
+          <span class="sello-stamp" id="selloStamp" aria-hidden="true">
+            SELLADO
+            <small>A TODO TERRENO · 2026</small>
+          </span>
+        </div>
+
+      </div>
+
+      <p class="manifiesto__intro" id="pasoCaption">Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino.</p>
+
+      <div class="paso__nav">
+        <button type="button" class="btn-paso btn-paso--ghost" id="navPrev">← Atrás</button>
+        <button type="button" class="btn-paso" id="navNext">Abrir pasaporte →</button>
+      </div>
+    </form>
+    </div>
+  </div>
+
+  <!-- Canvas donde el pasaporte se disuelve en arena -->
+  <canvas id="dustCanvas" class="dust-canvas" aria-hidden="true"></canvas>
+</section>
+
+<!-- ============ CONFIRMACIÓN ============ -->
+<section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
+  <div class="sello" aria-hidden="true">SELLADO</div>
+  <h2 id="confTitulo">¡Estás listo para la aventura a todo terreno! 🤘</h2>
+  <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sale el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
+  <dl class="confirmacion__datos">
+    <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
+  </dl>
+  <p>Te avisaremos por correo a <strong id="confCorreo"></strong> cuando haya novedades del viaje.</p>
+</section>
+
+<!-- ============ COUNTDOWN ============ -->
+<section class="countdown" id="countdown" hidden aria-label="Notificación de cuenta regresiva hasta el evento">
+  <div class="notif">
+    <span class="notif__icon" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="20" height="20" role="presentation">
+        <circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M9 9 L23 23 M23 9 L9 23" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <div class="notif__body">
+      <p class="notif__app">SHINERAY · A TODO TERRENO <span class="notif__now">ahora</span></p>
+      <p class="notif__msg">Faltan <strong id="cd-dias">00</strong> días para la aventura</p>
+      <p class="notif__sub" role="timer" aria-live="off">
+        <span id="cd-horas">00</span>h <span id="cd-min">00</span>m <span id="cd-seg">00</span>s restantes
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PISTAS ============ -->
+<section class="pistas" id="pistas" hidden aria-label="Pistas de ruta">
+  <p class="overline">TRES PISTAS, CERO RESPUESTAS</p>
+  <p class="pistas__intro">Desde el 1 de septiembre el terreno empieza a hablar. Se abren solas, no hay forma de adelantarlas.</p>
+  <ol class="pistas__lista" id="pistasLista"></ol>
+</section>
+
+<footer class="footer">
+  <p>SHINERAY — CONVENCIÓN NACIONAL 2026 · A TODO TERRENO · Invitación no transferible</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

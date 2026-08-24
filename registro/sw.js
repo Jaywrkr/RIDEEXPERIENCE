@@ -1,15 +1,18 @@
-// Adaptado de shineray-deck/sw.js (funciona igual, cambia el nombre del
-// cache y el listado de archivos del "shell" de este sitio).
-const CACHE = 'registro-evento-v1';
+const CACHE = 'atodoterreno-registro-v1';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon.svg',
+  './assets/favicon.svg',
   './css/style.css',
   './js/config.js',
   './js/api.js',
   './js/main.js',
+  './js/passport.js',
+  './js/reveal.js',
+  './js/welcome.js',
+  './js/countdown.js',
+  './js/clues.js',
 ];
 
 self.addEventListener('install', (event) => {

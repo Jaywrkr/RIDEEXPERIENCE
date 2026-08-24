@@ -1,21 +1,30 @@
-// Cliente HTTP minimo para el sitio publico de registro. Sin build step
-// ni dependencias — misma linea que admin/js/api.js.
+// Cliente HTTP minimo para el pasaporte de registro. Sin build step ni
+// dependencias, igual que el resto del sitio.
+
+class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
 
 const Api = {
   baseUrl() {
     return window.SITIO_CONFIG.API_BASE_URL;
   },
 
-  async obtenerEvento() {
+  // Resuelve el ID del evento a inscribir: el fijado en config.js, o si
+  // esta vacio, el primero que devuelva la API (este sitio es de un solo
+  // evento).
+  async obtenerEventoId() {
     const configurado = window.SITIO_CONFIG.EVENTO_ID;
-    if (configurado) {
-      return this._request(`/eventos/${configurado}`);
-    }
+    if (configurado) return configurado;
+
     const eventos = await this._request('/eventos');
     if (eventos.length === 0) {
       throw new ApiError('Todavia no hay ningun evento creado en el panel administrativo.', 404);
     }
-    return eventos[0];
+    return eventos[0].id;
   },
 
   async registrar(eventoId, datos) {
@@ -45,9 +54,7 @@ const Api = {
   },
 };
 
-class ApiError extends Error {
-  constructor(message, status) {
-    super(message);
-    this.status = status;
-  }
-}
+// Expuesto explicitamente en window: passport.js se carga como modulo ES
+// (import/export), y este script como script clasico — asignar a window
+// evita cualquier ambiguedad sobre si el binding es visible entre ambos.
+window.Api = Api;
