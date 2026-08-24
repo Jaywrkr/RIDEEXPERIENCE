@@ -18,12 +18,11 @@
 
   <div class="contenido">
     <div class="fila-cabecera">
-      <h1 style="margin: 0; font-size: 1.3rem;">Evento</h1>
-      <select class="selector-evento" id="selector-evento"></select>
+      <h1 style="margin: 0; font-size: 1.3rem;">A Todo Terreno</h1>
     </div>
 
     <div id="sin-eventos" class="tarjeta oculto">
-      <p class="vacio">Todavía no hay eventos creados. Crea el primero abajo.</p>
+      <p class="vacio">Todavía no está creado. Completá el formulario de abajo para arrancar.</p>
     </div>
 
     <div class="tarjetas-stats" id="bloque-stats">
@@ -76,13 +75,12 @@
     </div>
 
     <div class="tarjeta" id="tarjeta-crear-evento">
-      <h2>Crear nuevo evento</h2>
-      <button type="button" class="boton-secundario" id="boton-mostrar-crear">+ Nuevo evento</button>
-      <form id="form-crear-evento" class="oculto" style="margin-top: 16px;">
+      <h2>Crear A Todo Terreno</h2>
+      <form id="form-crear-evento">
         <div class="mensaje-error" id="mensaje-error-crear"></div>
         <div class="campo">
           <label for="nuevo-nombre">Nombre</label>
-          <input type="text" id="nuevo-nombre" required />
+          <input type="text" id="nuevo-nombre" value="A Todo Terreno" required />
         </div>
         <div class="campo">
           <label for="nuevo-lugar">Lugar</label>
@@ -90,7 +88,7 @@
         </div>
         <div class="campo">
           <label for="nuevo-fecha-inicio">Fecha de inicio</label>
-          <input type="datetime-local" id="nuevo-fecha-inicio" required />
+          <input type="datetime-local" id="nuevo-fecha-inicio" value="2026-09-25T09:00" required />
         </div>
         <button type="submit" class="boton-primario" style="width: auto;">Crear evento</button>
       </form>

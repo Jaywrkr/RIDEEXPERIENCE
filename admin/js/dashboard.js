@@ -12,17 +12,18 @@
     window.location.href = 'index.html';
   });
 
-  const selectorEvento = document.getElementById('selector-evento');
   const sinEventos = document.getElementById('sin-eventos');
   const bloqueStats = document.getElementById('bloque-stats');
   const formEvento = document.getElementById('form-evento');
+  const tarjetaCrearEvento = document.getElementById('tarjeta-crear-evento');
   const mensajeErrorEvento = document.getElementById('mensaje-error-evento');
   const statTotal = document.getElementById('stat-total');
   const tablaBody = document.getElementById('tabla-asistentes-body');
   const tablaVacia = document.getElementById('tabla-vacia');
 
-  let eventos = [];
-  let eventoActualId = null;
+  // Este panel administra un solo evento (A Todo Terreno) — no hay
+  // selector, siempre se trabaja sobre el primero (y unico) que exista.
+  let eventoActual = null;
 
   // datetime-local <-> ISO. Los inputs trabajan en hora local del navegador;
   // el backend guarda/lee ISO 8601 (Prisma DateTime).
@@ -102,42 +103,33 @@
     return div.innerHTML;
   }
 
-  async function seleccionarEvento(eventoId) {
-    eventoActualId = eventoId;
-    const evento = eventos.find((e) => e.id === eventoId);
-    if (!evento) return;
-    llenarFormEvento(evento);
+  async function cargarEventos() {
+    const eventos = await Api.listarEventos();
+
+    if (eventos.length === 0) {
+      eventoActual = null;
+      sinEventos.classList.remove('oculto');
+      formEvento.closest('.tarjeta').classList.add('oculto');
+      bloqueStats.classList.add('oculto');
+      tarjetaCrearEvento.classList.remove('oculto');
+      return;
+    }
+
+    eventoActual = eventos[0];
+    sinEventos.classList.add('oculto');
+    formEvento.closest('.tarjeta').classList.remove('oculto');
+    bloqueStats.classList.remove('oculto');
+    // Ya existe A Todo Terreno: no hace falta volver a mostrar el
+    // formulario de creacion.
+    tarjetaCrearEvento.classList.add('oculto');
+
+    llenarFormEvento(eventoActual);
     try {
-      await cargarAsistentes(eventoId);
+      await cargarAsistentes(eventoActual.id);
     } catch (error) {
       console.error(error);
     }
   }
-
-  async function cargarEventos() {
-    eventos = await Api.listarEventos();
-
-    if (eventos.length === 0) {
-      sinEventos.classList.remove('oculto');
-      formEvento.closest('.tarjeta').classList.add('oculto');
-      bloqueStats.classList.add('oculto');
-      return;
-    }
-
-    sinEventos.classList.add('oculto');
-    formEvento.closest('.tarjeta').classList.remove('oculto');
-    bloqueStats.classList.remove('oculto');
-
-    selectorEvento.innerHTML = eventos
-      .map((evento) => `<option value="${evento.id}">${escapeHtml(evento.nombre)}</option>`)
-      .join('');
-
-    await seleccionarEvento(eventos[0].id);
-  }
-
-  selectorEvento.addEventListener('change', (evento) => {
-    seleccionarEvento(evento.target.value);
-  });
 
   formEvento.addEventListener('submit', async (evento) => {
     evento.preventDefault();
@@ -157,10 +149,7 @@
     };
 
     try {
-      const actualizado = await Api.actualizarEvento(eventoActualId, datos);
-      eventos = eventos.map((e) => (e.id === actualizado.id ? actualizado : e));
-      const opcion = selectorEvento.querySelector(`option[value="${actualizado.id}"]`);
-      if (opcion) opcion.textContent = actualizado.nombre;
+      eventoActual = await Api.actualizarEvento(eventoActual.id, datos);
     } catch (error) {
       mostrarErrorEvento(error.message || 'No se pudo guardar el evento.');
     } finally {
@@ -168,13 +157,8 @@
     }
   });
 
-  const botonMostrarCrear = document.getElementById('boton-mostrar-crear');
   const formCrearEvento = document.getElementById('form-crear-evento');
   const mensajeErrorCrear = document.getElementById('mensaje-error-crear');
-
-  botonMostrarCrear.addEventListener('click', () => {
-    formCrearEvento.classList.toggle('oculto');
-  });
 
   formCrearEvento.addEventListener('submit', async (evento) => {
     evento.preventDefault();
@@ -189,7 +173,6 @@
     try {
       await Api.crearEvento(datos);
       formCrearEvento.reset();
-      formCrearEvento.classList.add('oculto');
       await cargarEventos();
     } catch (error) {
       mensajeErrorCrear.textContent = error.message || 'No se pudo crear el evento.';
