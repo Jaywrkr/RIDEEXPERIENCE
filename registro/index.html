@@ -298,13 +298,59 @@
         </div>
 
         <!-- PASO 3 · Revisión y sello -->
-        <div class="paso" data-step-panel="3" hidden>
-          <p class="overline">REVISA TU PASAPORTE</p>
-          <dl class="pasaporte__resumen">
-            <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
-            <div><dt>Correo</dt><dd id="resumenCorreo">—</dd></div>
-            <div><dt>Teléfono</dt><dd id="resumenTelefono">—</dd></div>
+        <div class="paso paso--visado" data-step-panel="3" hidden>
+          <div class="visado__head">
+            <p class="overline">HOJA DE VISADO</p>
+            <span class="visado__tipo" aria-hidden="true">TIPO&nbsp;/&nbsp;P</span>
+          </div>
+
+          <!-- Datos del titular, dispuestos como el bloque de un visado
+               real: etiqueta bilingüe arriba, dato debajo. -->
+          <dl class="visado__datos">
+            <div class="visado__dato visado__dato--ancho">
+              <dt>Titular <em>/ Holder</em></dt>
+              <dd id="resumenNombre">—</dd>
+            </div>
+            <div class="visado__dato visado__dato--ancho">
+              <dt>Correo <em>/ Email</em></dt>
+              <dd id="resumenCorreo">—</dd>
+            </div>
+            <div class="visado__dato">
+              <dt>Teléfono <em>/ Phone</em></dt>
+              <dd id="resumenTelefono">—</dd>
+            </div>
+            <div class="visado__dato">
+              <dt>Documento <em>/ No.</em></dt>
+              <dd id="resumenSerial" class="visado__mono">—</dd>
+            </div>
           </dl>
+
+          <!-- Datos del viaje: lo que convierte la hoja en un visado y no
+               en un resumen de formulario. -->
+          <dl class="visado__datos visado__datos--viaje">
+            <div class="visado__dato">
+              <dt>Destino <em>/ Destination</em></dt>
+              <dd class="visado__clasificado">CLASIFICADO</dd>
+            </div>
+            <div class="visado__dato">
+              <dt>Entrada <em>/ Entry</em></dt>
+              <dd class="visado__mono">25 SEP 2026</dd>
+            </div>
+            <div class="visado__dato">
+              <dt>Salida <em>/ Exit</em></dt>
+              <dd class="visado__mono">27 SEP 2026</dd>
+            </div>
+            <div class="visado__dato">
+              <dt>Entradas <em>/ Entries</em></dt>
+              <dd class="visado__mono">ÚNICA</dd>
+            </div>
+          </dl>
+
+          <p class="visado__nota">
+            Documento emitido por Shineray Motors para la Convención
+            Nacional 2026. Intransferible.
+          </p>
+
           <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
           <span class="field__error" id="err-sellar" role="alert"></span>
           <button type="submit" class="btn-sellar">
