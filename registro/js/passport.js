@@ -271,6 +271,7 @@ export function initPassportForm({ onSealed }) {
       asignar('resumenNombre', nombre);
       asignar('resumenCorreo', correo);
       asignar('resumenTelefono', telefono);
+      asignar('resumenSerial', serial);
       const mrzEl = document.getElementById('pasaporteMrz');
       if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial });
     }
