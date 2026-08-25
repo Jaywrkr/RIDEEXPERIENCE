@@ -1,15 +1,38 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": false
+  },
   "framework": null,
   "outputDirectory": "public",
-  "crons": [{ "path": "/api/notificaciones/cron", "schedule": "0 0 * * *" }],
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api/[...proxy]" }],
+  "crons": [
+    {
+      "path": "/api/notificaciones/cron",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/[...proxy]"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PATCH, DELETE, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PATCH, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
       ]
     }
   ]

@@ -18,6 +18,10 @@
   const tarjetaCrearEvento = document.getElementById('tarjeta-crear-evento');
   const mensajeErrorEvento = document.getElementById('mensaje-error-evento');
   const statTotal = document.getElementById('stat-total');
+  const statSemana = document.getElementById('stat-semana');
+  const statHoy = document.getElementById('stat-hoy');
+  const statFaltan = document.getElementById('stat-faltan');
+  const statFaltanEtiqueta = document.getElementById('stat-faltan-etiqueta');
   const tablaBody = document.getElementById('tabla-asistentes-body');
   const tablaVacia = document.getElementById('tabla-vacia');
 
@@ -67,13 +71,71 @@
     });
   }
 
-  async function cargarAsistentes(eventoId) {
+  // Fecha corta para la tabla: en una lista larga, la hora completa de
+  // cada fila es ruido. La hora se conserva en el title, para quien la
+  // necesite.
+  function formatearFechaCorta(isoString) {
+    if (!isoString) return '—';
+    return new Date(isoString).toLocaleDateString('es-EC', {
+      day: '2-digit', month: 'short', year: '2-digit',
+    });
+  }
+
+  function inicialDe(nombre) {
+    const limpio = (nombre || '').trim();
+    return limpio ? limpio[0].toUpperCase() : '?';
+  }
+
+  /**
+   * Metricas del evento. Se calculan sobre los asistentes que ya se
+   * cargaron para la tabla, asi que no cuestan una peticion extra.
+   */
+  function pintarMetricas(asistentes, total, evento) {
+    statTotal.textContent = total;
+
+    const ahora = Date.now();
+    const DIA = 24 * 60 * 60 * 1000;
+    const inicioDeHoy = new Date();
+    inicioDeHoy.setHours(0, 0, 0, 0);
+
+    const enSemana = asistentes.filter(
+      (a) => a.createdAt && ahora - new Date(a.createdAt).getTime() <= 7 * DIA
+    ).length;
+    const hoy = asistentes.filter(
+      (a) => a.createdAt && new Date(a.createdAt).getTime() >= inicioDeHoy.getTime()
+    ).length;
+
+    statSemana.textContent = enSemana;
+    statHoy.textContent = hoy;
+
+    // Cuenta atras hasta el evento. Cambia de etiqueta segun el momento,
+    // para no mostrar "faltan -3 dias" una vez que ya paso.
+    if (evento && evento.fechaInicio) {
+      const inicio = new Date(evento.fechaInicio);
+      inicio.setHours(0, 0, 0, 0);
+      const dias = Math.round((inicio.getTime() - inicioDeHoy.getTime()) / DIA);
+      if (dias > 0) {
+        statFaltan.textContent = dias;
+        statFaltanEtiqueta.textContent = dias === 1 ? 'Día para el evento' : 'Días para el evento';
+      } else if (dias === 0) {
+        statFaltan.textContent = 'HOY';
+        statFaltanEtiqueta.textContent = 'El evento es hoy';
+      } else {
+        statFaltan.textContent = Math.abs(dias);
+        statFaltanEtiqueta.textContent = 'Días desde el evento';
+      }
+    } else {
+      statFaltan.textContent = '—';
+    }
+  }
+
+  async function cargarAsistentes(eventoId, evento) {
     const [asistentes, total] = await Promise.all([
       Api.listarAsistentes(eventoId),
       Api.totalAsistentes(eventoId),
     ]);
 
-    statTotal.textContent = total;
+    pintarMetricas(asistentes, total, evento);
 
     tablaBody.innerHTML = '';
     if (asistentes.length === 0) {
@@ -86,11 +148,16 @@
       const fila = document.createElement('tr');
       const claseEstado = asistente.estado === 'REGISTRADO' ? 'estado-registrado' : 'estado-cancelado';
       fila.innerHTML = `
-        <td>${escapeHtml(asistente.nombre)}</td>
-        <td>${escapeHtml(asistente.correo)}</td>
-        <td>${escapeHtml(asistente.telefono)}</td>
+        <td>
+          <span class="celda-persona">
+            <span class="inicial" aria-hidden="true">${escapeHtml(inicialDe(asistente.nombre))}</span>
+            <span>${escapeHtml(asistente.nombre)}</span>
+          </span>
+        </td>
+        <td class="celda-correo">${escapeHtml(asistente.correo)}</td>
+        <td class="celda-tel">${escapeHtml(asistente.telefono)}</td>
         <td><span class="estado-badge ${claseEstado}">${asistente.estado}</span></td>
-        <td>${formatearFecha(asistente.createdAt)}</td>
+        <td class="celda-fecha" title="${escapeHtml(formatearFecha(asistente.createdAt))}">${escapeHtml(formatearFechaCorta(asistente.createdAt))}</td>
       `;
       tablaBody.appendChild(fila);
     }
@@ -124,7 +191,7 @@
 
     llenarFormEvento(eventoActual);
     try {
-      await cargarAsistentes(eventoActual.id);
+      await cargarAsistentes(eventoActual.id, eventoActual);
     } catch (error) {
       console.error(error);
     }
