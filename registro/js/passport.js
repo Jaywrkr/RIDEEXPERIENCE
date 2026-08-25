@@ -1,5 +1,5 @@
 import { initValidacion } from './validacion.js';
-import { golpeDeSello } from './ambiente.js';
+import { golpeDeSello, sonidoPagina, sonidoError } from './ambiente.js';
 
 const TOTAL_STEPS = 3;
 
@@ -292,6 +292,8 @@ export function initPassportForm({ onSealed }) {
     currentStep = n;
     updateChrome(n);
 
+    sonidoPagina();
+
     if (!oldPanel || oldPanel === newPanel || reduceMotion || !newPanel.animate) {
       panels.forEach((panel) => { panel.hidden = panel !== newPanel; });
       focusPanel(newPanel);
@@ -366,6 +368,7 @@ export function initPassportForm({ onSealed }) {
     } catch (error) {
       if (errorEl) errorEl.textContent = error.message || 'No pudimos registrar tu pasaporte. Intenta de nuevo.';
       if (sellarBtn) sellarBtn.disabled = false;
+      sonidoError();
       return;
     }
 
