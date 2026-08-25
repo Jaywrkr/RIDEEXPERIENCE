@@ -43,6 +43,14 @@
   --font-serif: "Discota", "Arial Narrow", sans-serif;
 
   --ease: cubic-bezier(.22,.68,0,1);
+
+  /* Sistema de curvas. Un solo --ease para todo aplanaba el
+     movimiento: todo entraba con el mismo carácter. Estas cuatro
+     cubren los papeles distintos que necesita la pieza. */
+  --ease-salida: cubic-bezier(.16, 1, .3, 1);        /* entradas: rápido y frena suave */
+  --ease-resorte: cubic-bezier(.34, 1.56, .64, 1);   /* rebote corto, para lo que "aterriza" */
+  --ease-peso: cubic-bezier(.6, .04, .3, 1.2);       /* caída con masa, para el wordmark */
+  --ease-suave: cubic-bezier(.4, 0, .2, 1);          /* micro-interacciones */
 }
 
 * { box-sizing: border-box; }
@@ -1363,4 +1371,179 @@ input.invalid { border-bottom-color: var(--rojo); }
   font-size: .7rem;
   letter-spacing: .15em;
   padding: 1.5rem;
+}
+
+/* =========================================================
+   CAPA DE MOVIMIENTO
+   Coreografía de entrada de la tapa, profundidad de las
+   montañas y micro-interacciones. Todo se activa solo si
+   motion.js puso la clase `js-motion` en el <html>: sin JS,
+   nada queda oculto esperando una animación que no llega.
+   ========================================================= */
+
+/* ---- Entrada escenificada de la tapa ----
+   El orden cuenta una historia: primero el terreno (montañas),
+   después quién invita (logo), después a qué (título), y al
+   final qué hacer (CTA). No todo a la vez. */
+
+.js-motion .cover-dunes,
+.js-motion .cover-brand,
+.js-motion .cover-title .ltr,
+.js-motion .cover-cta,
+.js-motion .cover-label {
+  opacity: 0;
+}
+
+.js-motion.has-entered .cover-dunes {
+  animation: subir-terreno 1.1s var(--ease-salida) forwards;
+}
+@keyframes subir-terreno {
+  from { opacity: 0; transform: translateY(26%) scale(1.04); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.js-motion.has-entered .cover-brand {
+  animation: bajar-logo .8s var(--ease-salida) .25s forwards;
+}
+@keyframes bajar-logo {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* "A TODO": las letras se abren en abanico, una tras otra. */
+.js-motion.has-entered .cover-atodo .ltr {
+  animation: abrir-letra .5s var(--ease-salida) forwards;
+  animation-delay: calc(.5s + var(--i, 0) * .045s);
+}
+@keyframes abrir-letra {
+  from { opacity: 0; transform: translateY(-10px) rotate(-8deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+/* "TERRENO": cae con peso y rebota una vez, como un sello de
+   goma golpeando el papel. Arranca cuando "A TODO" ya terminó. */
+.js-motion.has-entered .cover-terreno .ltr {
+  animation: caer-letra .62s var(--ease-peso) forwards;
+  animation-delay: calc(.82s + var(--i, 0) * .05s);
+}
+@keyframes caer-letra {
+  0%   { opacity: 0; transform: translateY(-38px) scaleY(1.25); }
+  70%  { opacity: 1; transform: translateY(3px) scaleY(.94); }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+.cover-title .ltr { display: inline-block; will-change: transform; }
+.cover-title .ltr--espacio { width: .28em; }
+
+.js-motion.has-entered .cover-cta {
+  animation: entrar-cta .6s var(--ease-resorte) 1.35s forwards;
+}
+@keyframes entrar-cta {
+  from { opacity: 0; transform: translateY(16px) scale(.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.js-motion.has-entered .cover-label {
+  animation: sellar-etiqueta .55s var(--ease-resorte) 1.55s forwards;
+}
+@keyframes sellar-etiqueta {
+  from { opacity: 0; transform: rotate(-14deg) scale(1.3); }
+  to   { opacity: 1; transform: rotate(-1deg) scale(1); }
+}
+
+/* ---- Vida de las montañas: dos técnicas, nunca a la vez ----
+   Una animación CSS sobre `transform` gana siempre sobre el estilo
+   inline que escribe el parallax, así que las dos no pueden convivir
+   en la misma capa (pausarla tampoco libera la propiedad: la mantiene
+   congelada en el valor animado). Se reparten por tipo de puntero, que
+   además es lo que cada dispositivo puede aprovechar: en escritorio el
+   parallax responde al mouse; en táctil, donde no hay puntero que
+   seguir, las capas respiran solas. */
+@media (hover: none), (pointer: coarse) {
+  .js-motion .cover-dunes__front { animation: respirar 13s ease-in-out 2.4s infinite; }
+  .js-motion .cover-dunes__back  { animation: respirar-lento 17s ease-in-out 2.4s infinite; }
+}
+@keyframes respirar {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(-1.1%, -.7%, 0); }
+}
+@keyframes respirar-lento {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(1.4%, -.5%, 0); }
+}
+
+/* ---- Botones: barrido de luz + onda de tinta ---- */
+
+.cover-cta, .btn-paso, .btn-sellar, .welcome__cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Un destello diagonal cruza el botón al pasar el mouse. */
+.cover-cta::before, .btn-sellar::before, .welcome__cta::before {
+  content: "";
+  position: absolute; top: 0; bottom: 0; left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.28), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+  transition: left .55s var(--ease-suave);
+}
+.cover-cta:hover::before, .btn-sellar:hover::before, .welcome__cta:hover::before {
+  left: 125%;
+}
+
+.onda {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,.32);
+  transform: scale(0);
+  pointer-events: none;
+  animation: onda-expandir .55s var(--ease-salida) forwards;
+}
+@keyframes onda-expandir {
+  to { transform: scale(1); opacity: 0; }
+}
+
+/* ---- Realce del logo al pasar por la tapa ---- */
+.cover-brand { transition: transform .5s var(--ease-resorte); }
+.paso--cover:hover .cover-brand { transform: scale(1.04); }
+
+/* ---- Sello: impacto con onda expansiva ----
+   Al aterrizar, el sello empuja un anillo de tinta hacia afuera.
+   Es el remate del flujo, merece un golpe real. */
+.sello-stamp::after {
+  content: "";
+  position: absolute; inset: -8%;
+  border: 3px solid var(--rojo);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.sello-stamp.is-landed::after {
+  animation: onda-sello .7s var(--ease-salida) .3s forwards;
+}
+@keyframes onda-sello {
+  0%   { opacity: .55; transform: scale(.75); }
+  100% { opacity: 0;   transform: scale(1.75); }
+}
+
+/* ---- Nada de lo anterior corre si se pidió menos movimiento ----
+   La regla global ya colapsa las duraciones, pero estos elementos
+   arrancan en opacity:0, así que hay que devolverlos a la vista
+   explícitamente o quedarían invisibles. */
+@media (prefers-reduced-motion: reduce) {
+  .js-motion .cover-dunes,
+  .js-motion .cover-brand,
+  .js-motion .cover-title .ltr,
+  .js-motion .cover-cta,
+  .js-motion .cover-label {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+  .js-motion .cover-dunes__front,
+  .js-motion .cover-dunes__back { animation: none !important; }
+  .cover-cta::before, .btn-sellar::before, .welcome__cta::before { display: none; }
 }
