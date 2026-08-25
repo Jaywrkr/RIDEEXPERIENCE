@@ -24,6 +24,11 @@
   --tinta-soft: #241f18;
   --rojo: #c41e1e;
   --rojo-dark: #8f1414;
+  /* El rojo de marca sobre el fondo tinta da 3.18:1 — suficiente para
+     titulares grandes, insuficiente (WCAG AA pide 4.5:1) para textos
+     chicos. Esta variante aclarada es solo para texto sobre oscuro; el
+     rojo de marca se mantiene intacto sobre fondos claros. */
+  --rojo-sobre-oscuro: #e84545;
   --hueso: #f3eee2;
   --dorado: #b98a3a;
 
@@ -207,24 +212,26 @@ html.no-scroll { overflow: hidden; height: 100%; }
 }
 
 .welcome__brand {
-  display: inline-flex; align-items: center; gap: .45rem;
-  color: var(--rojo);
-  font-family: var(--font-display);
-  font-size: .95rem;
-  letter-spacing: .05em;
-  margin-bottom: 1.5rem;
+  display: block;
+  width: clamp(9.5rem, 34vw, 13rem);
+  height: auto;
+  margin: 0 auto 1.75rem;
 }
+
+/* La overline va en rojo sobre el fondo tinta; al ser texto chico
+   necesita la variante aclarada para cumplir contraste. */
+.welcome .overline { color: var(--rojo-sobre-oscuro); }
 
 .welcome__title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 9vw, 3.6rem);
-  line-height: 1.02;
+  font-size: clamp(2.6rem, 11vw, 5rem);
+  line-height: .95;
   letter-spacing: .01em;
   color: var(--hueso);
   margin: 0 0 1.4rem;
-  filter: url(#inkrough);
+  text-shadow: 0 2px 18px rgba(0,0,0,.5);
 }
-.welcome__title span { color: var(--rojo); }
+.welcome__title span { color: var(--rojo-sobre-oscuro); }
 
 .welcome__hint {
   font-family: var(--font-mono);
@@ -309,7 +316,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
   font-family: var(--font-mono);
   font-size: .68rem;
   letter-spacing: .2em;
-  color: var(--rojo);
+  color: var(--rojo-sobre-oscuro);
   display: none;
 }
 .topbar__brand {
@@ -606,8 +613,17 @@ body::after {
   font-size: .68rem;
   letter-spacing: .12em;
 }
-.pasaporte__serial { color: var(--hueso); font-weight: 700; }
-.pasaporte__serial span { color: var(--rojo); }
+.pasaporte__serial { color: var(--hueso); font-weight: 700; white-space: nowrap; }
+/* Texto chico en rojo sobre tinta: necesita la variante aclarada. */
+.pasaporte__serial span { color: var(--rojo-sobre-oscuro); }
+
+/* En pantallas angostas el nombre del emisor partía en dos líneas y
+   empujaba el serial; se acorta el tracking y se baja un punto. */
+@media (max-width: 26rem) {
+  .pasaporte__header { padding-inline: 1.1rem; font-size: .62rem; letter-spacing: .08em; }
+  .pasaporte__body { padding-inline: 1.1rem; }
+  .pasaporte__progress { padding-inline: 1.1rem; }
+}
 
 .pasaporte__body { position: relative; z-index: 1; padding: 1.5rem 1.75rem 2.25rem; }
 
@@ -744,26 +760,32 @@ body::after {
 }
 
 /* Botón de registro dentro de la propia tapa */
+/* CTA principal de la tapa. Va en tinta, no en rojo: cae sobre las
+   montañas de semitono rojo, y un botón rojo sobre fondo rojo pierde
+   toda la afordancia. El negro tinta es el mismo del wordmark
+   TERRENO, así que sigue en paleta y es el elemento de mayor
+   contraste de la tapa — que es justo lo que debe ser. */
 .cover-cta {
   position: relative; z-index: 3;
   align-self: center;
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   letter-spacing: .06em;
-  background: var(--rojo);
-  color: #fff;
+  background: var(--tinta);
+  color: var(--hueso);
   border: 0;
   border-radius: 3px;
-  padding: .8rem 1.9rem;
+  padding: .95rem 2.2rem;
+  min-height: 48px; /* objetivo táctil mínimo recomendado */
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(120,30,20,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12);
   transition: background .2s var(--ease), transform .15s var(--ease), box-shadow .2s var(--ease);
   margin-bottom: .9rem;
 }
 .cover-cta:hover {
-  background: var(--rojo-dark);
+  background: var(--tinta-soft);
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(120,30,20,.5), inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow: 0 12px 26px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12);
 }
 .cover-cta:active { transform: scale(.97); }
 .cover-cta:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
@@ -790,11 +812,17 @@ body::after {
   object-fit: cover; object-position: bottom;
 }
 .cover-dunes__back { opacity: .55; }
+/* La ruta viene como trazo gris claro; puesta tal cual sobre el
+   semitono rojo se leía como rayones/daño en la imagen. Se usa como
+   máscara y se rellena con el arena de la tapa, así se lee como un
+   camino abriéndose entre las montañas. */
 .cover-dunes__ruta {
-  height: 60%;
-  object-fit: contain; object-position: bottom center;
-  opacity: .5;
-  mix-blend-mode: multiply;
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 62%;
+  opacity: .42;
+  background: #cbb494;
+  -webkit-mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
+  mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
 }
 
 .cover-brand {
@@ -818,7 +846,9 @@ body::after {
   text-indent: .48em;
   color: var(--rojo);
   line-height: 1;
-  margin-bottom: -.48em;
+  /* Sin margen negativo: con la Discota real, -.48em hacía que las
+     astas de TERRENO chocaran contra "A TODO" y se leyera mal. */
+  margin-bottom: .06em;
 }
 .cover-terreno {
   font-family: var(--font-display);
@@ -829,19 +859,21 @@ body::after {
   transform: rotate(-1.5deg);
 }
 
+/* Etiqueta informativa, no interactiva: antes tenía relleno sólido y
+   sombra, así que competía con el CTA y parecía el botón principal.
+   Ahora es un sello de contorno, claramente subordinado. */
 .cover-label {
   position: relative; z-index: 1;
   align-self: center;
-  background: var(--hueso);
-  color: var(--rojo);
+  background: transparent;
+  color: var(--hueso);
+  border: 1.5px solid rgba(243,238,226,.65);
   font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: .72rem;
+  font-size: .68rem;
   letter-spacing: .18em;
-  padding: .45rem 1rem;
+  padding: .4rem .9rem;
   border-radius: 3px;
   transform: rotate(-1deg);
-  box-shadow: 0 2px 6px rgba(60,40,20,.3);
   margin-bottom: 1.1rem;
 }
 
@@ -873,13 +905,24 @@ body::after {
 .paso--datapage .field { margin-bottom: .2rem; }
 .paso--datapage label { margin-bottom: .1rem; }
 .paso--datapage input[type="text"],
+.paso--datapage input[type="email"],
+.paso--datapage input[type="tel"],
 .paso--datapage .field__readonly { padding-top: .15rem; padding-bottom: .2rem; }
 .paso--datapage .field--dp input,
 .paso--datapage input {
   border-bottom-style: dotted;
   border-bottom-color: rgba(20,17,13,.55);
 }
-.paso--datapage label { color: var(--tinta); font-weight: 700; opacity: .8; }
+/* La etiqueta es metadato, el valor que escribe la persona es el
+   contenido. Antes ambos iban en DIN Black al mismo peso visual, así
+   que la jerarquía quedaba plana; se baja el tamaño y la opacidad de
+   la etiqueta para que el dato mande. */
+.paso--datapage label {
+  color: var(--tinta);
+  opacity: .6;
+  font-size: .62rem;
+  letter-spacing: .14em;
+}
 .paso--datapage .overline {
   display: flex;
   align-items: flex-start;
@@ -1000,23 +1043,29 @@ label { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; mar
 label em { text-transform: none; letter-spacing: 0; opacity: .8; font-style: normal; }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="tel"] {
   font-family: var(--font-mono);
-  font-size: .95rem;
+  font-size: 1rem; /* 16px: evita el zoom automático de iOS al enfocar */
   padding: .3rem .1rem .35rem;
   border: 0;
   border-bottom: 1.5px solid rgba(20,17,13,.3);
   background: transparent;
   color: var(--tinta);
   border-radius: 0;
+  appearance: none;
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
 input[type="text"]:focus,
-input[type="email"]:focus {
+input[type="email"]:focus,
+input[type="tel"]:focus {
   outline: none;
   border-bottom-color: var(--rojo);
   box-shadow: 0 1.5px 0 0 var(--rojo);
 }
+/* El placeholder por defecto del navegador es un gris azulado fuera de
+   paleta; se lleva al marrón tinta de la marca. */
+input::placeholder { color: rgba(20,17,13,.38); opacity: 1; }
 input.invalid { border-bottom-color: var(--rojo); }
 
 .field--codigo {
@@ -1095,7 +1144,6 @@ input.invalid { border-bottom-color: var(--rojo); }
   opacity: 0;
   pointer-events: none;
   mix-blend-mode: multiply;
-  filter: url(#inkstamp);
 }
 .sello-stamp img {
   display: block;
@@ -1144,17 +1192,19 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .confirmacion.is-visible { opacity: 1; transform: translateY(0); }
 
+/* Sello de la pantalla de confirmación: es el remate emocional del
+   flujo, tiene que verse. El filtro #inkstamp a este tamaño no leía
+   como textura de tinta sino que borraba el sello entero, así que se
+   quita y se sostiene el efecto solo con el multiply. */
 .sello {
   display: inline-block;
   transform: rotate(-6deg);
-  margin-bottom: 1.5rem;
-  opacity: .9;
-  filter: url(#inkstamp);
+  margin-bottom: 1.75rem;
   mix-blend-mode: multiply;
 }
 .sello img {
   display: block;
-  width: 5.6rem;
+  width: clamp(7rem, 22vw, 9rem);
   height: auto;
 }
 
