@@ -42,6 +42,37 @@
   --font-mono: "DIN Pro Black", Arial, sans-serif;
   --font-serif: "Discota", "Arial Narrow", sans-serif;
 
+  /* ---- Escala tipográfica ----
+     Había 17 tamaños distintos solo entre .55 y 1.3rem, elegidos uno a
+     uno. Estos seis peldaños cubren todo el texto que no es titular, con
+     saltos suficientes para que dos niveles contiguos se distingan de
+     verdad (si dos tamaños difieren en 1px, no son dos niveles: son
+     ruido). */
+  --t-micro:     .625rem;   /* letra chica legal, MRZ */
+  --t-etiqueta:  .6875rem;  /* rótulos, overlines, versalitas */
+  --t-apoyo:     .8125rem;  /* pies, notas */
+  --t-cuerpo:    .9375rem;  /* texto corrido */
+  --t-destacado: 1.0625rem; /* entradilla, botones */
+  --t-subtitulo: 1.25rem;
+
+  /* ---- Tracking ----
+     El principio: el espaciado va al revés del tamaño. La letra chica en
+     mayúsculas necesita aire para no empastarse; el titular grande
+     necesita cerrarse, porque a ese cuerpo el espacio entre letras se
+     agranda ópticamente y el conjunto se desarma. */
+  --track-micro:    .18em;
+  --track-etiqueta: .12em;
+  --track-cuerpo:   .01em;
+  --track-titulo:   -.015em;
+
+  /* ---- Interlineado ----
+     También inverso al tamaño, y más generoso de lo normal en el cuerpo
+     porque la única fuente de texto disponible es un peso Black: sin
+     aire entre líneas, un 900 se convierte en un muro. */
+  --lh-titulo: .92;
+  --lh-medio:  1.25;
+  --lh-cuerpo: 1.65;
+
   --ease: cubic-bezier(.22,.68,0,1);
 
   /* Sistema de curvas. Un solo --ease para todo aplanaba el
@@ -1662,4 +1693,129 @@ input.invalid { border-bottom-color: var(--rojo); }
   /* Sin animación las barras se quedan altas: el estado "encendido"
      tiene que seguir siendo visible. */
   .ambiente.is-on .ambiente__ondas span { animation: none; height: 12px; }
+}
+
+/* =========================================================
+   JERARQUÍA TIPOGRÁFICA
+   Aplica la escala y el tracking definidos arriba. Va al
+   final para prevalecer sobre los valores sueltos previos
+   sin tener que reescribir cada regla histórica.
+   ========================================================= */
+
+/* ---- Titulares ----
+   Cierre del tracking y del interlineado: a estos cuerpos el espacio
+   sobra, no falta. */
+.welcome__title,
+.hero__title,
+.cover-terreno,
+.confirmacion h2 {
+  letter-spacing: var(--track-titulo);
+  line-height: var(--lh-titulo);
+}
+
+/* "A TODO" es la excepción deliberada: el tracking abierto no es un
+   descuido sino el recurso que lo separa del bloque macizo de TERRENO
+   y arma el contraste de la tapa. */
+.cover-atodo { line-height: 1; }
+
+/* ---- Overline / versalitas ----
+   Texto chico en mayúsculas: necesita aire o se empasta. */
+.overline,
+.cover-label,
+.pasaporte__progress-label,
+.topbar__event,
+.topbar__brand {
+  font-size: var(--t-etiqueta);
+  letter-spacing: var(--track-etiqueta);
+  line-height: var(--lh-medio);
+}
+
+/* La overline del cuerpo del pasaporte es un rótulo de sección, no un
+   titular: se le baja el cuerpo y se le sube el tracking para que no
+   compita con el dato que anuncia. */
+.pasaporte__body .overline {
+  font-size: var(--t-apoyo);
+  letter-spacing: .06em;
+}
+
+/* ---- Texto corrido ----
+   La única fuente de texto disponible es un peso Black. A 900, el
+   interlineado normal produce un muro: se abre a 1.65 y se recorta el
+   contraste con una opacidad leve, que es lo que devuelve la sensación
+   de "texto" frente a "titular pequeño". */
+.manifiesto__intro,
+.confirmacion p,
+.hero__hint {
+  font-size: var(--t-cuerpo);
+  line-height: var(--lh-cuerpo);
+  letter-spacing: var(--track-cuerpo);
+  max-width: 34ch;              /* medida de lectura: más ancho cansa */
+  margin-inline: auto;
+}
+
+/* ---- Rótulos de campo ----
+   Son metadato: el dato que escribe la persona manda. */
+label {
+  font-size: var(--t-etiqueta);
+  letter-spacing: var(--track-etiqueta);
+}
+
+/* ---- Letra chica ---- */
+.pasaporte__fineprint,
+.pasaporte__mrz {
+  font-size: var(--t-micro);
+  letter-spacing: var(--track-micro);
+}
+.pasaporte__mrz { letter-spacing: .02em; } /* el MRZ imita ancho fijo */
+
+/* ---- Botones ----
+   Un botón es una orden: cuerpo estable y tracking corto. Antes iban de
+   1rem a 1.15rem sin criterio. */
+.cover-cta,
+.welcome__cta,
+.btn-sellar,
+.btn-paso {
+  font-size: var(--t-destacado);
+  letter-spacing: .04em;
+  line-height: 1.1;
+}
+
+/* ---- Números del pasaporte ----
+   El serial y las fechas son datos de documento: tabulares y con aire,
+   como en un pasaporte real. */
+.pasaporte__serial,
+.confirmacion__datos dd,
+.field__readonly {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .06em;
+}
+
+/* ---- Titular de confirmación en dos alturas ----
+   Antes era una sola línea larga ("¡Estás listo para la aventura a todo
+   terreno! 🤘") que a este cuerpo se partía en dos renglones apretados y
+   dejaba el emoji solo en el segundo, huérfano. Partirlo en grito +
+   bajada da la jerarquía que la línea única no tenía: primero la
+   emoción, después el dato. */
+.confirmacion h2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 1.25rem;
+}
+.confirmacion__grito {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 12vw, 4rem);
+  line-height: .92;
+  letter-spacing: var(--track-titulo);
+  color: var(--tinta);
+}
+.confirmacion__bajada {
+  font-family: var(--font-mono);
+  font-size: var(--t-apoyo);
+  letter-spacing: var(--track-etiqueta);
+  text-transform: uppercase;
+  line-height: 1.4;
+  max-width: 22ch;
+  color: var(--rojo-dark);
 }
