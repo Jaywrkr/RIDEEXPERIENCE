@@ -74,7 +74,11 @@ function initParallaxMontanas() {
   function pintar() {
     pendiente = false;
     capas.forEach(({ el, factor }) => {
-      el.style.transform = `translate3d(${(px * factor).toFixed(2)}px, ${(py * factor * 0.4).toFixed(2)}px, 0)`;
+      // Se escriben custom properties, no transform: el CSS compone el
+      // desplazamiento con el escalado que da margen a las capas, y una
+      // segunda declaración de transform pisaría a la otra.
+      el.style.setProperty('--px', `${(px * factor).toFixed(2)}px`);
+      el.style.setProperty('--py', `${(py * factor * 0.4).toFixed(2)}px`);
     });
   }
 
@@ -91,7 +95,8 @@ function initParallaxMontanas() {
   marco.addEventListener('mouseleave', () => {
     capas.forEach(({ el }) => {
       el.style.transition = 'transform .7s var(--ease-salida)';
-      el.style.transform = 'translate3d(0,0,0)';
+      el.style.setProperty('--px', '0px');
+      el.style.setProperty('--py', '0px');
       setTimeout(() => { el.style.transition = ''; }, 700);
     });
   });

@@ -270,7 +270,10 @@ html.no-scroll { overflow: hidden; height: 100%; }
   margin: 0 0 1.4rem;
   text-shadow: 0 2px 18px rgba(0,0,0,.5);
 }
-.welcome__title span { color: var(--rojo-sobre-oscuro); }
+/* Regla retirada: apuntaba al <span> que envolvía "A TODO TERRENO"
+   cuando el título era texto. Ahora el wordmark es una imagen y el único
+   span que queda es "BIENVENIDO", al que esta regla le ganaba en
+   especificidad y lo pintaba de rojo. */
 
 .welcome__hint {
   font-family: var(--font-mono);
@@ -844,6 +847,21 @@ body::after {
   width: 100%; height: 46%;
   pointer-events: none;
   overflow: hidden;
+}
+/* Las capas conservan su caja (100% del contenedor, que es lo que da la
+   silueta correcta de dos picos) y se agrandan con un escalado del 12%.
+   El parallax las desplaza hasta 30px: sin ese excedente, al moverse
+   hacia un lado el borde de la imagen se despegaba del borde de la tapa
+   y dejaba ver el fondo. El overflow del contenedor recorta lo que sobra.
+   Escala y desplazamiento se componen en el mismo transform, porque una
+   segunda declaración de transform pisaría a la anterior: por eso el
+   parallax escribe --px/--py en vez de transform. */
+.cover-dunes img,
+.cover-dunes__ruta {
+  --px: 0px;
+  --py: 0px;
+  transform: translate3d(var(--px), var(--py), 0) scale(1.12);
+  transform-origin: bottom center;
 }
 .cover-dunes img {
   position: absolute; left: 0; right: 0; bottom: 0;
@@ -1494,13 +1512,16 @@ input.invalid { border-bottom-color: var(--rojo); }
   .js-motion .cover-dunes__front { animation: respirar 13s ease-in-out 2.4s infinite; }
   .js-motion .cover-dunes__back  { animation: respirar-lento 17s ease-in-out 2.4s infinite; }
 }
+/* Llevan el mismo scale(1.12) que la regla base: una animación sobre
+   transform reemplaza el valor entero, así que omitir la escala aquí
+   haría que las capas encogieran al arrancar la respiración. */
 @keyframes respirar {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50%      { transform: translate3d(-1.1%, -.7%, 0); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.12); }
+  50%      { transform: translate3d(-1.1%, -.7%, 0) scale(1.12); }
 }
 @keyframes respirar-lento {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50%      { transform: translate3d(1.4%, -.5%, 0); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.12); }
+  50%      { transform: translate3d(1.4%, -.5%, 0) scale(1.12); }
 }
 
 /* ---- Botones: barrido de luz + onda de tinta ---- */
@@ -1846,3 +1867,49 @@ input.is-ok + .field__error::after {
   right: .1rem;
   bottom: 1.35em;
 }
+
+/* =========================================================
+   WORDMARK OFICIAL
+   "A TODO TERRENO" deja de componerse con la fuente y pasa
+   a ser el lockup real de marca. Una fuente aproxima; el
+   wordmark tiene el peso, el kerning y el desgaste exactos
+   del original, e iguales en todos los navegadores.
+   ========================================================= */
+
+.cover-wordmark {
+  display: block;
+  width: min(78%, 17rem);
+  height: auto;
+  margin: 0 auto;
+  /* Grabado en seco sobre el papel kraft: el relieve va al contorno de
+     la imagen, no a una caja rectangular. */
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,.32))
+    drop-shadow(0 -1px 1px rgba(20,17,13,.28));
+}
+
+.welcome__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  margin: 0 0 1.6rem;
+}
+.welcome__bienvenido {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  letter-spacing: .16em;
+  text-indent: .16em;
+  line-height: 1;
+  color: var(--arena-300);
+}
+.welcome__wordmark {
+  display: block;
+  width: min(88%, 24rem);
+  height: auto;
+  filter: drop-shadow(0 3px 16px rgba(0,0,0,.55));
+}
+
+/* Las reglas de texto del título de tapa quedan sin uso al pasar a
+   imagen; se anulan aquí para que no dejen restos de estilo. */
+.cover-title { display: block; text-shadow: none; }
