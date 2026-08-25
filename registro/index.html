@@ -21,9 +21,6 @@
 <meta name="twitter:description" content="Pasaporte de aventura para la Convención Nacional Shineray 2026. El destino es sorpresa.">
 <meta name="twitter:image" content="assets/og-image.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-state="invitado">
@@ -58,21 +55,28 @@
   <canvas id="welcomeDustCanvas" class="welcome__canvas" aria-hidden="true"></canvas>
 
   <div class="welcome__content">
-    <div class="welcome__brand" aria-hidden="true">
-      <svg viewBox="0 0 48 48" width="30" height="30" role="presentation">
-        <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/>
-        <path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      </svg>
-      <span>SHINERAY</span>
-    </div>
+    <img class="welcome__brand" src="assets/brand/shineray-shm-logo.png" alt="Shineray SHM" width="208" height="36" loading="eager">
     <p class="overline">CONVENCIÓN NACIONAL 2026</p>
-    <h1 class="welcome__title" id="welcomeTitle">BIENVENIDO<br><span>A TODO TERRENO</span></h1>
+    <h1 class="welcome__title" id="welcomeTitle">
+      <span class="welcome__bienvenido">BIENVENIDO</span>
+      <img class="welcome__wordmark" src="assets/brand/wordmark-atodoterreno-claro.png"
+           alt="A Todo Terreno" width="1996" height="780">
+    </h1>
     <p class="welcome__hint">Toca para que el polvo se asiente</p>
     <button class="welcome__cta" id="welcomeCta" type="button">ENTRAR →</button>
   </div>
 </div>
 
 <a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
+
+<!-- Sonido ambiente. Nace oculto y lo revela ambiente.js solo si el
+     navegador soporta Web Audio, para no ofrecer un control muerto. -->
+<button class="ambiente" id="ambienteToggle" type="button" aria-pressed="false"
+        aria-label="Activar sonido ambiente" hidden>
+  <span class="ambiente__ondas" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </span>
+</button>
 
 <div class="topbar" id="topbar" aria-hidden="true" hidden>
   <span class="topbar__wordmark"><em>A TODO</em> TERRENO</span>
@@ -86,13 +90,7 @@
   <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
   <div class="hero__content">
     <p class="overline">CONVENCIÓN NACIONAL SHINERAY</p>
-    <div class="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
-        <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/>
-        <path d="M14 14 L34 34 M34 14 L14 34" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-      <span>SHINERAY</span>
-    </div>
+    <img class="brand-mark" src="assets/brand/shineray-shm-logo.png" alt="Shineray SHM" width="220" height="38" loading="eager">
     <h1 class="hero__title">A TODO<br>TERRENO</h1>
     <p class="hero__sub">CONVENCIÓN NACIONAL 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
     <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Baja y empieza a entender por qué.</p>
@@ -188,36 +186,17 @@
         <div class="paso paso--cover" id="pasaporteCover" data-step-panel="1">
           <span class="pasaporte__cover-grain" aria-hidden="true"></span>
 
-          <svg class="cover-dunes" viewBox="0 0 300 170" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <pattern id="ht-front" width="5" height="5" patternUnits="userSpaceOnUse">
-                <circle cx="2.5" cy="2.5" r="1.9" fill="#b23020"/>
-              </pattern>
-              <pattern id="ht-back" width="7.5" height="7.5" patternUnits="userSpaceOnUse">
-                <circle cx="3.75" cy="3.75" r="1.6" fill="#b23020"/>
-              </pattern>
-            </defs>
-            <path d="M0,68 Q45,30 95,52 Q140,70 180,44 Q235,12 300,40 L300,170 L0,170 Z" fill="url(#ht-back)" opacity=".8"/>
-            <path d="M0,110 Q50,66 105,92 Q150,112 200,84 Q250,58 300,80 L300,170 L0,170 Z" fill="url(#ht-front)"/>
-            <path d="M96,172 C 130,150 96,132 138,118"
-                  fill="none" stroke="#cbb494" stroke-width="17" stroke-linecap="round"/>
-            <path d="M132,120 C 168,108 152,94 196,84"
-                  fill="none" stroke="#cbb494" stroke-width="11" stroke-linecap="round"/>
-            <path d="M190,86 C 226,78 218,68 252,60"
-                  fill="none" stroke="#cbb494" stroke-width="7" stroke-linecap="round"/>
-          </svg>
-
-          <div class="cover-brand" aria-hidden="true">
-            <svg viewBox="0 0 48 48" width="34" height="34" role="presentation">
-              <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/>
-              <path d="M15 15 L33 33 M33 15 L15 33" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-            </svg>
-            <span>Shineray</span>
+          <div class="cover-dunes" aria-hidden="true">
+            <img class="cover-dunes__back" src="assets/brand/montanas-halftone-alt.png" alt="">
+            <img class="cover-dunes__front" src="assets/brand/montanas-halftone.png" alt="">
+            <span class="cover-dunes__ruta"></span>
           </div>
 
+          <img class="cover-brand" src="assets/brand/shineray-shm-logo.png" alt="Shineray SHM" width="180" height="31">
+
           <div class="cover-title">
-            <span class="cover-atodo">A TODO</span>
-            <span class="cover-terreno">TERRENO</span>
+            <img class="cover-wordmark" src="assets/brand/wordmark-atodoterreno.png"
+                 alt="A Todo Terreno" width="1996" height="780">
           </div>
 
           <button type="button" class="cover-cta" id="coverCta">Regístrate aquí</button>
@@ -338,8 +317,8 @@
 
           <!-- Sello de tinta que cae sobre la hoja al confirmar -->
           <span class="sello-stamp" id="selloStamp" aria-hidden="true">
-            SELLADO
-            <small>A TODO TERRENO · 2026</small>
+            <img src="assets/brand/sello-aventura-garantizada.png" alt="" width="140" height="140">
+            <small>SELLADO · 2026</small>
           </span>
         </div>
 
@@ -361,9 +340,12 @@
 
 <!-- ============ CONFIRMACIÓN ============ -->
 <section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
-  <div class="sello" aria-hidden="true">SELLADO</div>
-  <h2 id="confTitulo">¡Estás listo para la aventura a todo terreno! 🤘</h2>
-  <p>Tu pasaporte quedó abierto. Bienvenido al convoy que sale el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
+  <div class="sello" aria-hidden="true"><img src="assets/brand/sello-aventura-garantizada.png" alt="" width="90" height="90"></div>
+  <h2 id="confTitulo">
+    <span class="confirmacion__grito">¡Estás listo!</span>
+    <span class="confirmacion__bajada">Tu lugar quedó sellado</span>
+  </h2>
+  <p>Sales con el convoy el 25 de septiembre. El destino, lo sabrás cuando llegues.</p>
   <dl class="confirmacion__datos">
     <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
   </dl>

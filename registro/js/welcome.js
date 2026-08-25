@@ -61,11 +61,16 @@ function burstDust(canvas) {
   });
 }
 
-export function initWelcome() {
+export function initWelcome({ onDismissed } = {}) {
   const overlay = document.getElementById('welcome');
   const cta = document.getElementById('welcomeCta');
   const canvas = document.getElementById('welcomeDustCanvas');
-  if (!overlay || !cta) return;
+  if (!overlay || !cta) {
+    // Sin overlay no hay nada que disipar, pero la tapa igual tiene que
+    // entrar: si no, se quedaría oculta esperando una señal que no llega.
+    onDismissed?.();
+    return;
+  }
 
   document.documentElement.classList.add('no-scroll');
   cta.focus({ preventScroll: true });
@@ -85,6 +90,7 @@ export function initWelcome() {
 
     overlay.hidden = true;
     document.documentElement.classList.remove('no-scroll');
+    onDismissed?.();
   }
 
   cta.addEventListener('click', (event) => {

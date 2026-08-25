@@ -1,4 +1,9 @@
-const CACHE = 'atodoterreno-registro-v1';
+// IMPORTANTE: subir este número en cada despliegue que cambie CSS/JS.
+// El service worker sirve primero lo que tiene cacheado, así que sin
+// cambiar el nombre de la caché los visitantes que ya entraron una vez
+// seguirían viendo la versión vieja del sitio aunque se despliegue una
+// nueva. El `activate` de más abajo borra las cachés con otro nombre.
+const CACHE = 'atodoterreno-registro-v2';
 const SHELL = [
   './',
   './index.html',
@@ -8,7 +13,10 @@ const SHELL = [
   './js/config.js',
   './js/api.js',
   './js/main.js',
+  './js/motion.js',
+  './js/ambiente.js',
   './js/passport.js',
+  './js/validacion.js',
   './js/reveal.js',
   './js/welcome.js',
   './js/countdown.js',
@@ -17,7 +25,19 @@ const SHELL = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((cache) =>
+      // Se cachea archivo por archivo en vez de con addAll: addAll es
+      // atomico, asi que una sola ruta equivocada en SHELL abortaria la
+      // instalacion entera y dejaria el sitio sin service worker. Asi,
+      // lo que exista se cachea y lo que falte solo se pierde offline.
+      Promise.all(
+        SHELL.map((ruta) =>
+          cache.add(ruta).catch(() => {
+            console.warn('[sw] no se pudo cachear', ruta);
+          })
+        )
+      )
+    ).then(() => self.skipWaiting())
   );
 });
 

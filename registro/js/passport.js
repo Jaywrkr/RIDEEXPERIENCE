@@ -1,3 +1,6 @@
+import { initValidacion } from './validacion.js';
+import { golpeDeSello } from './ambiente.js';
+
 const TOTAL_STEPS = 3;
 
 // Genera un número de pasaporte decorativo para esta sesión (no es un
@@ -34,32 +37,20 @@ function generateMrz({ nombre, serial }) {
   return `${line1}\n${line2}`;
 }
 
-function validateStep2(form) {
-  let ok = true;
-  const required = ['cedula', 'nombre', 'telefono', 'email'];
-  required.forEach((name) => {
-    const input = form.elements[name];
-    if (!input) return;
-    const errorEl = document.getElementById(`err-${name}`);
-    const value = input.value.trim();
-    if (!value) {
-      ok = false;
-      input.classList.add('invalid');
-      if (errorEl) errorEl.textContent = 'Este dato es necesario para el pasaporte.';
-    } else {
-      input.classList.remove('invalid');
-      if (errorEl) errorEl.textContent = '';
-    }
-  });
-  return ok;
-}
+// La validacion del paso 2 vive en validacion.js: antes aqui solo se
+// comprobaba que los campos no estuvieran vacios, asi que un error de
+// formato (una cedula con un digito mal) no aparecia hasta el paso 3, al
+// pulsar el boton final, y sin decir cual de los cuatro campos fallaba.
 
 // Guarda un borrador de los datos del titular para que un refresh a mitad
 // del formulario no borre lo ya escrito. sessionStorage puede no estar
 // disponible (modo privado de Safari, políticas de cookies, etc.): si
 // falla, el pasaporte sigue funcionando, simplemente sin recordar nada.
 const DRAFT_KEY = 'atr-passport-draft';
-const DRAFT_FIELDS = ['cedula', 'nombre', 'telefono'];
+// Los cuatro campos del formulario. El correo faltaba, así que un refresh
+// a mitad del formulario conservaba cédula, nombre y teléfono pero
+// obligaba a reescribir el correo.
+const DRAFT_FIELDS = ['cedula', 'nombre', 'telefono', 'email'];
 
 function saveDraft(form) {
   try {
@@ -230,6 +221,8 @@ export function initPassportForm({ onSealed }) {
   // mejor no arrancar nada a que reviente a mitad de una interacción.
   if (!form || !navPrev || !navNext) return;
 
+  const validacion = initValidacion(form);
+
   restoreDraft(form);
   DRAFT_FIELDS.forEach((name) => {
     const input = form.elements[name];
@@ -327,7 +320,7 @@ export function initPassportForm({ onSealed }) {
   }
 
   function goNext() {
-    if (currentStep === 2 && !validateStep2(form)) return;
+    if (currentStep === 2 && !validacion.validarTodo()) return;
     if (currentStep < TOTAL_STEPS) showStep(currentStep + 1);
   }
 
@@ -382,6 +375,7 @@ export function initPassportForm({ onSealed }) {
     const stamp = document.getElementById('selloStamp');
     if (stamp) stamp.classList.add('is-landed');
     if (card) setTimeout(() => card.classList.add('is-stamped'), 250);
+    golpeDeSello();
 
     await new Promise((r) => setTimeout(r, reduceMotion ? 400 : 1600));
 

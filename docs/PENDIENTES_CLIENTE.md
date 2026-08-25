@@ -22,17 +22,25 @@
   se puede llevar al tono de marca de Shineray (hay copy ya validado
   para esto en `shineray-deck/index.html`, slide "El mensaje real").
 
-## Decisión pendiente: el pasaporte viejo (código de acceso)
+## Vercel: limpieza de proyectos (2026-08-24, resuelto)
 
-- [ ] `rideexperience.vercel.app` sigue sirviendo el sistema **anterior**
-  (pasaporte con código de acceso pre-generado, no cédula). Ya no es el
-  que usa el cliente — lo reemplazó `atodoterreno.vercel.app` — pero
-  sigue activo con su propia base de datos. Decidir si:
-  - Se deja como está (no molesta, pero es infra sin uso real).
-  - Se pausa el proyecto en Vercel (reversible, no borra nada).
-  - Se retira el código de la raíz del repo (esto sí requiere
-    confirmación tuya explícita antes de tocarlo — esa base puede
-    tener inscripciones reales de gente que ya usó un código).
+Había 5 proyectos de Vercel del repo, solo 3 hacen algo real. Los
+otros 2 quedaron **pausados** (reversible, no se borró código ni base
+de datos):
+- ✅ `rideexperience-registro` — duplicado de `atodoterreno`, nunca se
+  usó.
+- ✅ `rideexperience` — el pasaporte viejo con código de acceso. Sigue
+  pendiente si en algún momento querés borrar directamente el código
+  de la raíz del repo (`index.html`, `api/`, `lib/`, `db/`) — eso sí
+  necesita tu confirmación explícita porque esa base puede tener
+  inscripciones reales de gente que ya usó un código.
+
+- [ ] **Ignored Build Step** en los 3 proyectos que siguen activos
+  (`atodoterreno`, `rideexperience-admin`, `rideexperience-api`) —
+  para que ningún push dispare un redeploy solo. Es manual, no se
+  puede por API: cada proyecto → Settings → Git → "Ignored Build Step"
+  → `exit 0` → Save. Después, para deployar algo puntual: botón
+  "Redeploy" en el dashboard.
 
 ## Cierre
 
