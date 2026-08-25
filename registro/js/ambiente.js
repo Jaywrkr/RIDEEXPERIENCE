@@ -179,6 +179,68 @@ export function initAmbiente() {
 }
 
 /**
+ * El golpe del sello: vibración corta en el móvil y un "tunc" grave.
+ *
+ * La vibración es el detalle que más suma aquí — el dispositivo principal
+ * es el teléfono (se llega escaneando un QR) y sentir el sello en la mano
+ * convierte un envío de formulario en un gesto físico. Es un solo pulso
+ * corto, no un patrón largo: vibrar de más molesta.
+ *
+ * El sonido solo suena si la persona encendió el ambiente. Sonar sin que
+ * lo haya pedido, aunque sea un golpe puntual, es exactamente lo que hace
+ * que la gente silencie la pestaña.
+ */
+export function golpeDeSello() {
+  try {
+    navigator.vibrate?.(18);
+  } catch {
+    // Sin soporte de vibración no pasa nada: es un extra, no el efecto.
+  }
+
+  if (!sonando || !ctx || ctx.state !== 'running') return;
+
+  const t = ctx.currentTime;
+
+  // Cuerpo del golpe: una senoide grave que cae de tono, que es como
+  // suena algo macizo al impactar.
+  const cuerpo = ctx.createOscillator();
+  cuerpo.type = 'sine';
+  cuerpo.frequency.setValueAtTime(190, t);
+  cuerpo.frequency.exponentialRampToValueAtTime(48, t + 0.16);
+
+  const gCuerpo = ctx.createGain();
+  gCuerpo.gain.setValueAtTime(0.0001, t);
+  gCuerpo.gain.exponentialRampToValueAtTime(0.5, t + 0.008);
+  gCuerpo.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+
+  // Chasquido de la goma contra el papel: un pulso de ruido muy corto.
+  const clic = ctx.createBufferSource();
+  const n = Math.floor(ctx.sampleRate * 0.05);
+  const buf = ctx.createBuffer(1, n, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < n; i += 1) {
+    d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 3;
+  }
+  clic.buffer = buf;
+
+  const filtroClic = ctx.createBiquadFilter();
+  filtroClic.type = 'bandpass';
+  filtroClic.frequency.value = 1500;
+
+  const gClic = ctx.createGain();
+  gClic.gain.value = 0.28;
+
+  // Sale por el destino y no por el master del viento, para que el golpe
+  // no herede el nivel bajo del ambiente ni sus ráfagas.
+  cuerpo.connect(gCuerpo).connect(ctx.destination);
+  clic.connect(filtroClic).connect(gClic).connect(ctx.destination);
+
+  cuerpo.start(t);
+  cuerpo.stop(t + 0.3);
+  clic.start(t);
+}
+
+/**
  * Muestra el control. Se llama al cerrarse la bienvenida y no antes: el
  * overlay de bienvenida está por encima y se cierra al hacer clic en
  * cualquier parte, así que un botón debajo sería inalcanzable, y uno por

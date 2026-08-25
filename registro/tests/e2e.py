@@ -15,6 +15,7 @@ import json
 import subprocess
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -138,48 +139,57 @@ def t_campos_obligatorios(page):
           page.inner_text("#err-cedula").strip() != "")
 
 
-def t_cedula_invalida(page):
-    print("\n[ Validación de cédula ]")
-    for cedula, caso in [(CEDULA_MAL_DV, "dígito verificador incorrecto"),
-                         (CEDULA_PROV_MAL, "provincia inexistente")]:
+def t_formato_invalido_no_avanza(page):
+    """Con la validación en el cliente, los datos mal formados ya no llegan
+    al paso 3: se detienen en el campo. Antes esta prueba llegaba a pulsar
+    el botón final, que es justo el recorrido que se quiso eliminar."""
+    print("\n[ Formato inválido: se detiene en el paso 2 ]")
+    casos = [
+        ("cédula con dígito verificador malo", dict(cedula=CEDULA_MAL_DV), "err-cedula"),
+        ("cédula de provincia inexistente", dict(cedula=CEDULA_PROV_MAL), "err-cedula"),
+        ("correo mal formado", dict(email="esto-no-es-un-correo"), "err-email"),
+        ("teléfono demasiado corto", dict(telefono="123"), "err-telefono"),
+    ]
+    for descripcion, campos, id_error in casos:
         reset_api()
         abrir(page)
         ir_a_formulario(page)
-        llenar(page, cedula=cedula)
-        avanzar_a_revision(page)
-        page.click(".btn-sellar")
-        page.wait_for_timeout(1200)
-        err = page.inner_text("#err-sellar").strip()
-        check(f"rechaza cédula con {caso}", err != "" and len(registrados()) == 0,
-              f"error='{err}' guardados={len(registrados())}")
-        check(f"el botón vuelve a habilitarse tras el error ({caso})",
-              not page.is_disabled(".btn-sellar"))
+        llenar(page, **campos)
+        page.click("text=Abrir pasaporte")
+        page.wait_for_timeout(500)
+        check(f"no avanza con {descripcion}", page.is_visible("#cedula"))
+        check(f"señala el campo con {descripcion}",
+              page.inner_text(f"#{id_error}").strip() != "")
+        check(f"no registra nada con {descripcion}", len(registrados()) == 0)
 
 
-def t_correo_invalido(page):
-    print("\n[ Validación de correo ]")
+def t_api_rechaza_formato_invalido():
+    """El servidor es la autoridad final: aunque el cliente valide, la API
+    tiene que rechazar por su cuenta lo que llegue mal formado (alguien
+    puede llamarla directamente, sin pasar por el formulario)."""
+    print("\n[ La API rechaza formatos inválidos por su cuenta ]")
     reset_api()
-    abrir(page)
-    ir_a_formulario(page)
-    llenar(page, email="esto-no-es-un-correo")
-    avanzar_a_revision(page)
-    page.click(".btn-sellar")
-    page.wait_for_timeout(1200)
-    check("rechaza un correo mal formado",
-          page.inner_text("#err-sellar").strip() != "" and len(registrados()) == 0)
-
-
-def t_telefono_invalido(page):
-    print("\n[ Validación de teléfono ]")
-    reset_api()
-    abrir(page)
-    ir_a_formulario(page)
-    llenar(page, telefono="123")
-    avanzar_a_revision(page)
-    page.click(".btn-sellar")
-    page.wait_for_timeout(1200)
-    check("rechaza un teléfono demasiado corto",
-          page.inner_text("#err-sellar").strip() != "" and len(registrados()) == 0)
+    base = dict(cedula=CEDULA_OK, nombre="Jay Jaramillo",
+                correo="jay@ejemplo.com", telefono="0991234567")
+    casos = [
+        ("cédula con dígito verificador malo", dict(cedula=CEDULA_MAL_DV)),
+        ("cédula de provincia inexistente", dict(cedula=CEDULA_PROV_MAL)),
+        ("correo mal formado", dict(correo="no-es-correo")),
+        ("teléfono demasiado corto", dict(telefono="123")),
+        ("nombre demasiado corto", dict(nombre="Jo")),
+    ]
+    for descripcion, cambio in casos:
+        cuerpo = json.dumps({**base, **cambio}).encode()
+        req = urllib.request.Request(
+            f"{API}/eventos/11111111-2222-3333-4444-555555555555/asistentes",
+            data=cuerpo, method="POST",
+            headers={"Content-Type": "application/json"})
+        try:
+            urllib.request.urlopen(req, timeout=5)
+            check(f"la API rechaza {descripcion}", False, "respondió 2xx")
+        except urllib.error.HTTPError as e:
+            check(f"la API rechaza {descripcion}", e.code == 400, f"HTTP {e.code}")
+    check("ninguno de los inválidos quedó guardado", len(registrados()) == 0)
 
 
 def t_cedula_duplicada(page):
@@ -285,9 +295,60 @@ def t_sin_doble_envio(page):
           f"guardados={len(registrados())}")
 
 
-PRUEBAS = [t_flujo_feliz, t_campos_obligatorios, t_cedula_invalida, t_correo_invalido,
-           t_telefono_invalido, t_cedula_duplicada, t_servidor_caido, t_borrador,
-           t_navegacion, t_sin_doble_envio]
+def t_validacion_en_el_campo(page):
+    """El error de formato debe aparecer junto al campo y en el momento,
+    no dos pasos después al pulsar el botón final."""
+    print("\n[ Validación en el campo ]")
+    reset_api()
+    abrir(page)
+    ir_a_formulario(page)
+
+    page.fill("#cedula", CEDULA_MAL_DV)
+    page.click("#nombre")
+    page.wait_for_timeout(250)
+    check("avisa de la cédula inválida al salir del campo",
+          page.inner_text("#err-cedula").strip() != "",
+          "el error no apareció en el paso 2")
+
+    page.fill("#cedula", "17123")
+    page.click("#nombre")
+    page.wait_for_timeout(200)
+    check("dice cuántos dígitos faltan",
+          "10" in page.inner_text("#err-cedula"), page.inner_text("#err-cedula"))
+
+    page.fill("#cedula", CEDULA_OK)
+    page.wait_for_timeout(200)
+    check("el error se limpia al corregir, sin salir del campo",
+          page.inner_text("#err-cedula").strip() == "")
+    check("marca el campo como correcto",
+          page.eval_on_selector("#cedula", "e=>e.classList.contains('is-ok')"))
+
+    page.fill("#telefono", "123")
+    page.click("#email")
+    page.wait_for_timeout(200)
+    check("avisa del teléfono mal formado en el campo",
+          page.inner_text("#err-telefono").strip() != "")
+
+    page.fill("#email", "no-es-correo")
+    page.click("#nombre")
+    page.wait_for_timeout(200)
+    check("avisa del correo mal formado en el campo",
+          page.inner_text("#err-email").strip() != "")
+
+    page.fill("#nombre", "")
+    page.click("text=Abrir pasaporte")
+    page.wait_for_timeout(400)
+    check("no deja avanzar con errores de formato", page.is_visible("#cedula"))
+    check("enfoca el primer campo con problema",
+          page.evaluate("()=>document.activeElement.id") == "nombre",
+          page.evaluate("()=>document.activeElement.id"))
+
+
+# Las pruebas que no necesitan navegador reciben None y lo ignoran.
+PRUEBAS = [t_flujo_feliz, t_campos_obligatorios, t_validacion_en_el_campo,
+           t_formato_invalido_no_avanza, t_cedula_duplicada, t_servidor_caido,
+           t_borrador, t_navegacion, t_sin_doble_envio]
+PRUEBAS_SIN_NAVEGADOR = [t_api_rechaza_formato_invalido]
 
 
 def main():
@@ -332,6 +393,14 @@ def main():
                     check(f"{prueba.__name__} corrió sin excepción", False, repr(e))
 
             navegador.close()
+
+        for prueba in PRUEBAS_SIN_NAVEGADOR:
+            if filtro and filtro not in prueba.__name__:
+                continue
+            try:
+                prueba()
+            except Exception as e:
+                check(f"{prueba.__name__} corrió sin excepción", False, repr(e))
     finally:
         sitio.terminate()
         api.terminate()
