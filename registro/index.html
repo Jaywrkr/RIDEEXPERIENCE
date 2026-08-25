@@ -62,8 +62,30 @@
       <img class="welcome__wordmark" src="assets/brand/wordmark-atodoterreno-claro.png"
            alt="A Todo Terreno" width="1996" height="780">
     </h1>
-    <p class="welcome__hint">Toca para que el polvo se asiente</p>
-    <button class="welcome__cta" id="welcomeCta" type="button">ENTRAR →</button>
+    <p class="welcome__hint">
+      <span class="welcome__auricular" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+             stroke-width="1.9" stroke-linecap="round">
+          <path d="M4 14v-2a8 8 0 0 1 16 0v2"/>
+          <rect x="2.5" y="13.5" width="4" height="7" rx="1.6" fill="currentColor" stroke="none"/>
+          <rect x="17.5" y="13.5" width="4" height="7" rx="1.6" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      Esta experiencia se vive mejor con sonido
+    </p>
+
+    <!-- Dos entradas en vez de una recomendacion pasiva: el navegador
+         exige un gesto para poder reproducir audio, asi que el propio
+         clic de entrada hace de permiso. Quien no quiera sonido tiene la
+         puerta de al lado, sin penalizacion. -->
+    <div class="welcome__acciones">
+      <button class="welcome__cta" id="welcomeCtaSonido" type="button">
+        ENTRAR CON SONIDO →
+      </button>
+      <button class="welcome__cta welcome__cta--mudo" id="welcomeCta" type="button">
+        Entrar en silencio
+      </button>
+    </div>
   </div>
 </div>
 

@@ -198,44 +198,66 @@ html.no-scroll { overflow: hidden; height: 100%; }
   filter: blur(3.5rem);
   opacity: .55;
   will-change: transform, opacity;
-  animation: cloud-drift 18s ease-in-out infinite alternate;
+  animation: deriva-1 22s ease-in-out infinite alternate;
 }
 .welcome__cloud--1 {
   width: 34rem; height: 34rem; top: -12%; left: -14%;
   background: radial-gradient(circle, var(--arena-500), transparent 70%);
-  animation-duration: 17s;
+  animation: deriva-1 24s ease-in-out infinite alternate;
 }
 .welcome__cloud--2 {
   width: 26rem; height: 26rem; top: 24%; right: -12%;
   background: radial-gradient(circle, var(--dorado), transparent 70%);
-  animation-duration: 21s; animation-delay: -4s;
+  animation: deriva-2 29s ease-in-out -6s infinite alternate;
 }
 .welcome__cloud--3 {
   width: 30rem; height: 30rem; bottom: -16%; left: 12%;
   background: radial-gradient(circle, var(--rojo), transparent 70%);
   opacity: .4;
-  animation-duration: 19s; animation-delay: -9s;
+  animation: deriva-3 26s ease-in-out -11s infinite alternate;
 }
 .welcome__cloud--4 {
   width: 22rem; height: 22rem; bottom: 2%; right: 8%;
   background: radial-gradient(circle, var(--arena-300), transparent 70%);
-  animation-duration: 23s; animation-delay: -2s;
+  animation: deriva-4 31s ease-in-out -3s infinite alternate;
 }
 .welcome__cloud--5 {
   width: 40rem; height: 40rem; top: 42%; left: 50%;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, var(--arena-300), transparent 70%);
   opacity: .3;
-  animation-name: cloud-drift-center;
-  animation-duration: 27s;
+  animation: deriva-centro 34s ease-in-out infinite alternate;
 }
-@keyframes cloud-drift {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(4%, -3%) scale(1.08); }
+/* Antes las cinco nubes compartian una sola trayectoria de 4% en 17s:
+   un recorrido tan corto y tan lento que no se percibia como movimiento.
+   Ahora cada una tiene su propio camino, su amplitud y su duracion, y
+   pasan por tres puntos en vez de ir y volver en linea recta — que es lo
+   que las hace parecer masas de polvo a la deriva y no cajas
+   desplazandose. */
+@keyframes deriva-1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(26%, 16%) scale(1.22); }
+  100% { transform: translate(8%, -14%) scale(1.05); }
 }
-@keyframes cloud-drift-center {
-  from { transform: translate(-50%, -50%) scale(1); }
-  to { transform: translate(calc(-50% + 3%), calc(-50% - 3%)) scale(1.1); }
+@keyframes deriva-2 {
+  0%   { transform: translate(0, 0) scale(1.05); }
+  50%  { transform: translate(-24%, 20%) scale(1); }
+  100% { transform: translate(-10%, -8%) scale(1.2); }
+}
+@keyframes deriva-3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(22%, -22%) scale(1.25); }
+  100% { transform: translate(-14%, -6%) scale(1.08); }
+}
+@keyframes deriva-4 {
+  0%   { transform: translate(0, 0) scale(1.1); }
+  50%  { transform: translate(-20%, -18%) scale(1); }
+  100% { transform: translate(12%, 10%) scale(1.18); }
+}
+@keyframes deriva-centro {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  50%  { transform: translate(calc(-50% + 12%), calc(-50% - 10%)) scale(1.3); }
+  100% { transform: translate(calc(-50% - 8%), calc(-50% + 8%)) scale(1.1); }
 }
 
 .welcome__canvas {
@@ -2079,4 +2101,40 @@ input.is-ok + .field__error::after {
    demasiado los correos largos. */
 @media (max-width: 22rem) {
   .visado__datos { grid-template-columns: 1fr; }
+}
+
+/* ---- Bienvenida: entrada con o sin sonido ----
+   El navegador solo permite reproducir audio dentro de un gesto del
+   usuario. Ofrecer la eleccion en el propio boton de entrada convierte
+   ese gesto en el permiso, y evita el patron de "activa el sonido" que
+   obliga a un segundo clic despues de haber entrado. */
+.welcome__acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .7rem;
+}
+.welcome__cta--mudo {
+  background: transparent;
+  color: var(--arena-300);
+  border: 1px solid rgba(228,203,152,.4);
+  font-size: var(--t-apoyo);
+  padding: .6rem 1.4rem;
+  box-shadow: none;
+  min-height: 44px;
+}
+.welcome__cta--mudo:hover {
+  background: rgba(228,203,152,.1);
+  border-color: rgba(228,203,152,.7);
+  box-shadow: none;
+}
+.welcome__cta--mudo::before { display: none; }
+
+.welcome__hint {
+  display: inline-flex; align-items: center; gap: .5rem;
+  justify-content: center;
+}
+.welcome__auricular {
+  display: inline-flex;
+  color: var(--arena-500);
 }

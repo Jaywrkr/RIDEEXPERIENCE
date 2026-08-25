@@ -64,6 +64,7 @@ function burstDust(canvas) {
 export function initWelcome({ onDismissed } = {}) {
   const overlay = document.getElementById('welcome');
   const cta = document.getElementById('welcomeCta');
+  const ctaSonido = document.getElementById('welcomeCtaSonido');
   const canvas = document.getElementById('welcomeDustCanvas');
   if (!overlay || !cta) {
     // Sin overlay no hay nada que disipar, pero la tapa igual tiene que
@@ -73,12 +74,15 @@ export function initWelcome({ onDismissed } = {}) {
   }
 
   document.documentElement.classList.add('no-scroll');
-  cta.focus({ preventScroll: true });
+  (ctaSonido || cta).focus({ preventScroll: true });
 
   let dismissing = false;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  async function dismiss() {
+  // conSonido viaja hasta onDismissed para que el modulo de ambiente
+  // pueda arrancar el audio dentro del mismo gesto del usuario, que es
+  // lo unico que el navegador acepta como permiso.
+  async function dismiss(conSonido = false) {
     if (dismissing) return;
     dismissing = true;
 
@@ -90,12 +94,18 @@ export function initWelcome({ onDismissed } = {}) {
 
     overlay.hidden = true;
     document.documentElement.classList.remove('no-scroll');
-    onDismissed?.();
+    onDismissed?.({ conSonido });
   }
 
   cta.addEventListener('click', (event) => {
     event.stopPropagation();
-    dismiss();
+    dismiss(false);
   });
-  overlay.addEventListener('click', dismiss);
+  ctaSonido?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    dismiss(true);
+  });
+  // Un clic en el fondo entra en silencio: no se puede dar por supuesto
+  // que quien toca fuera de los botones quiere audio.
+  overlay.addEventListener('click', () => dismiss(false));
 }

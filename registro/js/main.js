@@ -4,17 +4,18 @@ import { initCountdown } from './countdown.js';
 import { renderClues } from './clues.js';
 import { initWelcome } from './welcome.js';
 import { initMotion, iniciarEntradaTapa } from './motion.js';
-import { initAmbiente, mostrarAmbiente } from './ambiente.js';
+import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
 
 // El movimiento se prepara antes que nada (parte las letras del título,
 // engancha parallax y ondas) y la coreografía de la tapa arranca recién
 // cuando la bienvenida termina de disiparse.
 initMotion();
 initAmbiente();
+initSonidosInterfaz();
 initWelcome({
-  onDismissed: () => {
+  onDismissed: ({ conSonido } = {}) => {
     iniciarEntradaTapa();
-    mostrarAmbiente();
+    mostrarAmbiente({ encender: conSonido });
   },
 });
 initReveal();
