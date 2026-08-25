@@ -20,7 +20,7 @@ function burstDust(canvas) {
   const cx = rect.width / 2;
   const cy = rect.height / 2;
   const colors = ['#d3ac66', '#e4cb98', '#b98a3a', '#c41e1e'];
-  const particles = Array.from({ length: 220 }, () => {
+  const particles = Array.from({ length: 480 }, () => {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 6 + 2;
     return {
@@ -28,7 +28,7 @@ function burstDust(canvas) {
       y: cy + (Math.random() - 0.5) * rect.height * 0.6,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed - 1,
-      size: Math.random() * 4 + 1.5,
+      size: Math.random() * 1.6 + 0.5,
       life: 1,
       color: colors[Math.floor(Math.random() * colors.length)],
     };
