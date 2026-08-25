@@ -175,8 +175,8 @@ function initBookTilt(frame) {
 
 const STEP_CAPTIONS = {
   1: 'Comienza la aventura hacia tu destino.',
-  2: 'Así queda tu nombre en el manifiesto de expedición: no hay vuelta atrás.',
-  3: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
+  2: '',
+  3: 'Revisa tus datos antes de sellar, estas a nada de vivir la experiencia A TODO TERRENO.',
 };
 
 // Dibuja barras de código de barras pseudoaleatorias pero estables para este
@@ -237,7 +237,7 @@ export function initPassportForm({ onSealed }) {
   const fechaEmisionEl = document.getElementById('fechaEmision');
   if (fechaEmisionEl) fechaEmisionEl.textContent = formatFecha(new Date());
   const fechaExpiracionEl = document.getElementById('fechaExpiracion');
-  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(new Date('2026-09-25T09:00:00-05:00'));
+  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(new Date('2026-09-27T09:00:00-05:00'));
 
   initBookTilt(document.querySelector('.pasaporte__pageframe'));
 
@@ -253,7 +253,11 @@ export function initPassportForm({ onSealed }) {
     });
     if (stepLabel) stepLabel.textContent = `PASO ${n} DE ${TOTAL_STEPS}`;
     if (progressEl) progressEl.setAttribute('aria-valuenow', String(n));
-    if (caption) caption.textContent = STEP_CAPTIONS[n] || '';
+    if (caption) {
+      const text = STEP_CAPTIONS[n] || '';
+      caption.textContent = text;
+      caption.hidden = !text;
+    }
 
     navPrev.hidden = n === 1;
     // En la portada el registro se abre con el botón de la propia tapa;

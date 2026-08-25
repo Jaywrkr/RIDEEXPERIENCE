@@ -973,6 +973,19 @@ body::after {
   margin: .4rem auto 0;
 }
 
+.cover-pasaporte {
+  position: relative; z-index: 1;
+  align-self: center;
+  color: var(--tinta);
+  border: 1.5px solid rgba(20,17,13,.55);
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  padding: .35rem .7rem .35rem 1rem;
+  margin: .9rem 0 .3rem;
+}
+
 .cover-title {
   position: relative; z-index: 1;
   display: flex; flex-direction: column; align-items: center;
@@ -1319,9 +1332,21 @@ input.invalid { border-bottom-color: var(--rojo); }
 
 /* ========================= CONFIRMACIÓN ========================= */
 
+/* Contraportada del pasaporte: arena + duna de semitono rojo sangrando
+   desde el borde izquierdo + logo, calcada de la lámina de referencia
+   del cliente. Se reutiliza el mismo activo de semitono de la tapa
+   (montanas-halftone-alt.png), rotado -90° para que la silueta que
+   antes subía desde abajo ahora entre desde la izquierda. */
 .confirmacion {
+  position: relative;
+  overflow: hidden;
   min-height: 100svh;
-  background: var(--arena-100);
+  background:
+    radial-gradient(circle at 66% 46%, rgba(255,255,255,.6), rgba(255,255,255,0) 55%),
+    linear-gradient(rgba(243,234,213,.35), rgba(243,234,213,.35)),
+    url("../assets/brand/textura-arena.jpg");
+  background-size: auto, auto, cover;
+  background-position: center;
   color: var(--tinta);
   text-align: center;
   padding: 4rem 1.5rem 2rem;
@@ -1332,11 +1357,34 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .confirmacion.is-visible { opacity: 1; transform: translateY(0); }
 
+.confirmacion__halftone {
+  position: absolute; z-index: -1;
+  left: 0; top: 0;
+  width: 34%; height: 62%;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+}
+.confirmacion__halftone img {
+  position: absolute; top: 50%; left: 50%;
+  width: 100vh; max-width: none; height: auto;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.confirmacion__logo {
+  position: absolute; z-index: -1;
+  top: 1.5rem; left: 1.5rem;
+  width: clamp(7.5rem, 26vw, 9.5rem);
+  height: auto;
+}
+
 /* Sello de la pantalla de confirmación: es el remate emocional del
    flujo, tiene que verse. El filtro #inkstamp a este tamaño no leía
    como textura de tinta sino que borraba el sello entero, así que se
    quita y se sostiene el efecto solo con el multiply. */
 .sello {
+  position: relative; z-index: 1;
   display: inline-block;
   transform: rotate(-6deg);
   margin-bottom: 1.75rem;
@@ -1344,7 +1392,7 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .sello img {
   display: block;
-  width: clamp(7rem, 22vw, 9rem);
+  width: clamp(8.5rem, 26vw, 11rem);
   height: auto;
 }
 
@@ -1520,6 +1568,7 @@ input.invalid { border-bottom-color: var(--rojo); }
 
 .js-motion .cover-dunes,
 .js-motion .cover-brand,
+.js-motion .cover-pasaporte,
 .js-motion .cover-title .ltr,
 .js-motion .cover-cta,
 .js-motion .cover-label {
@@ -1540,6 +1589,10 @@ input.invalid { border-bottom-color: var(--rojo); }
 @keyframes bajar-logo {
   from { opacity: 0; transform: translateY(-14px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.js-motion.has-entered .cover-pasaporte {
+  animation: bajar-logo .8s var(--ease-salida) .38s forwards;
 }
 
 /* "A TODO": las letras se abren en abanico, una tras otra. */
@@ -1671,6 +1724,7 @@ input.invalid { border-bottom-color: var(--rojo); }
 @media (prefers-reduced-motion: reduce) {
   .js-motion .cover-dunes,
   .js-motion .cover-brand,
+  .js-motion .cover-pasaporte,
   .js-motion .cover-title .ltr,
   .js-motion .cover-cta,
   .js-motion .cover-label {
