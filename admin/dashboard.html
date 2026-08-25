@@ -5,30 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Panel administrativo</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="topbar">
-    <strong>Panel administrativo</strong>
-    <div>
-      <span id="nombre-admin" style="margin-right: 12px; color: var(--text-muted); font-size: 0.9rem;"></span>
+  <header class="topbar">
+    <div class="topbar__marca">
+      <img class="topbar__logo" src="assets/shineray-shm-logo.png" alt="Shineray SHM" width="124" height="21" />
+      <span class="topbar__sep" aria-hidden="true"></span>
+      <span class="topbar__titulo">Panel de organización</span>
+    </div>
+    <div class="topbar__sesion">
+      <span class="topbar__usuario" id="nombre-admin"></span>
       <button class="boton-secundario" id="boton-salir">Cerrar sesión</button>
     </div>
-  </div>
+  </header>
 
   <div class="contenido">
     <div class="fila-cabecera">
-      <h1 style="margin: 0; font-size: 1.3rem;">A Todo Terreno</h1>
+      <div>
+        <p class="cabecera__sub">Convención Nacional 2026</p>
+        <h1 class="cabecera__titulo">A Todo Terreno</h1>
+      </div>
     </div>
 
     <div id="sin-eventos" class="tarjeta oculto">
       <p class="vacio">Todavía no está creado. Completá el formulario de abajo para arrancar.</p>
     </div>
 
+    <!-- Metricas calculadas sobre los asistentes que ya se cargan para la
+         tabla: no cuestan una peticion extra. -->
     <div class="tarjetas-stats" id="bloque-stats">
       <div class="stat">
         <div class="valor" id="stat-total">—</div>
-        <div class="etiqueta">Asistentes registrados</div>
+        <div class="etiqueta">Inscritos en total</div>
+      </div>
+      <div class="stat stat--secundaria">
+        <div class="valor" id="stat-semana">—</div>
+        <div class="etiqueta">En los últimos 7 días</div>
+      </div>
+      <div class="stat stat--secundaria">
+        <div class="valor" id="stat-hoy">—</div>
+        <div class="etiqueta">Hoy</div>
+      </div>
+      <div class="stat stat--secundaria">
+        <div class="valor" id="stat-faltan">—</div>
+        <div class="etiqueta" id="stat-faltan-etiqueta">Días para el evento</div>
       </div>
     </div>
 

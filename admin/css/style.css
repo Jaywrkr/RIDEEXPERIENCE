@@ -1,16 +1,62 @@
+/* =========================================================
+   PANEL ADMINISTRATIVO — A TODO TERRENO / SHINERAY
+   Criterio: esto es una herramienta de trabajo, no la
+   experiencia del pasaporte. Lleva la marca (paleta, tipos,
+   logo) pero manda la claridad y la densidad de datos: sin
+   texturas de papel, sin animaciones teatrales, sin nada
+   que estorbe a quien tiene que leer una lista.
+   ========================================================= */
+
+@font-face {
+  font-family: "DIN Pro Black";
+  src: url("../assets/fonts/DINPro-Black.otf") format("opentype");
+  font-weight: 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Discota";
+  src: url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
-  --bg: #f4f5f7;
+  /* Paleta de marca. El primario pasa del verde generico que habia al
+     rojo Shineray. */
+  --rojo: #c41e1e;
+  --rojo-hover: #a81919;
+  --rojo-suave: #fdeceb;
+  /* Sobre fondo oscuro el rojo de marca da 3.18:1, insuficiente para
+     texto chico; esta variante aclarada es solo para eso. */
+  --rojo-sobre-oscuro: #e84545;
+
+  --tinta: #14110d;
+  --tinta-suave: #241f18;
+
+  --arena-100: #f7f2e7;
+  --arena-300: #e4cb98;
+
+  --bg: #f4f1ea;          /* arena muy clara: cálido, no gris de oficina */
   --surface: #ffffff;
-  --border: #e0e2e7;
-  --text: #1f2430;
-  --text-muted: #6b7280;
-  --primary: #2f5d50;
-  --primary-hover: #24483e;
+  --border: #e3ddd0;
+  --border-fuerte: #cfc6b3;
+  --text: #1f1b16;
+  --text-muted: #7a7267;
+
+  --ok: #1e7e34;
+  --ok-bg: #e8f5ec;
   --danger: #b3261e;
   --danger-bg: #fdecea;
-  --radius: 10px;
-  --shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(31, 27, 22, .06), 0 4px 14px rgba(31, 27, 22, .05);
+  --shadow-alto: 0 8px 30px rgba(31, 27, 22, .12);
+
+  --fuente: "DIN Pro Black", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fuente-display: "Discota", "Arial Narrow", sans-serif;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
 }
 
 * { box-sizing: border-box; }
@@ -20,9 +66,16 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  font-family: var(--fuente);
+  /* DIN Black es un peso 900: sin interlineado generoso, cualquier
+     bloque de texto se convierte en un muro. */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--primary); }
+a { color: var(--rojo); }
+
+/* =============== INGRESO =============== */
 
 .centro-pantalla {
   min-height: 100vh;
@@ -30,6 +83,19 @@ a { color: var(--primary); }
   align-items: center;
   justify-content: center;
   padding: 24px;
+  /* El ingreso sí puede permitirse atmósfera: es una sola pantalla, sin
+     datos que leer. El resto del panel no. */
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgba(196, 30, 30, .16), transparent 70%),
+    radial-gradient(80% 60% at 50% 100%, rgba(228, 203, 152, .12), transparent 70%),
+    var(--tinta);
+}
+
+.login-marca {
+  display: block;
+  width: 168px;
+  height: auto;
+  margin: 0 auto 28px;
 }
 
 .tarjeta {
@@ -37,195 +103,372 @@ a { color: var(--primary); }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 32px;
+  padding: 28px;
 }
 
 .tarjeta-login {
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
+  padding: 34px 32px 30px;
+  box-shadow: var(--shadow-alto);
+  border: 0;
+  /* Filete rojo arriba, como el canto de un documento. */
+  border-top: 4px solid var(--rojo);
 }
 
 .tarjeta-login h1 {
-  font-size: 1.25rem;
-  margin: 0 0 4px;
+  font-family: var(--fuente-display);
+  font-size: 2rem;
+  letter-spacing: .01em;
+  line-height: 1;
+  margin: 0 0 6px;
 }
 
 .tarjeta-login p.subtitulo {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin: 0 0 24px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 26px;
 }
 
-.campo {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+/* =============== CAMPOS =============== */
+
+.campo { margin-bottom: 18px; }
 
 .campo label {
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 .campo input,
 .campo textarea {
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.95rem;
+  width: 100%;
+  /* 16px: por debajo de eso iOS hace zoom automático al enfocar. */
+  font-size: 1rem;
   font-family: inherit;
+  padding: 11px 13px;
+  border: 1.5px solid var(--border-fuerte);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease);
 }
 
 .campo input:focus,
 .campo textarea:focus {
-  outline: 2px solid var(--primary);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--rojo);
+  box-shadow: 0 0 0 3px rgba(196, 30, 30, .14);
 }
 
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 0 16px;
+}
+@media (max-width: 34rem) {
+  .grid-2 { grid-template-columns: 1fr; }
 }
 
-button {
-  cursor: pointer;
+/* =============== BOTONES =============== */
+
+.boton-primario,
+.boton-secundario {
   font-family: inherit;
+  font-size: 0.85rem;
+  letter-spacing: .04em;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  /* 44px: objetivo táctil mínimo recomendado. */
+  min-height: 44px;
+  padding: 11px 20px;
+  transition: background .18s var(--ease), border-color .18s var(--ease),
+              transform .12s var(--ease), box-shadow .18s var(--ease);
 }
 
 .boton-primario {
   width: 100%;
-  padding: 11px 16px;
-  background: var(--primary);
+  background: var(--rojo);
   color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border: 0;
+  box-shadow: 0 2px 8px rgba(196, 30, 30, .28);
 }
-
-.boton-primario:hover { background: var(--primary-hover); }
-.boton-primario:disabled { opacity: 0.6; cursor: not-allowed; }
+.boton-primario:hover:not(:disabled) {
+  background: var(--rojo-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(196, 30, 30, .34);
+}
+.boton-primario:active:not(:disabled) { transform: translateY(0); }
+.boton-primario:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
 
 .boton-secundario {
-  padding: 9px 14px;
   background: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: var(--arena-300);
+  border: 1.5px solid rgba(228, 203, 152, .35);
 }
+.boton-secundario:hover {
+  background: rgba(228, 203, 152, .12);
+  border-color: rgba(228, 203, 152, .6);
+}
+
+:where(.boton-primario, .boton-secundario):focus-visible {
+  outline: 3px solid var(--rojo);
+  outline-offset: 2px;
+}
+
+/* =============== MENSAJES =============== */
 
 .mensaje-error {
-  background: var(--danger-bg);
-  color: var(--danger);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 0.85rem;
-  margin-bottom: 16px;
   display: none;
+  background: var(--danger-bg);
+  border-left: 3px solid var(--danger);
+  color: var(--danger);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
 }
-
 .mensaje-error.visible { display: block; }
 
-/* ---- Layout del panel ---- */
+/* =============== BARRA SUPERIOR =============== */
 
 .topbar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--tinta);
+  color: var(--arena-100);
+  padding: 13px 24px;
+  border-bottom: 3px solid var(--rojo);
 }
 
-.topbar strong { font-size: 1rem; }
+.topbar__marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.topbar__logo { width: 124px; height: auto; display: block; }
+.topbar__sep {
+  width: 1px; height: 22px;
+  background: rgba(228, 203, 152, .28);
+  flex-shrink: 0;
+}
+.topbar__titulo {
+  font-size: 0.7rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--arena-300);
+  white-space: nowrap;
+}
+
+.topbar__sesion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.topbar__usuario {
+  font-size: 0.78rem;
+  color: var(--arena-300);
+  opacity: .85;
+}
+@media (max-width: 40rem) {
+  .topbar { padding: 12px 16px; }
+  .topbar__titulo, .topbar__sep { display: none; }
+  .topbar__usuario { display: none; }
+}
+
+/* =============== CONTENIDO =============== */
 
 .contenido {
-  max-width: 1000px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 28px 24px 64px;
+}
+@media (max-width: 40rem) {
+  .contenido { padding: 20px 16px 48px; }
 }
 
 .fila-cabecera {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 22px;
 }
 
-.selector-evento {
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  min-width: 240px;
+.cabecera__titulo {
+  font-family: var(--fuente-display);
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  line-height: .95;
+  letter-spacing: -.01em;
+  margin: 0;
 }
+.cabecera__sub {
+  font-size: 0.72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--rojo);
+  margin: 0 0 4px;
+}
+
+/* =============== ESTADÍSTICAS =============== */
 
 .tarjetas-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
 .stat {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px;
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
 }
+/* Filete de color en el canto: identifica la tarjeta sin gastar espacio
+   ni añadir un icono más. */
+.stat::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--rojo);
+}
+/* El arena claro sobre blanco casi no se veia: las tarjetas secundarias
+   parecian rotas en vez de secundarias. Este tono si se lee y sigue
+   siendo claramente subordinado al rojo de la principal. */
+.stat--secundaria::before { background: var(--border-fuerte); }
 
 .stat .valor {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: var(--fuente-display);
+  font-size: 2.4rem;
+  line-height: 1;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 5px;
+}
+.stat .etiqueta {
+  font-size: 0.68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.stat .etiqueta {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
+/* =============== TARJETAS DE SECCIÓN =============== */
+
+.tarjeta + .tarjeta { margin-top: 18px; }
 
 .tarjeta h2 {
-  font-size: 1.05rem;
-  margin: 0 0 16px;
+  font-size: 0.78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 18px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--border);
 }
+
+/* =============== TABLA =============== */
+
+#tabla-contenedor { overflow-x: auto; }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  min-width: 620px;
 }
 
-th, td {
+thead th {
   text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--border);
+  font-size: 0.65rem;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 12px 10px;
+  border-bottom: 1.5px solid var(--border-fuerte);
+  white-space: nowrap;
 }
 
-th { color: var(--text-muted); font-weight: 600; }
+tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr { transition: background .14s var(--ease); }
+tbody tr:hover { background: var(--arena-100); }
+
+/* Nombre con inicial en círculo: da un punto de anclaje para el ojo al
+   recorrer la lista, que si no es un bloque de texto uniforme. */
+.celda-persona {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.inicial {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tinta);
+  color: var(--arena-300);
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.celda-correo,
+.celda-tel {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.celda-fecha {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 
 .estado-badge {
   display: inline-block;
-  padding: 2px 8px;
+  font-size: 0.62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
   border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  white-space: nowrap;
 }
-
-.estado-registrado { background: #e6f4ea; color: #1e7e34; }
+.estado-registrado { background: var(--ok-bg); color: var(--ok); }
 .estado-cancelado { background: var(--danger-bg); color: var(--danger); }
+
+/* =============== ESTADOS VACÍOS =============== */
 
 .vacio {
   color: var(--text-muted);
-  font-size: 0.9rem;
-  padding: 20px 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
   text-align: center;
+  padding: 34px 20px;
+  margin: 0;
 }
 
 .oculto { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+  }
+}

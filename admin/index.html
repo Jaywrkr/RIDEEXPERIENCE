@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Panel administrativo — Ingreso</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="centro-pantalla">
+    <div class="login-envoltorio">
+    <img class="login-marca" src="assets/shineray-shm-logo.png" alt="Shineray SHM" width="168" height="29" />
     <form class="tarjeta tarjeta-login" id="form-login" novalidate>
-      <h1>Panel administrativo</h1>
-      <p class="subtitulo">Ingresa con tu cuenta de organizador para gestionar el evento.</p>
+      <h1>A Todo Terreno</h1>
+      <p class="subtitulo">Panel de organización. Ingresa con tu cuenta para gestionar el evento y ver a los inscritos.</p>
 
       <div class="mensaje-error" id="mensaje-error"></div>
 
@@ -27,6 +30,7 @@
 
       <button type="submit" class="boton-primario" id="boton-login">Ingresar</button>
     </form>
+    </div>
   </div>
 
   <script src="js/api.js"></script>
