@@ -13,11 +13,14 @@ export class AsistentesService {
       throw new NotFoundException('El evento indicado no existe.');
     }
 
+    // Al retirarse la cedula, el correo es la clave natural del asistente:
+    // es lo unico que queda para impedir una segunda inscripcion de la
+    // misma persona.
     const yaRegistrado = await this.prisma.asistente.findUnique({
-      where: { evento_cedula_unico: { eventoId, cedula: dto.cedula } },
+      where: { evento_correo_unico: { eventoId, correo: dto.correo } },
     });
     if (yaRegistrado) {
-      throw new ConflictException('Esta cedula ya esta registrada en este evento.');
+      throw new ConflictException('Este correo ya esta registrado en este evento.');
     }
 
     // El registro crea de una vez la notificacion de confirmacion

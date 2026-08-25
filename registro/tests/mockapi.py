@@ -5,11 +5,10 @@ Reproduce fielmente:
   POST /api/eventos/:id/asistentes         -> registro
 
 y sus validaciones (CreateAsistenteDto + AsistentesService):
-  - cedula ecuatoriana con digito verificador
   - nombre 3..150
   - correo valido
   - telefono ^\\+?\\d{7,15}$
-  - 409 si la cedula ya esta registrada en el evento
+  - 409 si el correo ya esta registrado en el evento
   - 404 si el evento no existe
   - 400 con { message: [...] } igual que class-validator
 """
@@ -26,35 +25,13 @@ EVENTOS = [{
     "fechaFin": "2026-09-27T00:00:00.000Z",
 }]
 
-registrados = {}       # cedula -> asistente
+registrados = {}       # correo -> asistente
 lock = threading.Lock()
 fallar_con = {"status": None}   # para simular caidas del servidor
 
 
-def cedula_valida(c):
-    """Mismo algoritmo que common/validators/cedula-ecuatoriana.validator."""
-    if not isinstance(c, str) or not re.fullmatch(r"\d{10}", c):
-        return False
-    prov = int(c[:2])
-    if prov < 1 or prov > 24:
-        return False
-    if int(c[2]) > 6:
-        return False
-    coef = [2, 1, 2, 1, 2, 1, 2, 1, 2]
-    total = 0
-    for i in range(9):
-        v = int(c[i]) * coef[i]
-        if v > 9:
-            v -= 9
-        total += v
-    verificador = (10 - (total % 10)) % 10
-    return verificador == int(c[9])
-
-
 def validar(dto):
     errores = []
-    if not cedula_valida(dto.get("cedula")):
-        errores.append("La cedula ingresada no es valida.")
     nombre = dto.get("nombre")
     if not isinstance(nombre, str) or not (3 <= len(nombre) <= 150):
         errores.append("nombre must be longer than or equal to 3 characters")
@@ -133,19 +110,20 @@ class H(BaseHTTPRequestHandler):
             return self._json(400, {"message": errores})
 
         with lock:
-            if dto["cedula"] in registrados:
-                return self._json(409, {"message": "Esta cedula ya esta registrada en este evento."})
+            # El correo es la clave natural desde que se retiro la cedula.
+            clave = dto["correo"].lower()
+            if clave in registrados:
+                return self._json(409, {"message": "Este correo ya esta registrado en este evento."})
             asistente = {
                 "id": f"asist-{len(registrados) + 1}",
                 "eventoId": evento_id,
-                "cedula": dto["cedula"],
                 "nombre": dto["nombre"],
                 "correo": dto["correo"],
                 "telefono": dto["telefono"],
                 "estado": "REGISTRADO",
                 "createdAt": "2026-08-25T00:00:00.000Z",
             }
-            registrados[dto["cedula"]] = asistente
+            registrados[clave] = asistente
         return self._json(201, asistente)
 
 

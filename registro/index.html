@@ -227,11 +227,6 @@
           </p>
 
           <div class="field field--dp">
-            <label for="cedula">Cédula <em>/ ID Number</em></label>
-            <input type="text" id="cedula" name="cedula" required inputmode="numeric" maxlength="10" placeholder="10 dígitos" autocomplete="off">
-            <span class="field__error" id="err-cedula" role="alert"></span>
-          </div>
-          <div class="field field--dp">
             <label for="nombre">Nombre completo <em>/ Full Name</em></label>
             <input type="text" id="nombre" name="nombre" required autocomplete="name">
             <span class="field__error" id="err-nombre" role="alert"></span>
@@ -307,7 +302,8 @@
           <p class="overline">REVISA TU PASAPORTE</p>
           <dl class="pasaporte__resumen">
             <div><dt>Titular</dt><dd id="resumenNombre">—</dd></div>
-            <div><dt>Cédula</dt><dd id="resumenCedula">—</dd></div>
+            <div><dt>Correo</dt><dd id="resumenCorreo">—</dd></div>
+            <div><dt>Teléfono</dt><dd id="resumenTelefono">—</dd></div>
           </dl>
           <p class="pasaporte__mrz" id="pasaporteMrz" aria-hidden="true"></p>
           <span class="field__error" id="err-sellar" role="alert"></span>

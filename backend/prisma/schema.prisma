@@ -60,7 +60,6 @@ enum EstadoRegistro {
 // Persona inscrita a un evento.
 model Asistente {
   id        String         @id @default(uuid())
-  cedula    String
   nombre    String
   correo    String
   telefono  String
@@ -74,9 +73,12 @@ model Asistente {
 
   notificaciones Notificacion[]
 
-  // La cedula solo tiene que ser unica dentro de un mismo evento: la misma
-  // persona puede registrarse a congresos distintos.
-  @@unique([eventoId, cedula], name: "evento_cedula_unico")
+  // Al retirarse la cedula, el correo pasa a ser la clave natural del
+  // asistente: es lo unico que queda para impedir que la misma persona se
+  // inscriba dos veces. Sin esta restriccion no habria nada que lo evite.
+  // Como antes con la cedula, solo tiene que ser unico dentro del mismo
+  // evento: la misma persona puede registrarse a congresos distintos.
+  @@unique([eventoId, correo], name: "evento_correo_unico")
   @@map("asistentes")
 }
 
