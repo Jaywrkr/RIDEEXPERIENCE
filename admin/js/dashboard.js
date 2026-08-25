@@ -87,7 +87,6 @@
       const claseEstado = asistente.estado === 'REGISTRADO' ? 'estado-registrado' : 'estado-cancelado';
       fila.innerHTML = `
         <td>${escapeHtml(asistente.nombre)}</td>
-        <td>${escapeHtml(asistente.cedula)}</td>
         <td>${escapeHtml(asistente.correo)}</td>
         <td>${escapeHtml(asistente.telefono)}</td>
         <td><span class="estado-badge ${claseEstado}">${asistente.estado}</span></td>

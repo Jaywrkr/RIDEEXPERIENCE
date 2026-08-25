@@ -4,8 +4,8 @@ import { golpeDeSello } from './ambiente.js';
 const TOTAL_STEPS = 3;
 
 // Genera un número de pasaporte decorativo para esta sesión (no es un
-// identificador real, es puramente narrativo — el registro real lo
-// identifica la cédula en el backend).
+// identificador real, es puramente narrativo — al asistente lo identifica
+// su correo en el backend).
 function generateSerial() {
   const n = Math.floor(Math.random() * 999999)
     .toString()
@@ -39,18 +39,16 @@ function generateMrz({ nombre, serial }) {
 
 // La validacion del paso 2 vive en validacion.js: antes aqui solo se
 // comprobaba que los campos no estuvieran vacios, asi que un error de
-// formato (una cedula con un digito mal) no aparecia hasta el paso 3, al
-// pulsar el boton final, y sin decir cual de los cuatro campos fallaba.
+// formato no aparecia hasta el paso 3, al pulsar el boton final, y sin
+// decir cual de los campos fallaba.
 
 // Guarda un borrador de los datos del titular para que un refresh a mitad
 // del formulario no borre lo ya escrito. sessionStorage puede no estar
 // disponible (modo privado de Safari, políticas de cookies, etc.): si
 // falla, el pasaporte sigue funcionando, simplemente sin recordar nada.
 const DRAFT_KEY = 'atr-passport-draft';
-// Los cuatro campos del formulario. El correo faltaba, así que un refresh
-// a mitad del formulario conservaba cédula, nombre y teléfono pero
-// obligaba a reescribir el correo.
-const DRAFT_FIELDS = ['cedula', 'nombre', 'telefono', 'email'];
+// Los tres campos del formulario.
+const DRAFT_FIELDS = ['nombre', 'telefono', 'email'];
 
 function saveDraft(form) {
   try {
@@ -264,11 +262,15 @@ export function initPassportForm({ onSealed }) {
 
     if (n === TOTAL_STEPS) {
       const nombre = (form.elements['nombre'] || {}).value?.trim() || '';
-      const cedula = (form.elements['cedula'] || {}).value?.trim() || '';
-      const resumenNombreEl = document.getElementById('resumenNombre');
-      const resumenCedulaEl = document.getElementById('resumenCedula');
-      if (resumenNombreEl) resumenNombreEl.textContent = nombre || '—';
-      if (resumenCedulaEl) resumenCedulaEl.textContent = cedula || '—';
+      const correo = (form.elements['email'] || {}).value?.trim() || '';
+      const telefono = (form.elements['telefono'] || {}).value?.trim() || '';
+      const asignar = (id, valor) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = valor || '—';
+      };
+      asignar('resumenNombre', nombre);
+      asignar('resumenCorreo', correo);
+      asignar('resumenTelefono', telefono);
       const mrzEl = document.getElementById('pasaporteMrz');
       if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial });
     }
@@ -329,8 +331,8 @@ export function initPassportForm({ onSealed }) {
     if (currentStep > 1) showStep(currentStep - 1);
   });
 
-  // La portada abre directo a la pagina de datos: no hay codigo previo que
-  // validar, el registro es abierto por cedula.
+  // La portada abre directo a la pagina de datos: no hay codigo previo
+  // que validar, el registro es abierto.
   const coverCta = document.getElementById('coverCta');
   if (coverCta) {
     coverCta.addEventListener('click', () => {
@@ -345,7 +347,6 @@ export function initPassportForm({ onSealed }) {
     if (currentStep !== TOTAL_STEPS || sealing) return;
 
     const datos = {
-      cedula: (form.elements['cedula']?.value || '').trim(),
       nombre: (form.elements['nombre']?.value || '').trim(),
       correo: (form.elements['email']?.value || '').trim(),
       telefono: (form.elements['telefono']?.value || '').trim(),

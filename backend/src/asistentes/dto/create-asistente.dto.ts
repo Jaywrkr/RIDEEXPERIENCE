@@ -1,11 +1,6 @@
 import { IsEmail, IsString, Length, Matches } from 'class-validator';
-import { EsCedulaEcuatoriana } from '../../common/validators/cedula-ecuatoriana.validator';
 
 export class CreateAsistenteDto {
-  @IsString()
-  @EsCedulaEcuatoriana()
-  cedula: string;
-
   @IsString()
   @Length(3, 150)
   nombre: string;
