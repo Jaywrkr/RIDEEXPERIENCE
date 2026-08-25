@@ -1,121 +1,163 @@
 # Estado actual del repositorio (RIDEEXPERIENCE)
 
-> Última actualización: 2026-08-24. Este documento existe para que
-> cualquier sesión nueva de IA (Claude, Codex, etc.) o cualquier persona
-> pueda retomar el trabajo sin depender del historial de chat de una
-> sesión anterior. **Reemplaza por completo la versión del 2026-07-23**
-> — desde entonces se construyó y desplegó todo el sistema real.
+> Última actualización: 2026-08-25. Este documento existe para que
+> cualquier sesión nueva (de IA o de persona) pueda retomar el trabajo sin
+> depender del historial de chat anterior. **Reemplaza la versión del
+> 2026-08-24**, que ya no describe el sistema: desde entonces se retiró la
+> cédula, se rehizo el diseño con la marca real y se agregó una suite de
+> pruebas.
 
-## Resumen: el sistema ya está en producción y probado de punta a punta
+## Qué es esto
 
-Lo que la cotización a Shineray prometía (`PROPUESTA_OFRECIDA.md`) —
-backend, panel administrativo, sitio de registro, notificaciones — ya
-existe, está desplegado en Vercel, y **el usuario ya lo probó
-completo en el navegador con datos reales y confirmó que funciona**:
-login del panel, creación del evento, registro con cédula real desde
-el pasaporte, y el asistente apareciendo en el panel.
+Un pasaporte digital de registro para **A Todo Terreno**, la Convención
+Nacional Shineray 2026 (25–27 de septiembre). La gente llega escaneando un
+QR desde el teléfono, "abre" un pasaporte, llena tres datos y sella su
+lugar. Hay un panel administrativo aparte para el equipo organizador.
 
-## URLs en producción (Vercel)
+## URLs en producción
 
 | Qué es | URL |
 |---|---|
-| **Sitio público** (pasaporte de registro, esto es lo que ve el cliente al escanear el QR) | **https://atodoterreno.vercel.app** |
+| **Sitio público** (el pasaporte, lo que ve quien escanea el QR) | **https://atodoterreno.vercel.app** |
 | Panel administrativo | **https://rideexperience-admin.vercel.app** |
 | Backend / API | https://rideexperience-api.vercel.app |
 
-Los tres son proyectos de Vercel enlazados al mismo repo de GitHub,
-rama `claude/las-tanusas-landing-8ttqff` (no existe rama `main` en este
-repo — esa es la que hace de rama por defecto). **Cada push a esa rama
-los redespliega solos**, no hace falta ningún paso manual.
+Rama por defecto del repo: **`claude/las-tanusas-landing-8ttqff`**. No
+existe `main`.
 
-- `rideexperience-api`: rootDirectory = `backend/`.
-- `rideexperience-admin`: rootDirectory = `admin/`.
-- `atodoterreno`: rootDirectory = `registro/` (este es el que el
-  cliente ve — reemplazó al viejo pasaporte de código de acceso que
-  vivía en la raíz del repo).
-- Hay un cuarto proyecto, `rideexperience` (rootDirectory = raíz del
-  repo), que sigue sirviendo el pasaporte VIEJO con código de acceso
-  (`index.html`, `api/validar-codigo.js`, etc.) — **es el sistema
-  anterior, ya no es el que se usa**, pero sigue ahí funcionando. Ver
-  sección "Qué contiene" más abajo y `PROXIMAS_FASES.md`.
+## ⚠️ Cada push despliega. No hay freno puesto.
 
-Base de datos: Postgres (Neon) conectado a `rideexperience-api` vía
-Vercel Storage. Ya migrada (tablas creadas) y con un admin real
-(`jaywrkr@gmail.com`).
+Verificado contra la API de Vercel el 2026-08-25:
+
+- Un push a **cualquier rama** crea un *preview deployment*.
+- Un merge a la rama por defecto crea un **deploy a producción real**.
+
+Se documentó como pendiente configurar el **Ignored Build Step** (`exit 0`
+en Settings → Git de cada proyecto) para frenarlo, pero **no se aplicó**.
+Mientras siga así, hay que asumir que todo lo que se mergea sale al aire.
+
+## Proyectos de Vercel
+
+Tres activos, cada uno con su `rootDirectory`:
+
+| Proyecto | rootDirectory |
+|---|---|
+| `atodoterreno` | `registro/` |
+| `rideexperience-admin` | `admin/` |
+| `rideexperience-api` | `backend/` |
+
+Y dos **pausados** el 2026-08-24 (reversible, no se borró nada):
+`rideexperience` (el pasaporte viejo de código de acceso, que todavía vive
+en la raíz del repo) y `rideexperience-registro` (duplicado de
+`atodoterreno`, nunca se usó).
+
+Base de datos: Postgres (Neon) conectado a `rideexperience-api`. Las
+migraciones de Prisma corren solas en cada deploy (`vercel-build`).
 
 ## Qué contiene el repo
 
-### 1. `backend/` — API REST (NestJS + Prisma + PostgreSQL)
+### `registro/` — el pasaporte público
 
-El sistema real cotizado a Shineray. Desplegado como función serverless
-en Vercel (`backend/api/[...proxy].ts`). Incluye:
+Sitio estático, sin build step, JavaScript con módulos ES nativos.
+
+- `index.html` — la página entera (bienvenida, pasaporte de 3 pasos,
+  confirmación, cuenta atrás).
+- `css/style.css` — todo el estilo. Tiene un sistema de tokens al
+  principio: paleta, escala tipográfica, tracking, interlineado y curvas
+  de animación.
+- `js/` — un módulo por responsabilidad:
+  - `main.js` arranca todo.
+  - `welcome.js` — la bienvenida y su disipación.
+  - `motion.js` — coreografía de entrada, parallax, ondas de clic.
+  - `ambiente.js` — **todo el audio**, sintetizado con Web Audio (0 KB en
+    archivos): viento de tres capas y los sonidos de interfaz.
+  - `passport.js` — el flujo de 3 pasos, el sello y el envío.
+  - `validacion.js` — validación en el navegador, espejo del backend.
+  - `api.js`, `config.js`, `countdown.js`, `clues.js`, `reveal.js`.
+- `assets/brand/` — logo, wordmark, sello, montañas, textura de arena.
+- `assets/fonts/` — Discota-CondensedRough y DINPro-Black.
+- `sw.js` — service worker.
+- `tests/` — la suite end-to-end (ver más abajo).
+
+### `admin/` — panel administrativo
+
+Sitio estático también. Login con JWT, edición del evento y tabla de
+inscritos con cuatro métricas. Tiene **su propia copia** de las fuentes y
+el logo en `admin/assets/`: se despliega como raíz propia en Vercel y no
+puede leer los archivos de `registro/`.
+
+### `backend/` — API (NestJS + Prisma + PostgreSQL)
+
+Desplegado como función serverless (`backend/api/[...proxy].ts`).
+
 - Auth JWT para el panel (`POST /api/auth/login`).
-- CRUD de eventos (`/api/eventos`).
-- Registro de asistentes con validación real de cédula ecuatoriana
-  (dígito verificador, no solo formato) — `/api/eventos/:id/asistentes`.
-- Notificaciones de correo (confirmación, aviso previo, aviso final) vía
-  Resend — `backend/src/notificaciones/`. Sin `RESEND_API_KEY`
-  configurada, el sistema sigue funcionando pero solo loguea los
-  correos en vez de mandarlos de verdad (ver `PROXIMAS_FASES.md`).
-- Migraciones de Prisma corren solas en cada deploy de Vercel
-  (`vercel-build` script) — no hace falta correrlas a mano.
+- CRUD de eventos.
+- Registro público de asistentes (`POST /api/eventos/:id/asistentes`).
+- Notificaciones por correo vía Resend — **el mecanismo funciona pero los
+  correos NO se envían**: falta cargar `RESEND_API_KEY`. Sin ella, el
+  sistema registra gente normal y solo loguea los correos.
 
-Ver [`backend/README.md`](../backend/README.md).
+### `shineray-deck/` — deck de venta
 
-### 2. `admin/` — Panel administrativo
+Presentación de 10 slides para pitchear el concepto. No tiene relación
+funcional con el sistema; se mantiene como pieza comercial.
 
-Sitio estático (HTML/CSS/JS plano, sin build step) para gestionar **el
-único evento** (A Todo Terreno) y ver los asistentes registrados. Sin
-selector de eventos a propósito — este sistema es de un solo evento,
-no multi-tenant.
+### Raíz del repo — pasaporte VIEJO
 
-### 3. `registro/` — Sitio público de registro (el pasaporte real)
+`index.html`, `css/`, `js/`, `api/`, `lib/`, `db/` son el sistema
+**anterior** (pasaporte con código de acceso pre-generado). Ya no se usa,
+su proyecto de Vercel está pausado, pero el código sigue ahí. Borrarlo
+requiere confirmación explícita: su base puede tener inscripciones reales.
 
-Es el pasaporte digital completo de "A Todo Terreno" — portada kraft,
-animación de apertura, MRZ, sello de tinta al confirmar — copiado
-visualmente de `index.html` (ver punto 5) pero **recableado al backend
-real**: sin código de acceso previo, con cédula/nombre/teléfono/correo,
-registrando contra la base de datos de verdad. Es lo que corre en
-`atodoterreno.vercel.app`.
+## Cómo correr las pruebas
 
-Ver [`registro/README.md`](../registro/README.md).
+```bash
+cd registro
+python3 tests/e2e.py          # todo
+python3 tests/e2e.py -k borrador   # solo un grupo
+```
 
-### 4. `shineray-deck/` — Deck de venta (PWA), no un sistema real
+Levanta el sitio y un backend de pruebas (`tests/mockapi.py`) que replica
+el contrato real del NestJS, y maneja un navegador de punta a punta.
+**43 comprobaciones, todas en verde** al cierre de esta sesión.
 
-Presentación interactiva de 10 slides para pitchear a Shineray el
-concepto "Un pasaporte, tres sellos". Sigue siendo solo un
-storyboard/mockup visual — no tiene relación funcional con el sistema
-real que se construyó después. Se mantiene como pieza de venta.
+Requiere `pip install playwright`. El entorno de estas sesiones ya trae
+Chromium en `/opt/pw-browsers/chromium`.
 
-### 5. `index.html` + `css/` + `js/` + `api/` + `lib/` + `db/` — Pasaporte VIEJO (código de acceso)
+> Nota: la red de las sesiones de Claude **bloquea**
+> `rideexperience-api.vercel.app`, por eso las pruebas corren contra el
+> backend local. Si se cambian las reglas de validación del backend, hay
+> que cambiarlas en `tests/mockapi.py` **y** en `registro/js/validacion.js`.
 
-El sistema **anterior** de "A Todo Terreno": pasaporte con código de
-acceso pre-generado (no cédula), backend en funciones serverless de
-Vercel + Postgres propio, notificaciones de sellos vía Resend
-(`lib/mailer.js`). Sigue viviendo en la raíz del repo y sigue
-desplegado en `rideexperience.vercel.app`, pero **ya no es el sistema
-que usa el cliente** — fue reemplazado por `registro/` en
-`atodoterreno.vercel.app`. Queda pendiente decidir si se apaga o se
-deja como está (ver `PROXIMAS_FASES.md`).
+## Decisiones de diseño que conviene no deshacer sin querer
 
-### 6. `robots.txt`, `sitemap.xml`, metadata SEO
-
-Sin relación con lo anterior, posiciona el sitio a nombre de Jay
-Jaramillo (@jaywrkr).
+- **La cédula se retiró a propósito** (2026-08-25). El correo pasó a ser
+  la clave natural: es lo único que impide que la misma persona se
+  inscriba dos veces. La restricción única `(eventoId, correo)` en
+  `schema.prisma` es esa protección.
+- **"A TODO TERRENO" es una imagen, no texto.** Es el lockup real de
+  marca (`wordmark-atodoterreno.png`). Componerlo con la fuente da un peso
+  y un kerning distintos.
+- **El audio arranca siempre en silencio.** La bienvenida ofrece "entrar
+  con sonido" porque el navegador solo permite reproducir audio dentro de
+  un gesto del usuario.
+- **El rojo de marca (#c41e1e) sobre fondo oscuro da 3.18:1**, que falla
+  WCAG AA para texto chico. Para eso existe `--rojo-sobre-oscuro`
+  (#e84545). No usar el rojo de marca en texto chico sobre oscuro.
+- **El marco del pasaporte no debe volver a fijar su altura con
+  `aspect-ratio`.** Lo hacía, y cuando la hoja de visado creció, el botón
+  de sellar quedó recortado: el formulario no se podía enviar.
 
 ## Documentos relacionados
 
+- [`PROXIMAS_FASES.md`](./PROXIMAS_FASES.md) — qué sigue.
+- [`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md) — lo que depende de
+  cuentas o decisiones tuyas.
+- [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) — configuración del
+  despliegue.
+- [`GUIA_PRUEBAS_LOCAL.md`](./GUIA_PRUEBAS_LOCAL.md) — correr todo en
+  local.
 - [`PROPUESTA_OFRECIDA.md`](./PROPUESTA_OFRECIDA.md) — qué se cotizó.
-- [`COMPARATIVA_Y_PLAN.md`](./COMPARATIVA_Y_PLAN.md) — plan original de
-  5 semanas (ya completado en su mayoría).
-- [`SEMANA_3.md`](./SEMANA_3.md), [`SEMANA_4.md`](./SEMANA_4.md) —
-  detalle técnico de cada parte construida.
-- [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) — cómo está
-  configurado el despliegue en Vercel.
-- [`GUIA_PRUEBAS_LOCAL.md`](./GUIA_PRUEBAS_LOCAL.md) — alternativa para
-  correr todo en una máquina local (ya no hace falta, todo está en
-  producción, pero sirve para desarrollo).
-- [`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md) — checklist de
-  configuración pendiente (Resend, dominio, etc.).
-- [`PROXIMAS_FASES.md`](./PROXIMAS_FASES.md) — qué sigue después de
-  esta sesión.
+- [`COMPARATIVA_Y_PLAN.md`](./COMPARATIVA_Y_PLAN.md),
+  [`SEMANA_3.md`](./SEMANA_3.md), [`SEMANA_4.md`](./SEMANA_4.md) —
+  histórico de la construcción.

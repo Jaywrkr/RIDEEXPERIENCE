@@ -1,88 +1,106 @@
-# Pendientes para vos (configuración, decisiones y cuentas que no puede resolver una sesión de IA)
+# Pendientes para vos
 
-> Última actualización: 2026-08-24. Lista viva. El sistema ya está en
-> producción y **probado de punta a punta por vos**: login, creación del
-> evento, registro real desde el pasaporte, asistente visible en el
-> panel. Esto es lo que queda, todo opcional o de cierre — nada de esto
-> bloquea seguir usando el sistema como está hoy.
+> Última actualización: 2026-08-25. Cosas que no puede resolver una sesión
+> de IA: cuentas, archivos, decisiones y ajustes que solo existen en el
+> panel de Vercel. Ordenadas por lo que más mueve la aguja.
 
-## Notificaciones de correo reales (todavía simuladas)
+## 1. La fuente de texto — es lo que más impacto tiene
 
-- [ ] Crear cuenta en [Resend](https://resend.com) (o confirmar si se
-  reusa la que ya usa el pasaporte viejo, `lib/mailer.js` — mismo
-  proveedor, evita duplicar cuentas).
-- [ ] Verificar tu dominio de envío en Resend (o usar su dominio de
-  pruebas mientras tanto) y generar una API key.
-- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en
-  **Vercel → proyecto `rideexperience-api` → Settings → Environment
-  Variables**, y redesplegar. Sin esto, el sistema sigue registrando
-  gente normal, pero los correos solo quedan logueados, no se mandan.
-- [ ] Opcional: revisar/reemplazar el copy de los 3 correos en
-  `backend/src/notificaciones/templates/correos.ts` — hoy es genérico,
-  se puede llevar al tono de marca de Shineray (hay copy ya validado
-  para esto en `shineray-deck/index.html`, slide "El mensaje real").
+Hoy la única tipografía disponible para texto es **DIN Pro Black**, que es
+un peso **900**, de titular. Por eso todo el texto corrido, tanto del
+sitio como del panel, se lee como un muro de negritas: cuando todo pesa
+igual, nada destaca.
 
-## Vercel: limpieza de proyectos (2026-08-24, resuelto)
+Se compensó con más interlineado y limitando el ancho de lectura, pero es
+un parche. **Con DIN Pro Regular o Medium el proyecto entero mejora de
+golpe**, sin tocar nada más del diseño.
 
-Había 5 proyectos de Vercel del repo, solo 3 hacen algo real. Los
-otros 2 quedaron **pausados** (reversible, no se borró código ni base
-de datos):
-- ✅ `rideexperience-registro` — duplicado de `atodoterreno`, nunca se
-  usó.
-- ✅ `rideexperience` — el pasaporte viejo con código de acceso. Sigue
-  pendiente si en algún momento querés borrar directamente el código
-  de la raíz del repo (`index.html`, `api/`, `lib/`, `db/`) — eso sí
-  necesita tu confirmación explícita porque esa base puede tener
-  inscripciones reales de gente que ya usó un código.
+Si conseguís el archivo `.otf`, subilo al repo y avisá: son unos minutos
+de trabajo aplicarlo en los dos sitios.
 
-- [ ] **Ignored Build Step** en los 3 proyectos que siguen activos
-  (`atodoterreno`, `rideexperience-admin`, `rideexperience-api`) —
-  para que ningún push dispare un redeploy solo. Es manual, no se
-  puede por API: cada proyecto → Settings → Git → "Ignored Build Step"
-  → `exit 0` → Save. Después, para deployar algo puntual: botón
-  "Redeploy" en el dashboard.
+## 2. Los despliegues automáticos ya están apagados ✅
+
+Esto quedó resuelto **desde el repo**, no desde el panel: cada proyecto
+tiene un `vercel.json` con `{ "git": { "deploymentEnabled": false } }`, así
+que **ningún push dispara un build**, en ninguna rama.
+
+Se hizo así en vez de con el "Ignored Build Step" del dashboard para que
+quede versionado y no dependa de que alguien lo recuerde configurar.
+
+**Para desplegar cuando vos quieras**, dos opciones:
+
+- **Redeploy**: Vercel → proyecto → Deployments → elegí el commit → "..."
+  → Redeploy.
+- **Deploy Hook**: Settings → Git → Deploy Hooks. Te da una URL que
+  dispara el deploy con un `curl -X POST <url>`.
+
+> Ojo con el orden: el commit que apaga los deploys todavía se despliega
+> (Vercel lee el archivo del commit entrante). A partir del siguiente, ya
+> no.
+
+## 3. ⚠️ Antes del próximo deploy del backend: la cédula se borra
+
+La migración que quita la cédula **elimina esa columna y todos sus datos,
+de forma irreversible**, y corre sola en el próximo despliegue del
+backend.
+
+**Si hay inscripciones previas y esos números te sirven para algo,
+exportalos antes.** Si no, no hay nada que hacer.
+
+Contexto de la decisión: al quitar la cédula, el **correo** pasó a ser lo
+único que impide que la misma persona se inscriba dos veces. Esa
+protección quedó puesta.
+
+## 4. Correos: siguen sin enviarse
+
+El mecanismo funciona, pero falta la cuenta:
+
+- [ ] Crear cuenta en [Resend](https://resend.com) y verificar tu dominio
+      de envío (o usar el de pruebas mientras tanto).
+- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en **Vercel →
+      `rideexperience-api` → Settings → Environment Variables**, y
+      redesplegar.
+
+Sin esto la gente se registra normal, pero **no recibe ningún correo**.
+
+## 5. Confirmar la fecha del evento
+
+Está escrita a mano como **25–27 de septiembre de 2026** en la cuenta
+atrás, en la hoja de visado del pasaporte y en varios textos. Si cambia,
+decímelo y la actualizo en todos lados.
+
+## 6. Probar con los sentidos, no con mediciones
+
+Dos cosas que se construyeron pero **nadie experimentó todavía**:
+
+- **El sonido.** Todo el audio está sintetizado y lo calibré **midiendo la
+  señal**, no escuchándolo. Los niveles son correctos en decibeles, pero
+  hace falta que alguien lo oiga con auriculares y diga si el viento está
+  bien de volumen y si los sonidos de clic molestan o suman.
+- **El teléfono.** Hay cosas que **solo existen en móvil**: la vibración
+  al sellar el pasaporte y la respiración de las montañas. Vale la pena
+  hacer el flujo completo desde un celular real, escaneando el QR.
 
 ## Cierre
 
-- [ ] **Borrar 2 ramas de GitHub** ya fusionadas y seguras de eliminar
-  (el token de esta sesión no tiene permiso, hay que hacerlo a mano):
-  `claude/seo-metadata-jay-jaramillo-4w1p6b` y
-  `claude/passport-stamp-notifications-s0vk0a`. GitHub → pestaña
-  "Branches", o el botón "Delete branch" en cada Pull Request ya
-  mergeado.
-- [ ] **Dominio propio** en vez de `*.vercel.app` (opcional, cosmético
-  — hay que comprarlo y configurarlo en el proyecto `atodoterreno`).
-- [ ] Confirmar la fecha real del evento — hoy está hardcodeada como
-  25-27 de septiembre 2026 en varios archivos de `registro/`. Si
-  cambia, avisame y la actualizo.
-- [ ] **Detalles de UI**: mencionaste que hay algunos ajustes visuales
-  pendientes, sin especificar cuáles — decímelos en la próxima sesión.
+- [ ] **Dominio propio** en vez de `*.vercel.app` (opcional, cosmético).
+- [ ] **Borrar 2 ramas de GitHub** ya fusionadas:
+      `claude/seo-metadata-jay-jaramillo-4w1p6b` y
+      `claude/passport-stamp-notifications-s0vk0a`.
+- [ ] **Decidir sobre el pasaporte viejo** (el de código de acceso, en la
+      raíz del repo). Su proyecto de Vercel ya está pausado y no molesta.
+      Borrar el código sí requiere tu confirmación: esa base puede tener
+      inscripciones reales de gente que usó un código.
 
-## Ya resuelto (para referencia, no requiere acción)
+## Ya resuelto (no requiere acción)
 
-- ✅ Backend, base de datos (Postgres/Neon), autenticación — funcionando
-  en producción.
-- ✅ Panel administrativo simplificado a un solo evento (sin selector).
-- ✅ Sitio público de registro con el pasaporte visual real de Shineray,
-  conectado al backend — **probado con una cédula real por vos**.
-- ✅ Notificaciones: el mecanismo funciona (falta solo la cuenta de
-  Resend real, ítem arriba, para que los correos salgan de verdad).
-- ✅ Los 3 componentes desplegados en Vercel, con CORS y migraciones
-  automáticas en cada push. Admin real creado (`jaywrkr@gmail.com`).
-- ✅ Ramas de trabajo unidas a la rama por defecto del repo.
-
-## Documentos relacionados
-
-- [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) — foto completa del repo hoy.
-- [`PROXIMAS_FASES.md`](./PROXIMAS_FASES.md) — el mismo contenido de
-  este documento, ordenado como plan de trabajo para la próxima sesión.
-- [`PROPUESTA_OFRECIDA.md`](./PROPUESTA_OFRECIDA.md) — qué se cotizó.
-- [`COMPARATIVA_Y_PLAN.md`](./COMPARATIVA_Y_PLAN.md) — plan original de
-  5 semanas (ya completado en su mayoría).
-- [`SEMANA_3.md`](./SEMANA_3.md) / [`SEMANA_4.md`](./SEMANA_4.md) —
-  detalle técnico de sitio de registro / notificaciones.
-- [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) — configuración del
-  despliegue en Vercel.
-- [`GUIA_PRUEBAS_LOCAL.md`](./GUIA_PRUEBAS_LOCAL.md) — alternativa para
-  correr todo en una máquina local (no hace falta, todo está en
-  producción, pero sirve para desarrollo).
+- ✅ Sitio público y panel administrativo con la identidad real de la
+  marca: wordmark oficial, paleta, tipografías, sello y texturas.
+- ✅ Cédula retirada de todo el sistema.
+- ✅ Suite de 43 pruebas automáticas que verifica el registro de punta a
+  punta, incluida la persistencia real de los datos.
+- ✅ Dos proyectos de Vercel sin uso pausados (`rideexperience` y
+  `rideexperience-registro`), sin borrar nada.
+- ✅ Sonido ambiente y de interacción, sintetizado: **0 KB de archivos**.
+- ✅ Accesibilidad: contraste AA, objetivos táctiles de 44px, textos
+  alternativos y etiquetas en todos los campos.

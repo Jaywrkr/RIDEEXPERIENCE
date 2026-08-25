@@ -1,5 +1,39 @@
 # Despliegue en Vercel
 
+## Los despliegues automáticos están APAGADOS
+
+Cada proyecto tiene un `vercel.json` con:
+
+```json
+{ "git": { "deploymentEnabled": false } }
+```
+
+Eso corta el despliegue automático desde git: **ningún push, a ninguna
+rama, dispara un build**. Está en el repo a propósito y no en el panel de
+Vercel, para que quede versionado y no dependa de que alguien recuerde
+configurarlo proyecto por proyecto.
+
+Los tres archivos: `registro/vercel.json`, `admin/vercel.json` y
+`backend/vercel.json`.
+
+### Entonces, ¿cómo se despliega?
+
+De dos maneras, ambas a propósito:
+
+1. **Botón Redeploy** — Vercel → proyecto → Deployments → elegir el commit
+   → "..." → Redeploy.
+2. **Deploy Hook** — Settings → Git → Deploy Hooks. Crea una URL por
+   proyecto y rama; se dispara con `curl -X POST <url>`. Sirve para
+   automatizar el despliegue desde otro lado cuando se quiera.
+
+### Para volver a activar el despliegue automático
+
+Cambiar `deploymentEnabled` a `true` (o borrar el bloque `git`) en el
+`vercel.json` del proyecto en cuestión. Ojo: ese cambio no se aplica solo
+—justamente porque el automático está apagado—, hay que desplegar una vez
+a mano para que Vercel lea el archivo nuevo.
+
+
 > Última actualización: 2026-08-24. **Estado: funcionando en
 > producción, probado de punta a punta.** Este documento describe cómo
 > quedó configurado, para quien retome el trabajo después.

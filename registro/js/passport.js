@@ -174,7 +174,7 @@ function initBookTilt(frame) {
 }
 
 const STEP_CAPTIONS = {
-  1: 'Esto no es un formulario. Es la primera hoja de tu pasaporte hacia el destino.',
+  1: 'Comienza la aventura hacia tu destino.',
   2: 'Así queda tu nombre en el manifiesto de expedición: no hay vuelta atrás.',
   3: 'Revisá los datos antes de sellar. Una vez sellado, el conteo empieza para ti.',
 };

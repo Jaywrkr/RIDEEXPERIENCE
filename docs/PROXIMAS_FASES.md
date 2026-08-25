@@ -1,94 +1,106 @@
 # Próximas fases
 
-> Última actualización: 2026-08-24. El sistema ya está en producción y
-> probado de punta a punta por el usuario (login, creación de evento,
-> registro real con cédula desde el pasaporte, asistente visible en el
-> panel). Esto es lo que sigue.
+> Última actualización: 2026-08-25. Ver
+> [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) para la foto completa del repo.
 
-## Ahora mismo / próxima sesión
+## Lo primero que debería hacer una sesión nueva
 
-- [ ] **Detalles de UI pendientes** — el usuario mencionó que hay
-  algunos ajustes visuales por resolver, sin especificar cuáles
-  todavía. Preguntarle apenas retome la sesión qué es exactamente lo
-  que quiere cambiar antes de tocar nada a ciegas.
+- [ ] **Correr la suite antes de tocar nada**, para partir de un estado
+  conocido:
+  ```bash
+  cd registro && python3 tests/e2e.py
+  ```
+  Debe dar 43/43. Si no da, eso es lo primero a resolver.
 
-## Notificaciones de correo reales (Semana 4, todavía simuladas)
+- [ ] **Revisar en qué rama está el trabajo.** Al cierre de esta sesión el
+  historial iba en ramas por fase (`fase-1-identidad` … `fase-6-admin`),
+  encadenadas entre sí, que el usuario mergea a mano con un PR por fase.
+  Las fases 1 a 5 **ya están mergeadas y en producción**; la 6 (panel
+  administrativo) quedó pusheada esperando PR.
 
-- [ ] Crear cuenta en [Resend](https://resend.com) (o confirmar si se
-  reusa la que ya usa `lib/mailer.js` del pasaporte viejo — mismo
-  proveedor, evita duplicar cuentas).
-- [ ] Verificar dominio de envío en Resend (o usar su dominio de
-  pruebas mientras tanto) y generar una API key.
-- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en
-  **Environment Variables** del proyecto `rideexperience-api` en
-  Vercel, y redesplegar. Sin esto, el sistema sigue registrando gente
-  normal, pero los correos solo quedan logueados, no se mandan.
-- [ ] Revisar/ajustar el copy de los 3 correos
-  (`backend/src/notificaciones/templates/correos.ts`) — hoy es
-  genérico, se puede llevar al tono de marca de Shineray si se quiere
-  (hay copy ya validado para esto en `shineray-deck/index.html`, slide
-  "El mensaje real").
+## Lo más importante que queda pendiente
 
-## Limpieza de proyectos Vercel (2026-08-24, resuelto en esta sesión)
+- [ ] **Conseguir un peso de texto de DIN Pro.** Hoy el único tipo
+  disponible para texto es **DIN Pro Black, un peso 900**, así que todo el
+  texto corrido —del sitio y del panel— se lee como un muro de negritas.
+  Se compensó con interlineado y medida de lectura, pero es un parche. Con
+  **DIN Pro Regular o Medium** el proyecto entero da un salto inmediato.
+  Es el cambio de mayor impacto que queda. Al llegar el archivo: sumarlo a
+  `registro/assets/fonts/` y `admin/assets/fonts/`, declarar el
+  `@font-face` y apuntar `--font-mono` (sitio) y `--fuente` (panel) al
+  peso nuevo, dejando el Black solo para titulares y botones.
 
-Había 5 proyectos de Vercel ligados al repo; solo 3 hacen algo real
-(`rideexperience-api`, `rideexperience-admin`, `atodoterreno`). Los
-otros 2 se **pausaron** (reversible, `pause_project` — no borra código
-ni base de datos, solo deja de servir tráfico y de correr builds):
+- [x] ~~Frenar los despliegues automáticos.~~ **Resuelto desde el repo**:
+  cada proyecto tiene un `vercel.json` con
+  `{ "git": { "deploymentEnabled": false } }`, así que ningún push
+  dispara un build. Se hizo así en vez de con el "Ignored Build Step" del
+  panel para que quede versionado. Para desplegar: botón "Redeploy" o un
+  Deploy Hook. Ver [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md).
 
-- ✅ `rideexperience-registro` — era un duplicado exacto de
-  `atodoterreno` (mismo `registro/`, creado el mismo día que
-  admin/api, nunca se usó). Pausado.
-- ✅ `rideexperience` — el pasaporte viejo con código de acceso, ya
-  reemplazado por `atodoterreno`. Pausado (no borrado — su base de
-  datos puede tener inscripciones reales de gente que usó un código
-  antes; sigue pendiente decidir si se borra el código de la raíz del
-  repo, eso sí requiere confirmación explícita tuya).
+- [ ] **Aplicar la migración que quita la cédula.** El código ya no la
+  usa, pero la migración
+  `backend/prisma/migrations/20260825120000_quitar_cedula/` **borra la
+  columna y sus datos de forma irreversible**. Si hay inscripciones
+  previas con cédulas que se necesiten, **exportarlas antes**. Corre sola
+  en el próximo deploy del backend.
 
-- [ ] **Ignored Build Step en los 3 proyectos activos** — para que
-  ningún push a ninguna rama dispare un redeploy solo. No hay forma de
-  configurarlo por API/MCP, hay que hacerlo a mano una vez por
-  proyecto: Vercel → proyecto → Settings → Git → "Ignored Build Step"
-  → pegar `exit 0` → Save. Repetir en `atodoterreno`,
-  `rideexperience-admin`, `rideexperience-api`. Una vez puesto, para
-  deployar algo puntual se usa el botón "Redeploy" del dashboard (o un
-  Deploy Hook).
+## Correos reales (siguen sin enviarse)
 
-## Cierre / producción definitiva
+- [ ] Crear cuenta en [Resend](https://resend.com) y verificar dominio.
+- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en Vercel → proyecto
+  `rideexperience-api` → Settings → Environment Variables, y redesplegar.
+- [ ] Revisar el copy de los 3 correos en
+  `backend/src/notificaciones/templates/correos.ts` — sigue siendo
+  genérico. Hay copy de marca validado en `shineray-deck/index.html`,
+  slide "El mensaje real".
 
-- [ ] **Borrar 2 ramas de GitHub** ya fusionadas y seguras de eliminar
-  (el token de esta sesión no tiene permiso, hay que hacerlo a mano):
+## Cierre
+
+- [ ] **Confirmar la fecha real del evento.** Está escrita a mano como
+  25–27 de septiembre 2026 en varios sitios: `registro/js/countdown.js`,
+  la hoja de visado de `registro/index.html` y el copy. Si cambia, hay que
+  tocarlos todos.
+- [ ] **Dominio propio** en vez de `*.vercel.app` (opcional, cosmético).
+- [ ] **QA en dispositivo real**: el flujo completo desde un teléfono de
+  verdad, escaneando el QR real. Importa especialmente porque hay dos
+  cosas que solo existen en móvil: la vibración al sellar y la
+  "respiración" de las montañas (en escritorio ese lugar lo ocupa el
+  parallax).
+- [ ] **Probar el sonido con auriculares reales.** Todo el audio se
+  calibró midiendo la señal renderizada, no escuchándolo. Los niveles son
+  correctos en dB, pero nadie lo ha oído todavía.
+- [ ] **Borrar 2 ramas de GitHub** ya fusionadas:
   `claude/seo-metadata-jay-jaramillo-4w1p6b` y
   `claude/passport-stamp-notifications-s0vk0a`.
-- [ ] **Dominio propio** en vez de `*.vercel.app` (opcional, cosmético
-  — hay que comprarlo y configurarlo en el proyecto `atodoterreno`).
-- [ ] **QA final en dispositivo real**: probar el flujo completo desde
-  un celular de verdad, incluyendo escanear el QR real (cuando exista)
-  y confirmar que abre directo el pasaporte.
-- [ ] Confirmar con el cliente la fecha real del evento — hoy está
-  hardcodeada como 25-27 de septiembre 2026 en varios lugares
-  (`registro/js/countdown.js`, `registro/js/passport.js` fecha de
-  expiración, copy del sitio). Si cambia, hay que actualizarla en esos
-  archivos.
+- [ ] Decidir qué hacer con el **pasaporte viejo** en la raíz del repo
+  (`index.html`, `api/`, `lib/`, `db/`). Su proyecto de Vercel ya está
+  pausado. Borrar el código requiere confirmación explícita: esa base
+  puede tener inscripciones reales de gente que usó un código.
 
-## Ya resuelto (para referencia)
+## Ideas evaluadas y no hechas
 
-- ✅ Backend, base de datos, autenticación — Semana 1.
-- ✅ Panel administrativo, simplificado a un solo evento.
-- ✅ Sitio de registro con el pasaporte visual real, conectado al
-  backend.
-- ✅ Notificaciones (mecanismo funcionando, falta solo la cuenta de
-  Resend real para que salgan de verdad).
-- ✅ Los 3 componentes desplegados en Vercel, con CORS, migraciones
-  automáticas y admin real ya funcionando — **probado en producción por
-  el usuario**.
-- ✅ Ramas de trabajo unidas a la rama por defecto del repo.
+- **Exportar los inscritos a CSV** desde el panel. Es de valor real para
+  el equipo organizador el día del evento y es poco trabajo, pero no se
+  pidió, así que no se agregó.
+- **Reemplazar los `datetime-local` del panel** por un selector propio.
+  Hoy muestran el formato del idioma del sistema (`09/25/2026` en un
+  equipo en inglés), que no se puede forzar desde el sitio. Arreglarlo es
+  trabajo real, no un ajuste.
+- **El emoji 🤘** de la confirmación se retiró al reescribir el titular en
+  dos alturas. Era el único elemento a color fuera de la paleta.
 
-## Documentos relacionados
+## Ya resuelto
 
-- [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) — foto completa de qué es
-  este repo hoy.
-- [`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md) — checklist
-  detallado (parcialmente superpuesto con este documento).
-- [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) — configuración del
-  despliegue.
+- ✅ Backend, base de datos, autenticación, panel y sitio público, los
+  tres desplegados y probados en producción.
+- ✅ Suite end-to-end de 43 comprobaciones (`registro/tests/`).
+- ✅ Cédula retirada de todo el stack; el correo es la clave natural.
+- ✅ Identidad real aplicada: wordmark oficial, paleta, dos fuentes de
+  marca, sello, montañas y textura de arena.
+- ✅ Capa de movimiento: coreografía de entrada, parallax, ondas.
+- ✅ Audio sintetizado: viento de tres capas y sonidos de interacción.
+- ✅ Panel administrativo con la marca y métricas reales.
+- ✅ Contraste WCAG AA, objetivos táctiles de 44px, `alt` en toda imagen y
+  `label` en todo campo.
+- ✅ Service worker arreglado: la caché no se versionaba, así que los
+  visitantes recurrentes habrían seguido viendo el sitio viejo.
