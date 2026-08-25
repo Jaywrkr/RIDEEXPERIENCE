@@ -59,7 +59,10 @@ function validateStep2(form) {
 // disponible (modo privado de Safari, políticas de cookies, etc.): si
 // falla, el pasaporte sigue funcionando, simplemente sin recordar nada.
 const DRAFT_KEY = 'atr-passport-draft';
-const DRAFT_FIELDS = ['cedula', 'nombre', 'telefono'];
+// Los cuatro campos del formulario. El correo faltaba, así que un refresh
+// a mitad del formulario conservaba cédula, nombre y teléfono pero
+// obligaba a reescribir el correo.
+const DRAFT_FIELDS = ['cedula', 'nombre', 'telefono', 'email'];
 
 function saveDraft(form) {
   try {
