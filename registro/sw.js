@@ -14,6 +14,7 @@ const SHELL = [
   './js/api.js',
   './js/main.js',
   './js/motion.js',
+  './js/ambiente.js',
   './js/passport.js',
   './js/reveal.js',
   './js/welcome.js',

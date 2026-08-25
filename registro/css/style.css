@@ -1547,3 +1547,119 @@ input.invalid { border-bottom-color: var(--rojo); }
   .js-motion .cover-dunes__back { animation: none !important; }
   .cover-cta::before, .btn-sellar::before, .welcome__cta::before { display: none; }
 }
+
+/* =========================================================
+   MATERIALIDAD: que se sienta un documento, no una tarjeta
+   ========================================================= */
+
+/* ---- Canto de las páginas ----
+   Un pasaporte es un cuadernillo: se le ven los cantos de las hojas
+   por debajo de la tapa. Dos capas apenas rotadas y desplazadas
+   bastan para leerlo como volumen en vez de una sola lámina. */
+.pasaporte__pageframe::before,
+.pasaporte__pageframe::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #efe7d6, #d9cdb4);
+  pointer-events: none;
+}
+.pasaporte__pageframe::before {
+  transform: translate(4px, 5px) rotate(.5deg);
+  box-shadow: 0 6px 16px rgba(20,17,13,.16);
+}
+.pasaporte__pageframe::after {
+  transform: translate(8px, 10px) rotate(1.1deg);
+  background: linear-gradient(160deg, #e7dcc6, #cbbb9c);
+  box-shadow: 0 10px 24px rgba(20,17,13,.18);
+}
+
+/* ---- Tipografía grabada en el papel ----
+   La tapa de un pasaporte lleva el título estampado en seco, hundido
+   en el material. Una luz arriba y una sombra abajo (invertidas
+   respecto a una sombra normal) leen como relieve, no como texto
+   flotando sobre un fondo. */
+.cover-terreno {
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.34),
+    0 -1px 1px rgba(20,17,13,.34);
+}
+.cover-atodo {
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.3),
+    0 -1px 1px rgba(120,25,25,.3);
+}
+/* Reemplaza la sombra de caída genérica que traía el contenedor. */
+.cover-title { text-shadow: none; }
+
+/* ---- Fibra del papel ----
+   Grano fino y direccional sobre la tapa kraft: es lo que separa un
+   fondo de color de una superficie con material. */
+.paso--cover::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(93deg, rgba(120,90,50,.05) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(3deg,  rgba(255,255,255,.05) 0 1px, transparent 1px 4px);
+  mix-blend-mode: overlay;
+}
+
+/* ---- Luz cálida en la tapa ----
+   Una fuente de luz alta a la izquierda, coherente con la dirección
+   del grabado de arriba, y un oscurecimiento en los bordes: el papel
+   deja de verse plano. */
+.paso--cover::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 22% 8%, rgba(255,246,224,.3), transparent 55%),
+    radial-gradient(130% 100% at 50% 100%, transparent 60%, rgba(60,40,20,.22));
+}
+
+/* ---- Control de sonido ambiente ----
+   Tres barras que quedan quietas y bajas cuando está apagado, y suben
+   ondulando cuando suena: el estado se lee sin texto y sin iconos de
+   altavoz genéricos. */
+.ambiente {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 70;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 3px;
+  background: rgba(20,17,13,.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(243,238,226,.22);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .25s var(--ease-suave), border-color .25s var(--ease-suave), transform .25s var(--ease-resorte);
+}
+.ambiente:hover { background: rgba(20,17,13,.78); transform: scale(1.06); }
+.ambiente:focus-visible { outline: 3px solid var(--hueso); outline-offset: 3px; }
+.ambiente.is-on { border-color: var(--rojo-sobre-oscuro); }
+
+.ambiente__ondas { display: flex; align-items: center; gap: 3px; height: 16px; }
+.ambiente__ondas span {
+  display: block; width: 3px; height: 4px;
+  border-radius: 2px;
+  background: var(--arena-300);
+  transition: background .25s var(--ease-suave);
+}
+.ambiente.is-on .ambiente__ondas span {
+  background: var(--rojo-sobre-oscuro);
+  animation: ondear 1.5s ease-in-out infinite;
+}
+.ambiente.is-on .ambiente__ondas span:nth-child(2) { animation-delay: .22s; }
+.ambiente.is-on .ambiente__ondas span:nth-child(3) { animation-delay: .44s; }
+@keyframes ondear {
+  0%, 100% { height: 4px; }
+  50%      { height: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sin animación las barras se quedan altas: el estado "encendido"
+     tiene que seguir siendo visible. */
+  .ambiente.is-on .ambiente__ondas span { animation: none; height: 12px; }
+}

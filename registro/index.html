@@ -65,6 +65,15 @@
 
 <a class="skip-link" href="#manifiesto">Ir al pasaporte de registro</a>
 
+<!-- Sonido ambiente. Nace oculto y lo revela ambiente.js solo si el
+     navegador soporta Web Audio, para no ofrecer un control muerto. -->
+<button class="ambiente" id="ambienteToggle" type="button" aria-pressed="false"
+        aria-label="Activar sonido ambiente" hidden>
+  <span class="ambiente__ondas" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </span>
+</button>
+
 <div class="topbar" id="topbar" aria-hidden="true" hidden>
   <span class="topbar__wordmark"><em>A TODO</em> TERRENO</span>
   <span class="topbar__event">CONVENCIÓN 2026</span>
