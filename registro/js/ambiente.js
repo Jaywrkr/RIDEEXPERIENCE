@@ -126,6 +126,11 @@ function recordado() {
   }
 }
 
+// Se guarda la funcion de alternar para poder encender el ambiente desde
+// fuera (la bienvenida ofrece "entrar con sonido", y ese clic es el unico
+// permiso que el navegador acepta para reproducir audio).
+let alternarExterno = null;
+
 export function initAmbiente() {
   const boton = document.getElementById('ambienteToggle');
   if (!boton) return;
@@ -157,6 +162,7 @@ export function initAmbiente() {
   }
 
   boton.addEventListener('click', alternar);
+  alternarExterno = alternar;
   pintar();
 
   // Si ya lo había encendido antes, se respeta la preferencia — pero el
@@ -246,8 +252,12 @@ export function golpeDeSello() {
  * cualquier parte, así que un botón debajo sería inalcanzable, y uno por
  * encima cerraría la bienvenida sin querer al intentar usarlo.
  */
-export function mostrarAmbiente() {
+export function mostrarAmbiente({ encender = false } = {}) {
   const boton = document.getElementById('ambienteToggle');
   if (!boton || !(window.AudioContext || window.webkitAudioContext)) return;
   boton.hidden = false;
+  // Se enciende dentro del mismo turno del gesto que cerro la bienvenida:
+  // esperar mas (a un timeout, por ejemplo) haria que el navegador ya no
+  // lo considere una accion del usuario y bloquee el audio.
+  if (encender && !sonando) alternarExterno?.();
 }

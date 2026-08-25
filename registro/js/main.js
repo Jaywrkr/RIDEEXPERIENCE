@@ -12,9 +12,9 @@ import { initAmbiente, mostrarAmbiente } from './ambiente.js';
 initMotion();
 initAmbiente();
 initWelcome({
-  onDismissed: () => {
+  onDismissed: ({ conSonido } = {}) => {
     iniciarEntradaTapa();
-    mostrarAmbiente();
+    mostrarAmbiente({ encender: conSonido });
   },
 });
 initReveal();
