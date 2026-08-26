@@ -7,6 +7,7 @@ import { initMotion, iniciarEntradaTapa } from './motion.js';
 import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
 import { initRastroArena } from './rastro-arena.js';
 import { initEsquinaInvitacion } from './esquina-invitacion.js';
+import { initCompasReal } from './compas.js';
 import { initAgregarCalendario } from './calendario.js';
 
 // El movimiento se prepara antes que nada (parte las letras del título,
@@ -28,6 +29,7 @@ initHeroParallax();
 initSlideNav();
 initRastroArena();
 initEsquinaInvitacion();
+initCompasReal();
 initAgregarCalendario();
 
 let stopCountdown = null;
