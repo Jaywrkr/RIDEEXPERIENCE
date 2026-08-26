@@ -146,23 +146,32 @@ Chromium en `/opt/pw-browsers/chromium`.
   (`shineray-shm-logo-blanco.png`) sobre fondos oscuros. Mismo criterio en
   `admin/assets/`.
 
-## Pendiente real: la tipografía de texto
+## Tipografía: el diseño usa solo estas dos fuentes, a propósito
 
-Sigue sin llegar un peso de **DIN Pro** que no sea Black (900). El cliente
-reenvió los `.otf` dos veces creyendo que mandaba pesos nuevos; las dos
-veces resultaron ser **el mismo Discota-CondensedRough y el mismo
-DINPro-Black que ya estaban en el repo** (comparación MD5 byte a byte,
-confirmado). Quedan en el repo, sin usar, como posibles restos de
-limpieza:
+**Corrección (2026-08-26): esto NO es un pendiente.** Una sesión anterior
+asumió por su cuenta que "todo en negrita" era un problema a resolver y
+le pidió al cliente un peso DIN Pro Regular/Medium que nadie había
+pedido. El cliente confirmó que el diseño está definido con exactamente
+estas dos fuentes, ninguna más:
+
+- `Discota-CondensedRough` (titulares/display).
+- `DINPro-Black` (todo lo demás, peso 900).
+
+No pedir ni sugerir un tercer peso de fuente en sesiones futuras.
+
+Los dos `.otf` que el cliente reenvió dos veces (creyendo que se le
+pedía algo distinto) son duplicados idénticos —confirmado por hash MD5 y
+por los metadatos internos del propio archivo ("DIN Pro", estilo
+"Black")— de los que ya vive en `registro/assets/fonts/`. Quedan sueltos
+en el repo, sin usar, como restos de limpieza:
 
 - `assets/fonts/x` — archivo vacío, de un commit manual accidental.
 - `assets/fonts/Discota-CondensedRough (1).otf` y
   `assets/fonts/dinpro_black (1).otf` — duplicados idénticos de los que ya
   viven en `registro/assets/fonts/`.
 
-Hasta que llegue el peso Regular o Medium real, el texto corrido del sitio
-y del panel sigue forzado a DIN Pro Black en todas partes — es la causa de
-fondo del reclamo de "todo en negrita" y no tiene arreglo solo con CSS.
+Ver [`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md) para el detalle de
+si se pueden borrar.
 
 ## Decisiones de diseño que conviene no deshacer sin querer
 

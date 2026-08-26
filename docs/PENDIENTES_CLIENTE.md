@@ -4,25 +4,18 @@
 > de IA: cuentas, archivos, decisiones y ajustes que solo existen en el
 > panel de Vercel. Ordenadas por lo que más mueve la aguja.
 
-## 1. La fuente de texto — es lo que más impacto tiene
+## ~~1. La fuente de texto~~ — descartado, no es un pendiente real
 
-Hoy la única tipografía disponible para texto es **DIN Pro Black**, que es
-un peso **900**, de titular. Por eso todo el texto corrido, tanto del
-sitio como del panel, se lee como un muro de negritas: cuando todo pesa
-igual, nada destaca.
+**2026-08-26: confirmaste que el diseño está definido con exactamente dos
+fuentes** (`Discota-CondensedRough` para titulares y `DINPro-Black` para
+todo lo demás) **y que nunca pediste un peso Regular/Medium.** Ese
+"pendiente" lo había inventado una sesión anterior por su cuenta, no vos
+— queda descartado. No hace falta que reenvíes nada ni que aclares nada
+más sobre esto.
 
-Se compensó con más interlineado y limitando el ancho de lectura, pero es
-un parche. **Con DIN Pro Regular o Medium el proyecto entero mejora de
-golpe**, sin tocar nada más del diseño.
-
-⚠️ **Los dos archivos `.otf` que subiste hasta ahora ya estaban en el
-repo** — al compararlos byte a byte con lo que ya había, resultaron ser
-exactamente el mismo Discota-CondensedRough y el mismo DINPro-Black, no un
-peso nuevo. Es posible que el archivo de Regular/Medium no se haya llegado
-a adjuntar. Si volvés a subirlo, fijate que el nombre del archivo diga
-claramente el peso (por ejemplo `DINPro-Regular.otf` o
-`DINPro-Medium.otf`) para no confundirlo con el que ya está. Apenas
-llegue, son unos minutos de trabajo aplicarlo en los dos sitios.
+(Los dos `.otf` sueltos que habías reenviado siguen siendo duplicados
+idénticos de los que ya usa el sitio — ver el punto de archivos sueltos
+más abajo, en "Cierre", por si querés que los borre.)
 
 ## 2. Los despliegues automáticos ya están apagados ✅
 
