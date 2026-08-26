@@ -266,6 +266,14 @@
             <span class="field__error" id="err-email" role="alert"></span>
           </div>
 
+          <div class="field field--consentimiento">
+            <label class="consentimiento__label">
+              <input type="checkbox" id="consentimiento" name="consentimiento" required>
+              <span>Acepto que Shineray Motors use mis datos (nombre, correo, teléfono) para gestionar mi inscripción y contactarme sobre este evento.</span>
+            </label>
+            <span class="field__error" id="err-consentimiento" role="alert"></span>
+          </div>
+
           <div class="field field--dates-row" aria-hidden="true">
             <div class="field--dp">
               <label>Fecha de emisión <em>/ Date of issue</em></label>
@@ -420,6 +428,7 @@
     <dl class="confirmacion__datos">
       <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
     </dl>
+    <button type="button" class="boton-calendario" id="btnCalendario">+ Agregar a mi calendario</button>
     <p><strong>Importante:</strong> te enviaremos pistas clave del destino, activa tus notificaciones de correo a <strong id="confCorreo"></strong>.</p>
     <p>¡Y prepárate para vivir algo inolvidable!</p>
   </div>
@@ -458,5 +467,9 @@
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script type="module" src="js/main.js"></script>
+<!-- Vercel Web Analytics: hay que activarlo una vez en el dashboard del
+     proyecto (Settings → Analytics) para que empiece a recibir datos;
+     este script por si solo no lo enciende. -->
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

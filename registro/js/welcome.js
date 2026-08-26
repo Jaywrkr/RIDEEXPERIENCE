@@ -1,6 +1,8 @@
 // Bienvenida a pantalla completa: nubes de arena que se disipan al hacer clic,
 // revelando el resto del sitio debajo. Con reduced-motion, las nubes no
 // dibujan partículas y el CSS global ya colapsa las transiciones a instantáneas.
+import { trackEvent } from './analytics.js';
+
 function burstDust(canvas) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion || !canvas || !canvas.getContext || !canvas.parentElement) {
@@ -94,6 +96,7 @@ export function initWelcome({ onDismissed } = {}) {
 
     overlay.hidden = true;
     document.documentElement.classList.remove('no-scroll');
+    trackEvent('bienvenida_cerrada', { sonido: conSonido });
     onDismissed?.({ conSonido });
   }
 

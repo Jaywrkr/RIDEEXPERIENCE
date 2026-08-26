@@ -5,6 +5,7 @@ import { renderClues } from './clues.js';
 import { initWelcome } from './welcome.js';
 import { initMotion, iniciarEntradaTapa } from './motion.js';
 import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
+import { initAgregarCalendario } from './calendario.js';
 
 // El movimiento se prepara antes que nada (parte las letras del título,
 // engancha parallax y ondas) y la coreografía de la tapa arranca recién
@@ -23,6 +24,7 @@ initScrollCue();
 initTopbar();
 initHeroParallax();
 initSlideNav();
+initAgregarCalendario();
 
 let stopCountdown = null;
 
