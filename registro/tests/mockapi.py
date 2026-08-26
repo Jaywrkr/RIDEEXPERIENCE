@@ -114,14 +114,19 @@ class H(BaseHTTPRequestHandler):
             clave = dto["correo"].lower()
             if clave in registrados:
                 return self._json(409, {"message": "Este correo ya esta registrado en este evento."})
+            numero = len(registrados) + 1
             asistente = {
-                "id": f"asist-{len(registrados) + 1}",
+                "id": f"asist-{numero}",
                 "eventoId": evento_id,
                 "nombre": dto["nombre"],
                 "correo": dto["correo"],
                 "telefono": dto["telefono"],
                 "estado": "REGISTRADO",
                 "createdAt": "2026-08-25T00:00:00.000Z",
+                # Replica el correlativo real del backend (numero autoincremental
+                # + offset 1000, ver asistentes.service.ts): primer registro = ATT-1001.
+                "numero": numero,
+                "codigo": f"ATT-{1000 + numero}",
             }
             registrados[clave] = asistente
         return self._json(201, asistente)

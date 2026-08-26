@@ -6,14 +6,16 @@ import { EVENT_DATE } from './countdown.js';
 
 const TOTAL_STEPS = 3;
 
-// Genera un número de pasaporte decorativo para esta sesión (no es un
-// identificador real, es puramente narrativo — al asistente lo identifica
-// su correo en el backend).
+// Placeholder decorativo mientras se llena el pasaporte: el número real
+// (ATT-1001, ATT-1002...) lo asigna el backend en orden de registro recién
+// al sellar, así que hasta ese momento esto es puramente narrativo -- se
+// reemplaza por el definitivo apenas responde el servidor (ver el submit
+// más abajo).
 function generateSerial() {
-  const n = Math.floor(Math.random() * 999999)
+  const n = Math.floor(Math.random() * 9999)
     .toString()
-    .padStart(6, '0');
-  return `AT26-${n}`;
+    .padStart(4, '0');
+  return `ATT-${n}`;
 }
 
 // Arma una línea estilo MRZ (zona de lectura mecánica de un pasaporte real)
@@ -425,9 +427,18 @@ export function initPassportForm({ onSealed }) {
     };
 
     const sellarBtn = form.querySelector('.btn-sellar');
+    const sellarTexto = document.getElementById('btnSellarTexto');
     const errorEl = document.getElementById('err-sellar');
+    const textoOriginal = sellarTexto ? sellarTexto.textContent : '';
 
-    if (sellarBtn) sellarBtn.disabled = true;
+    // Entre este click y la respuesta del servidor puede pasar mas de un
+    // instante: disabled bloquea un segundo tap, y el spinner + "Sellando..."
+    // le confirman a la persona que el primero si se registro.
+    if (sellarBtn) {
+      sellarBtn.disabled = true;
+      sellarBtn.classList.add('is-loading');
+    }
+    if (sellarTexto) sellarTexto.textContent = 'Sellando...';
     if (errorEl) errorEl.textContent = '';
 
     let asistente;
@@ -436,10 +447,26 @@ export function initPassportForm({ onSealed }) {
       asistente = await Api.registrar(eventoId, datos);
     } catch (error) {
       if (errorEl) errorEl.textContent = error.message || 'No pudimos registrar tu pasaporte. Intenta de nuevo.';
-      if (sellarBtn) sellarBtn.disabled = false;
+      if (sellarBtn) {
+        sellarBtn.disabled = false;
+        sellarBtn.classList.remove('is-loading');
+      }
+      if (sellarTexto) sellarTexto.textContent = textoOriginal;
       sonidoError();
       return;
     }
+
+    // El numero de pasaporte real es secuencial y lo asigna el backend
+    // recien al registrar (ATT-1001, ATT-1002...); el que se mostraba
+    // hasta este punto era un decorativo de sesion. Si el backend todavia
+    // no manda "codigo" (despliegue viejo), se conserva el decorativo en
+    // vez de romper la pantalla de confirmacion.
+    const serialFinal = asistente?.codigo || serial;
+    if (serialEl) serialEl.textContent = serialFinal;
+    if (barcodeSerialEl) barcodeSerialEl.textContent = serialFinal;
+    renderBarcode(document.getElementById('barcodeBars'), serialFinal);
+    const resumenSerialEl = document.getElementById('resumenSerial');
+    if (resumenSerialEl) resumenSerialEl.textContent = serialFinal;
 
     trackEvent('registro_sellado');
     sealing = true;
@@ -463,7 +490,7 @@ export function initPassportForm({ onSealed }) {
     clearDraft();
 
     if (typeof onSealed === 'function') {
-      onSealed({ serial, asistente });
+      onSealed({ serial: serialFinal, asistente });
     }
   });
 

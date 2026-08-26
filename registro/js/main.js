@@ -37,7 +37,6 @@ let stopCountdown = null;
 function revealPostSello({ serial, asistente }) {
   const confirmacion = document.getElementById('confirmacion');
   const countdown = document.getElementById('countdown');
-  const pistas = document.getElementById('pistas');
   const confSerialEl = document.getElementById('confSerial');
   const confCorreoEl = document.getElementById('confCorreo');
 
@@ -46,7 +45,11 @@ function revealPostSello({ serial, asistente }) {
 
   if (confirmacion) confirmacion.hidden = false;
   if (countdown) countdown.hidden = false;
-  if (pistas) pistas.hidden = false;
+  // La sección de pistas ("#pistas") queda oculta por pedido del cliente
+  // hasta que las 3 pistas tengan contenido real -- por ahora las 3
+  // mostraban "SELLADA" de relleno. El elemento y clues.js quedan
+  // intactos en el HTML/JS para cuando se retome, simplemente no se
+  // revela acá.
 
   const navDot = document.getElementById('navDotConfirmacion');
   if (navDot) navDot.hidden = false;

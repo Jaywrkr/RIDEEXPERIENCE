@@ -43,7 +43,7 @@ export function initAgregarCalendario() {
   if (!boton) return;
 
   boton.addEventListener('click', () => {
-    const serial = document.getElementById('confSerial')?.textContent?.trim() || 'AT26';
+    const serial = document.getElementById('confSerial')?.textContent?.trim() || 'ATT';
     const ics = construirIcs({ serial });
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);

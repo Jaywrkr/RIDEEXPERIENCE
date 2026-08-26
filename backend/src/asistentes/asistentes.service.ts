@@ -3,6 +3,16 @@ import { EstadoRegistro, TipoNotificacion } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAsistenteDto } from './dto/create-asistente.dto';
 
+// El correlativo de la base de datos (1, 2, 3...) empieza en 1 porque asi
+// arranca cualquier secuencia de Postgres; el pasaporte visible arranca
+// en 1001 porque asi lo pidio el cliente. El offset vive en un solo
+// lugar para no repetirlo en cada método.
+const OFFSET_CODIGO = 1000;
+
+function conCodigo<T extends { numero: number }>(asistente: T): T & { codigo: string } {
+  return { ...asistente, codigo: `ATT-${OFFSET_CODIGO + asistente.numero}` };
+}
+
 @Injectable()
 export class AsistentesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -26,7 +36,7 @@ export class AsistentesService {
     // El registro crea de una vez la notificacion de confirmacion
     // (pendiente de envio, Semana 4 la conecta a un correo real) y, si el
     // evento ya tiene fechas de aviso configuradas, las otras dos.
-    return this.prisma.asistente.create({
+    const asistente = await this.prisma.asistente.create({
       data: {
         ...dto,
         eventoId,
@@ -55,13 +65,15 @@ export class AsistentesService {
         },
       },
     });
+    return conCodigo(asistente);
   }
 
   async listarPorEvento(eventoId: string) {
-    return this.prisma.asistente.findMany({
+    const asistentes = await this.prisma.asistente.findMany({
       where: { eventoId },
       orderBy: { createdAt: 'desc' },
     });
+    return asistentes.map(conCodigo);
   }
 
   async contarPorEvento(eventoId: string) {
@@ -78,7 +90,7 @@ export class AsistentesService {
     if (!asistente) {
       throw new NotFoundException('Asistente no encontrado en este evento.');
     }
-    return asistente;
+    return conCodigo(asistente);
   }
 
   // Check-in en la puerta el dia del evento. Alterna: si ya tenia
@@ -91,9 +103,10 @@ export class AsistentesService {
     if (!asistente) {
       throw new NotFoundException('Asistente no encontrado en este evento.');
     }
-    return this.prisma.asistente.update({
+    const actualizado = await this.prisma.asistente.update({
       where: { id: asistenteId },
       data: { llegadaEn: asistente.llegadaEn ? null : new Date() },
     });
+    return conCodigo(actualizado);
   }
 }
