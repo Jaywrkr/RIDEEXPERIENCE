@@ -1351,6 +1351,46 @@ input.invalid { border-bottom-color: var(--rojo); }
   pointer-events: none;
 }
 
+/* ---- Acabado holografico del sello ----
+   Un laminado de seguridad real cambia de color segun el angulo desde
+   el que se lo mira; esto imita eso con un barrido de tono continuo
+   enmascarado por la silueta del propio sello, asi que el brillo solo
+   aparece sobre la tinta roja y nunca se sale del dibujo.
+
+   .sello-stamp ya usa su propio ::after para el anillo de onda
+   (onda-sello, mas abajo en este archivo) -- por eso el holograma va en
+   un span propio (.sello-stamp__ink) alrededor de la imagen, en vez de
+   pisar ese pseudo-elemento. */
+.sello-stamp__ink { position: relative; display: block; }
+
+.sello-stamp__ink::after,
+.sello::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from 0deg,
+    #ff5da2, #ffb45e, #f4e26b, #6effc2, #5ec8ff, #b98bff, #ff5da2);
+  -webkit-mask-image: url("../assets/brand/sello-aventura-garantizada.png");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-image: url("../assets/brand/sello-aventura-garantizada.png");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mix-blend-mode: color-dodge;
+  opacity: .5;
+  pointer-events: none;
+  animation: holograma-giro 7s linear infinite;
+}
+@keyframes holograma-giro {
+  to { filter: hue-rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sello-stamp__ink::after, .sello::after { animation: none; }
+}
+
 .dust-canvas {
   position: absolute; inset: 0; z-index: 3;
   pointer-events: none;
