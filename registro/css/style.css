@@ -1366,9 +1366,17 @@ input.invalid { border-bottom-color: var(--rojo); }
   -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
 }
+/* El recorte de abajo se dimensiona en % del propio contenedor, no del
+   viewport: un cuadrado de 220% cubre el contenedor entero sin importar
+   su relación de aspecto, así que la duna rotada llena el panel igual
+   en un celular angosto que en un monitor ancho (antes, con "100vh",
+   la imagen quedaba angosta y flotando en vez de sangrar de punta a
+   punta en pantallas anchas). */
 .confirmacion__halftone img {
   position: absolute; top: 50%; left: 50%;
-  width: 100vh; max-width: none; height: auto;
+  width: 220%; height: 220%;
+  max-width: none;
+  object-fit: cover;
   transform: translate(-50%, -50%) rotate(-90deg);
 }
 
@@ -2127,13 +2135,6 @@ input.is-ok + .field__error::after {
   color: var(--rojo-dark);
   letter-spacing: .16em;
   position: relative;
-}
-.visado__clasificado::after {
-  content: "";
-  position: absolute; left: 0; right: 12%; top: 52%;
-  height: 2px;
-  background: var(--rojo-dark);
-  opacity: .75;
 }
 
 .visado__datos--viaje {
