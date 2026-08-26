@@ -1,7 +1,8 @@
 # Próximas fases
 
-> Última actualización: 2026-08-25. Ver
-> [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) para la foto completa del repo.
+> Última actualización: 2026-08-26. Ver
+> [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) para la foto completa del repo,
+> incluidas las reglas permanentes del cliente (fecha del evento, logo).
 
 ## Lo primero que debería hacer una sesión nueva
 
@@ -12,23 +13,35 @@
   ```
   Debe dar 43/43. Si no da, eso es lo primero a resolver.
 
-- [ ] **Revisar en qué rama está el trabajo.** Al cierre de esta sesión el
-  historial iba en ramas por fase (`fase-1-identidad` … `fase-6-admin`),
-  encadenadas entre sí, que el usuario mergea a mano con un PR por fase.
-  Las fases 1 a 5 **ya están mergeadas y en producción**; la 6 (panel
-  administrativo) quedó pusheada esperando PR.
+- [ ] **Revisar en qué rama está el trabajo.** El flujo normal es: una
+  rama `fase-N-descriptivo` por tanda de cambios, que el usuario mergea a
+  mano con un PR. La única excepción fue el 2026-08-26, cuando el usuario
+  pidió mergear directamente las 7 ramas de "wow factor" visual
+  (`fase-7`…`fase-13`) sin pasar por PR individual — ya está hecho, no
+  repetir ese patrón sin que lo pida de nuevo.
 
 ## Lo más importante que queda pendiente
 
-- [ ] **Conseguir un peso de texto de DIN Pro.** Hoy el único tipo
-  disponible para texto es **DIN Pro Black, un peso 900**, así que todo el
-  texto corrido —del sitio y del panel— se lee como un muro de negritas.
-  Se compensó con interlineado y medida de lectura, pero es un parche. Con
-  **DIN Pro Regular o Medium** el proyecto entero da un salto inmediato.
-  Es el cambio de mayor impacto que queda. Al llegar el archivo: sumarlo a
-  `registro/assets/fonts/` y `admin/assets/fonts/`, declarar el
-  `@font-face` y apuntar `--font-mono` (sitio) y `--fuente` (panel) al
-  peso nuevo, dejando el Black solo para titulares y botones.
+- [ ] **Conseguir un peso de texto de DIN Pro que no sea Black.** Hoy el
+  único tipo disponible para texto es **DIN Pro Black, un peso 900**, así
+  que todo el texto corrido —del sitio y del panel— se lee como un muro de
+  negritas. El cliente ya reenvió los `.otf` dos veces pidiendo esto
+  explícitamente ("no solo en negrita", "fuente oficial"), pero **las dos
+  veces resultaron ser bytes idénticos a los archivos que ya estaban en el
+  repo** (mismo Discota-CondensedRough, mismo DINPro-Black) — no llegó
+  ningún peso nuevo todavía. Con **DIN Pro Regular o Medium** el proyecto
+  entero da un salto inmediato; es el cambio de mayor impacto que queda.
+  Al llegar el archivo real: sumarlo a `registro/assets/fonts/` y
+  `admin/assets/fonts/`, declarar el `@font-face` y apuntar `--font-mono`
+  (sitio) y `--fuente` (panel) al peso nuevo, dejando el Black solo para
+  titulares y botones.
+
+- [ ] **Limpiar los archivos de fuente duplicados/sueltos** que quedaron
+  de los dos reenvíos fallidos: `assets/fonts/x` (vacío, de un commit
+  manual), `assets/fonts/Discota-CondensedRough (1).otf` y
+  `assets/fonts/dinpro_black (1).otf` (duplicados byte a byte de los que
+  ya están en `registro/assets/fonts/`). Confirmar con el cliente antes de
+  borrar, por si acaso.
 
 - [x] ~~Frenar los despliegues automáticos.~~ **Resuelto desde el repo**:
   cada proyecto tiene un `vercel.json` con
@@ -104,3 +117,15 @@
   `label` en todo campo.
 - ✅ Service worker arreglado: la caché no se versionaba, así que los
   visitantes recurrentes habrían seguido viendo el sitio viejo.
+- ✅ **7 fases de "wow factor" visual** mergeadas a la rama por defecto
+  (2026-08-26): tilt de giroscopio, mecanografiado del MRZ, sello
+  holográfico, rastro de arena en la tapa, parallax de montañas, ondas de
+  clic y más. Probadas juntas de punta a punta, sin errores de consola.
+- ✅ **Logo rojo de Shineray reemplazado en todo el sitio** por las
+  variantes negra/blanca según el fondo (`registro/index.html`,
+  `admin/dashboard.html`, `admin/index.html`).
+- ✅ **Pantalla de bienvenida rehecha** (2026-08-26): se quitaron las 5
+  masas de polvo animadas en bucle infinito (`filter: blur()` continuo,
+  la causa de la lentitud reportada) y se reemplazaron por el mismo fondo
+  fijo de textura de arena + dunas de semitono que usa la tapa del
+  pasaporte, replicando el gráfico de referencia del cliente.

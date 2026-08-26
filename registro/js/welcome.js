@@ -1,6 +1,6 @@
-// Bienvenida a pantalla completa: nubes de arena que se disipan al hacer clic,
-// revelando el resto del sitio debajo. Con reduced-motion, las nubes no
-// dibujan partículas y el CSS global ya colapsa las transiciones a instantáneas.
+// Bienvenida a pantalla completa: un estallido de polvo se dispara al hacer
+// clic, revelando el resto del sitio debajo. Con reduced-motion no se dibujan
+// partículas y el CSS global ya colapsa las transiciones a instantáneas.
 import { trackEvent } from './analytics.js';
 import { solicitarPermisoOrientacion } from './orientacion.js';
 

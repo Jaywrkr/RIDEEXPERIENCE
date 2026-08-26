@@ -1,11 +1,11 @@
 # Estado actual del repositorio (RIDEEXPERIENCE)
 
-> Última actualización: 2026-08-25. Este documento existe para que
+> Última actualización: 2026-08-26. Este documento existe para que
 > cualquier sesión nueva (de IA o de persona) pueda retomar el trabajo sin
 > depender del historial de chat anterior. **Reemplaza la versión del
-> 2026-08-24**, que ya no describe el sistema: desde entonces se retiró la
-> cédula, se rehizo el diseño con la marca real y se agregó una suite de
-> pruebas.
+> 2026-08-25**: desde entonces se apagaron los despliegues automáticos, se
+> mergearon las 7 fases de "wow factor" visual, se corrigió el logo rojo
+> en todo el sitio y se rehizo la pantalla de bienvenida.
 
 ## Qué es esto
 
@@ -25,16 +25,18 @@ lugar. Hay un panel administrativo aparte para el equipo organizador.
 Rama por defecto del repo: **`claude/las-tanusas-landing-8ttqff`**. No
 existe `main`.
 
-## ⚠️ Cada push despliega. No hay freno puesto.
+## ✅ Los despliegues automáticos están apagados
 
-Verificado contra la API de Vercel el 2026-08-25:
+Cada uno de los tres proyectos (`atodoterreno`, `rideexperience-admin`,
+`rideexperience-api`) tiene un `vercel.json` con
+`{ "git": { "deploymentEnabled": false } }`. **Ningún push, en ninguna
+rama, dispara un build.** Mergear código a la rama por defecto ya NO lo
+saca a producción por sí solo.
 
-- Un push a **cualquier rama** crea un *preview deployment*.
-- Un merge a la rama por defecto crea un **deploy a producción real**.
-
-Se documentó como pendiente configurar el **Ignored Build Step** (`exit 0`
-en Settings → Git de cada proyecto) para frenarlo, pero **no se aplicó**.
-Mientras siga así, hay que asumir que todo lo que se mergea sale al aire.
+Para que un cambio llegue a producción hace falta un paso manual después
+del merge: botón **"Redeploy"** en Vercel, o un **Deploy Hook**. Ver
+[`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) y
+[`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md#2-los-despliegues-automáticos-ya-están-apagados-).
 
 ## Proyectos de Vercel
 
@@ -128,6 +130,39 @@ Chromium en `/opt/pw-browsers/chromium`.
 > `rideexperience-api.vercel.app`, por eso las pruebas corren contra el
 > backend local. Si se cambian las reglas de validación del backend, hay
 > que cambiarlas en `tests/mockapi.py` **y** en `registro/js/validacion.js`.
+
+## ⚠️ Reglas permanentes del cliente (no cambiar nunca sin que lo pida)
+
+- **La fecha del evento es el 25 de septiembre de 2026, no el 27.** Fuente
+  única: `EVENT_DATE` en `registro/js/countdown.js`
+  (`2026-09-25T09:00:00-05:00`). Cualquier otro lugar que necesite "la
+  fecha del evento" debe importar esa constante, no escribirla de nuevo.
+  (El rango ENTRADA/SALIDA de la hoja de visado y el fin del evento en el
+  `.ics` del calendario sí van del 25 al 27 a propósito: es un rango de
+  varios días, no "la" fecha.)
+- **Nunca usar el logo de Shineray en rojo** (`shineray-shm-logo.png`) en
+  ningún lugar del sitio ni del panel. Usar la variante negra
+  (`shineray-shm-logo-negro.png`) sobre fondos claros y la blanca
+  (`shineray-shm-logo-blanco.png`) sobre fondos oscuros. Mismo criterio en
+  `admin/assets/`.
+
+## Pendiente real: la tipografía de texto
+
+Sigue sin llegar un peso de **DIN Pro** que no sea Black (900). El cliente
+reenvió los `.otf` dos veces creyendo que mandaba pesos nuevos; las dos
+veces resultaron ser **el mismo Discota-CondensedRough y el mismo
+DINPro-Black que ya estaban en el repo** (comparación MD5 byte a byte,
+confirmado). Quedan en el repo, sin usar, como posibles restos de
+limpieza:
+
+- `assets/fonts/x` — archivo vacío, de un commit manual accidental.
+- `assets/fonts/Discota-CondensedRough (1).otf` y
+  `assets/fonts/dinpro_black (1).otf` — duplicados idénticos de los que ya
+  viven en `registro/assets/fonts/`.
+
+Hasta que llegue el peso Regular o Medium real, el texto corrido del sitio
+y del panel sigue forzado a DIN Pro Black en todas partes — es la causa de
+fondo del reclamo de "todo en negrita" y no tiene arreglo solo con CSS.
 
 ## Decisiones de diseño que conviene no deshacer sin querer
 
