@@ -1410,11 +1410,9 @@ input.invalid { border-bottom-color: var(--rojo); }
 
 /* ========================= CONFIRMACIÓN ========================= */
 
-/* Contraportada del pasaporte: arena + duna de semitono rojo sangrando
-   desde el borde izquierdo + logo, calcada de la lámina de referencia
-   del cliente. Se reutiliza el mismo activo de semitono de la tapa
-   (montanas-halftone-alt.png), rotado -90° para que la silueta que
-   antes subía desde abajo ahora entre desde la izquierda. */
+/* Contraportada del pasaporte: solo arena + logo, sin la duna de
+   semitono rojo de las demás pantallas -- aquí compite con el sello y
+   el titular en un espacio ya cargado. */
 .confirmacion {
   position: relative;
   overflow: hidden;
@@ -1445,29 +1443,6 @@ input.invalid { border-bottom-color: var(--rojo); }
 .confirmacion__content {
   width: 100%;
   max-width: 31rem;
-}
-
-.confirmacion__halftone {
-  position: absolute; z-index: -1;
-  left: 0; top: 0;
-  width: 34%; height: 62%;
-  overflow: hidden;
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
-}
-/* El recorte de abajo se dimensiona en % del propio contenedor, no del
-   viewport: un cuadrado de 220% cubre el contenedor entero sin importar
-   su relación de aspecto, así que la duna rotada llena el panel igual
-   en un celular angosto que en un monitor ancho (antes, con "100vh",
-   la imagen quedaba angosta y flotando en vez de sangrar de punta a
-   punta en pantallas anchas). */
-.confirmacion__halftone img {
-  position: absolute; top: 50%; left: 50%;
-  width: 220%; height: 220%;
-  max-width: none;
-  object-fit: cover;
-  transform: translate(-50%, -50%) rotate(-90deg);
 }
 
 .confirmacion__logo {
