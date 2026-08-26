@@ -336,6 +336,15 @@ export function sonidoPagina() {
   fuente.start(t);
 }
 
+/** Tecla del MRZ imprimiéndose: mismo material que el roce, más seco y
+ *  agudo, como el cabezal de una impresora de matriz de puntos. Se llama
+ *  una vez por cada grupo de caracteres, no por cada uno: a la cadencia
+ *  del efecto le sobra ritmo, no le falta. */
+export function sonidoTecla() {
+  if (!puedeSonar()) return;
+  pulso({ frecuencia: 3400, duracion: 0.02, volumen: 0.045, q: 1.1, tipo: 'highpass' });
+}
+
 /** Aviso de error: dos golpes graves, sin nota musical. */
 export function sonidoError() {
   if (!puedeSonar()) return;

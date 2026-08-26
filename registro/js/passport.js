@@ -1,5 +1,5 @@
 import { initValidacion } from './validacion.js';
-import { golpeDeSello, sonidoPagina, sonidoError } from './ambiente.js';
+import { golpeDeSello, sonidoPagina, sonidoError, sonidoTecla } from './ambiente.js';
 import { trackEvent } from './analytics.js';
 import { initTiltGiroscopio } from './orientacion.js';
 
@@ -37,6 +37,36 @@ function generateMrz({ nombre, serial }) {
   const line2 = `${serialDigits}ECU2609258STD<<<<<<<<<<<<<<`.slice(0, 36);
 
   return `${line1}\n${line2}`;
+}
+
+// Un contador de llamadas evita que dos ejecuciones superpuestas (si se
+// vuelve a llegar al paso 3 mientras la anterior todavia estaba
+// escribiendo) sigan escribiendo sobre el mismo elemento a la vez.
+let mrzToken = 0;
+
+// El MRZ aparece caracter por caracter, como si se estuviera imprimiendo
+// en el momento -- en vez de aparecer entero, que se lee como texto que
+// ya estaba ahi. Con reduced-motion va directo al texto completo.
+function escribirMrz(el, texto) {
+  if (!el) return;
+  const token = ++mrzToken;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = texto;
+    return;
+  }
+
+  el.textContent = '';
+  let i = 0;
+  function siguiente() {
+    if (token !== mrzToken) return; // una escritura mas nueva la reemplazo
+    if (i >= texto.length) return;
+    el.textContent += texto[i];
+    if (i % 3 === 0 && texto[i] !== '\n') sonidoTecla();
+    i += 1;
+    setTimeout(siguiente, 12 + Math.random() * 10);
+  }
+  siguiente();
 }
 
 // La validacion del paso 2 vive en validacion.js: antes aqui solo se
@@ -287,7 +317,7 @@ export function initPassportForm({ onSealed }) {
       asignar('resumenTelefono', telefono);
       asignar('resumenSerial', serial);
       const mrzEl = document.getElementById('pasaporteMrz');
-      if (mrzEl) mrzEl.textContent = generateMrz({ nombre, serial });
+      escribirMrz(mrzEl, generateMrz({ nombre, serial }));
     }
   }
 
