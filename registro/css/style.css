@@ -1873,6 +1873,42 @@ input.invalid { border-bottom-color: var(--rojo); }
     radial-gradient(130% 100% at 50% 100%, transparent 60%, rgba(60,40,20,.22));
 }
 
+/* ---- Esquina que invita a tocar ----
+   Si nadie interactua, la esquina inferior derecha se despega un
+   instante y vuelve a su lugar: el gesto universal de "esto se puede
+   tocar", sin decir una palabra. .paso--cover tiene overflow:hidden,
+   asi que en vez de sacarla de la caja se simula el despegue con
+   escala + sombra, anclado en la propia esquina. */
+.cover-esquina {
+  position: absolute;
+  right: 0; bottom: 0; z-index: 3;
+  width: 2.6rem; height: 2.6rem;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background: linear-gradient(135deg, rgba(224,205,172,.95), rgba(120,90,50,.65));
+  transform-origin: bottom right;
+  pointer-events: none;
+}
+.cover-esquina.is-inviting {
+  animation: despegar-esquina 1.8s var(--ease-salida);
+}
+@keyframes despegar-esquina {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+  }
+  35% {
+    transform: scale(1.2) rotate(-7deg) translate(-4px, -4px);
+    filter: drop-shadow(-3px -3px 5px rgba(0,0,0,.35));
+  }
+  62% {
+    transform: scale(1.06) rotate(-2deg) translate(-1px, -1px);
+    filter: drop-shadow(-2px -2px 3px rgba(0,0,0,.22));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-esquina { display: none; }
+}
+
 /* ---- Control de sonido ambiente ----
    Tres barras que quedan quietas y bajas cuando está apagado, y suben
    ondulando cuando suena: el estado se lee sin texto y sin iconos de
