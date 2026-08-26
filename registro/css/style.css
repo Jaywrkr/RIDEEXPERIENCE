@@ -798,6 +798,9 @@ body::after {
   perspective: 1600px;
   transform-style: preserve-3d;
   will-change: transform;
+  /* Suaviza el ruido del giroscopio (el mouse ya se sentia bien sin
+     esto, pero el sensor entrega lecturas mas nerviosas). */
+  transition: transform .15s ease-out;
 }
 
 .paso {

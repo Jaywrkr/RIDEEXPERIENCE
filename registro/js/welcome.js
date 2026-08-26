@@ -2,6 +2,7 @@
 // revelando el resto del sitio debajo. Con reduced-motion, las nubes no
 // dibujan partículas y el CSS global ya colapsa las transiciones a instantáneas.
 import { trackEvent } from './analytics.js';
+import { solicitarPermisoOrientacion } from './orientacion.js';
 
 function burstDust(canvas) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -87,6 +88,11 @@ export function initWelcome({ onDismissed } = {}) {
   async function dismiss(conSonido = false) {
     if (dismissing) return;
     dismissing = true;
+
+    // El permiso del giroscopio en iOS solo se puede pedir dentro de un
+    // gesto del usuario -- este clic es el unico que hay antes de que el
+    // pasaporte, que es quien lo usa, aparezca en pantalla.
+    solicitarPermisoOrientacion();
 
     overlay.classList.add('is-dispersing');
     await Promise.all([

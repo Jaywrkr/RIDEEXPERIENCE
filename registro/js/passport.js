@@ -1,6 +1,7 @@
 import { initValidacion } from './validacion.js';
 import { golpeDeSello, sonidoPagina, sonidoError } from './ambiente.js';
 import { trackEvent } from './analytics.js';
+import { initTiltGiroscopio } from './orientacion.js';
 
 const TOTAL_STEPS = 3;
 
@@ -158,20 +159,28 @@ function initBookTilt(frame) {
   const MAX_TILT = 7;
   const sheen = document.getElementById('pasaporteSheen');
 
-  frame.addEventListener('mousemove', (event) => {
-    const rect = frame.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width - 0.5;
-    const py = (event.clientY - rect.top) / rect.height - 0.5;
+  function aplicarTilt(px, py) {
     frame.style.transform = `rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg)`;
     if (sheen) {
       sheen.style.setProperty('--sheen-x', `${((px + 0.5) * 100).toFixed(1)}%`);
       sheen.style.setProperty('--sheen-y', `${((py + 0.5) * 100).toFixed(1)}%`);
     }
+  }
+
+  frame.addEventListener('mousemove', (event) => {
+    const rect = frame.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    aplicarTilt(px, py);
   });
 
   frame.addEventListener('mouseleave', () => {
     frame.style.transform = '';
   });
+
+  // En movil no hay mousemove: el mismo tilt lo maneja el giroscopio,
+  // como si el pasaporte fuera un objeto real que se puede inclinar.
+  initTiltGiroscopio(aplicarTilt);
 }
 
 const STEP_CAPTIONS = {
