@@ -55,7 +55,7 @@
   <canvas id="welcomeDustCanvas" class="welcome__canvas" aria-hidden="true"></canvas>
 
   <div class="welcome__content">
-    <img class="welcome__brand" src="assets/brand/shineray-shm-logo.png" alt="Shineray SHM" width="208" height="36" loading="eager">
+    <img class="welcome__brand" src="assets/brand/shineray-shm-logo-blanco.png" alt="Shineray SHM" width="208" height="36" loading="eager">
     <p class="overline">CONVENCIÓN NACIONAL 2026</p>
     <h1 class="welcome__title" id="welcomeTitle">
       <span class="welcome__bienvenido">BIENVENIDO</span>
@@ -112,7 +112,7 @@
   <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
   <div class="hero__content">
     <p class="overline">CONVENCIÓN NACIONAL SHINERAY</p>
-    <img class="brand-mark" src="assets/brand/shineray-shm-logo.png" alt="Shineray SHM" width="220" height="38" loading="eager">
+    <img class="brand-mark" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="220" height="38" loading="eager">
     <h1 class="hero__title">A TODO<br>TERRENO</h1>
     <p class="hero__sub">CONVENCIÓN NACIONAL 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
     <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Baja y empieza a entender por qué.</p>
@@ -442,12 +442,23 @@
       <span class="confirmacion__bajada">¿El destino? Secreto hasta tu llegada.</span>
     </h2>
     <p>Consulta con tu asesor el lugar de embarque.</p>
-    <dl class="confirmacion__datos">
-      <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
-    </dl>
-    <button type="button" class="boton-calendario" id="btnCalendario">+ Agregar a mi calendario</button>
-    <p><strong>Importante:</strong> te enviaremos pistas clave del destino, activa tus notificaciones de correo a <strong id="confCorreo"></strong>.</p>
-    <p>¡Y prepárate para vivir algo inolvidable!</p>
+
+    <span class="confirmacion__divisor" aria-hidden="true"></span>
+
+    <div class="confirmacion__accion">
+      <dl class="confirmacion__datos">
+        <div><dt>Pasaporte N.º</dt><dd id="confSerial">—</dd></div>
+      </dl>
+      <button type="button" class="boton-calendario" id="btnCalendario">+ Agregar a mi calendario</button>
+    </div>
+
+    <span class="confirmacion__divisor" aria-hidden="true"></span>
+
+    <p class="confirmacion__cierre">
+      <strong>Importante:</strong> te enviaremos pistas clave del destino, activa tus notificaciones de correo a <strong id="confCorreo"></strong>.
+      <br><br>
+      ¡Y prepárate para vivir algo inolvidable!
+    </p>
   </div>
 </section>
 

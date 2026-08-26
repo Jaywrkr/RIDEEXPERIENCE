@@ -2,6 +2,7 @@ import { initValidacion } from './validacion.js';
 import { golpeDeSello, sonidoPagina, sonidoError, sonidoTecla } from './ambiente.js';
 import { trackEvent } from './analytics.js';
 import { initTiltGiroscopio } from './orientacion.js';
+import { EVENT_DATE } from './countdown.js';
 
 const TOTAL_STEPS = 3;
 
@@ -277,7 +278,9 @@ export function initPassportForm({ onSealed }) {
   const fechaEmisionEl = document.getElementById('fechaEmision');
   if (fechaEmisionEl) fechaEmisionEl.textContent = formatFecha(new Date());
   const fechaExpiracionEl = document.getElementById('fechaExpiracion');
-  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(new Date('2026-09-27T09:00:00-05:00'));
+  // La fecha del evento es el 25 de septiembre y no cambia: se importa
+  // de countdown.js (fuente unica) en vez de escribirla de nuevo aqui.
+  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(EVENT_DATE);
 
   initBookTilt(document.querySelector('.pasaporte__pageframe'));
 
