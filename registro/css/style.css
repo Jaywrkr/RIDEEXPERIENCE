@@ -981,7 +981,7 @@ body::after {
 .cover-brand {
   position: relative; z-index: 1;
   display: block;
-  width: clamp(9rem, 40%, 12rem);
+  width: clamp(10.5rem, 62%, 15rem);
   height: auto;
   margin: .4rem auto 0;
 }
@@ -1546,9 +1546,24 @@ input.invalid { border-bottom-color: var(--rojo); }
 
 .confirmacion p { max-width: 30rem; margin: 0 auto 1rem; line-height: 1.6; }
 
+/* La pantalla mezclaba titular, dato practico y cierre todo pegado,
+   uno atras del otro sin aire -- con todo el texto en el mismo peso
+   de fuente (Black), sin esa separacion se leia como un solo bloque
+   apretado. Un divisor fino entre cada grupo (emocion / dato / cierre)
+   hace el trabajo que en otro sitio haria el cambio de peso. */
+.confirmacion__divisor {
+  display: block;
+  width: 3rem;
+  height: 1.5px;
+  margin: 1.6rem auto;
+  background: rgba(20,17,13,.18);
+}
+
+.confirmacion__accion { margin: 0 auto; }
+
 .confirmacion__datos {
   display: inline-flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;
-  margin: .5rem 0 0;
+  margin: 0;
   padding: 1rem 1.75rem;
   background: var(--hueso);
   border: 1px solid rgba(20,17,13,.15);
@@ -1577,9 +1592,14 @@ input.invalid { border-bottom-color: var(--rojo); }
   color: var(--tinta);
   border: 1.5px solid rgba(20,17,13,.3);
   padding: .7rem 1.4rem;
-  margin: 1.1rem auto;
+  margin: 1.2rem auto 0;
   cursor: pointer;
   transition: background .2s var(--ease), transform .15s var(--ease);
+}
+
+.confirmacion__cierre {
+  font-size: .92rem;
+  opacity: .85;
 }
 .boton-calendario:hover { background: rgba(20,17,13,.05); transform: translateY(-1px); }
 .boton-calendario:active { transform: scale(.97); }
@@ -2211,7 +2231,7 @@ input.is-ok + .field__error::after {
 
 .cover-wordmark {
   display: block;
-  width: min(78%, 17rem);
+  width: min(94%, 22rem);
   height: auto;
   margin: 0 auto;
   /* Grabado en seco sobre el papel kraft: el relieve va al contorno de
