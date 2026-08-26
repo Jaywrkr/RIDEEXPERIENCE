@@ -1357,6 +1357,18 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .confirmacion.is-visible { opacity: 1; transform: translateY(0); }
 
+/* En los pasos 1-3 el contenido vive dentro de la hoja (.pasaporte,
+   max-width: 31rem) sobre un fondo de arena a todo lo ancho: por eso
+   se leen bien en cualquier tamaño de pantalla. La confirmación no
+   tenía ese marco -- el texto quedaba suelto en todo el viewport y en
+   pantallas anchas se veía perdido, flotando en un campo de arena
+   vacío. Se repite el mismo max-width para que sea, visualmente, la
+   pagina siguiente del mismo documento. */
+.confirmacion__content {
+  width: 100%;
+  max-width: 31rem;
+}
+
 .confirmacion__halftone {
   position: absolute; z-index: -1;
   left: 0; top: 0;
