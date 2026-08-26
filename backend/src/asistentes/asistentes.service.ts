@@ -1,21 +1,18 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EstadoRegistro, TipoNotificacion } from '@prisma/client';
+import { NotificacionesService } from '../notificaciones/notificaciones.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { conCodigo } from './codigo.util';
 import { CreateAsistenteDto } from './dto/create-asistente.dto';
-
-// El correlativo de la base de datos (1, 2, 3...) empieza en 1 porque asi
-// arranca cualquier secuencia de Postgres; el pasaporte visible arranca
-// en 1001 porque asi lo pidio el cliente. El offset vive en un solo
-// lugar para no repetirlo en cada método.
-const OFFSET_CODIGO = 1000;
-
-function conCodigo<T extends { numero: number }>(asistente: T): T & { codigo: string } {
-  return { ...asistente, codigo: `ATT-${OFFSET_CODIGO + asistente.numero}` };
-}
 
 @Injectable()
 export class AsistentesService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(AsistentesService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificaciones: NotificacionesService,
+  ) {}
 
   async registrar(eventoId: string, dto: CreateAsistenteDto) {
     const evento = await this.prisma.evento.findUnique({ where: { id: eventoId } });
@@ -65,6 +62,28 @@ export class AsistentesService {
         },
       },
     });
+
+    // El correo de confirmacion se dispara ahora mismo, DENTRO de esta
+    // misma invocacion, en vez de esperar al cron: en el deploy serverless
+    // de Vercel el proceso muere apenas se responde la request (sin
+    // "esperar de fondo" como en un servidor tradicional), asi que un
+    // fire-and-forget sin await se arriesga a que Vercel mate la funcion
+    // antes de que el correo salga. Y el cron de notificaciones corre una
+    // sola vez por dia (ver backend/vercel.json) -- sin este await, la
+    // persona podria esperar hasta 24hs por un correo que tiene que
+    // sentirse inmediato.
+    //
+    // Un fallo de correo (Resend caido, typo en el dominio, etc.) no debe
+    // tumbar el registro, que ya quedo guardado en la base: por eso el
+    // try/catch, aunque procesarPendientes ya atrapa el error por
+    // notificacion individualmente y la deja en FALLIDA para que el cron
+    // diario la reintente.
+    try {
+      await this.notificaciones.procesarPendientes();
+    } catch (error) {
+      this.logger.error(`No se pudo procesar notificaciones tras el registro: ${(error as Error).message}`);
+    }
+
     return conCodigo(asistente);
   }
 

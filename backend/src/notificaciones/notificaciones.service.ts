@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EstadoNotificacion, TipoNotificacion } from '@prisma/client';
+import { conCodigo } from '../asistentes/codigo.util';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailerService } from './mailer.service';
 import { PlantillasCorreo } from './templates/correos';
@@ -49,6 +50,7 @@ export class NotificacionesService {
         nombreAsistente: notificacion.asistente.nombre,
         evento: notificacion.evento,
         sitioUrl,
+        codigo: conCodigo(notificacion.asistente).codigo,
       });
 
       try {
