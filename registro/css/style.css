@@ -923,6 +923,16 @@ body::after {
   pointer-events: none;
 }
 
+/* Rastro de arena: un dedo arrastrandose por la tapa deja granos que se
+   asientan, como trazar en arena de verdad. pointer-events:none para
+   que nunca robe el toque al boton de la propia tapa -- el listener
+   real vive en .paso--cover, que sigue recibiendo el gesto igual. */
+.cover-arena {
+  position: absolute; inset: 0; z-index: 2;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
 /* Dunas de semitono rojo con camino de arena, ancladas al pie de la tapa */
 .cover-dunes {
   position: absolute; z-index: 0;
