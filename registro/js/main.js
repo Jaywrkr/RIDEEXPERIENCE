@@ -6,6 +6,7 @@ import { initWelcome } from './welcome.js';
 import { initMotion, iniciarEntradaTapa } from './motion.js';
 import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
 import { initRastroArena } from './rastro-arena.js';
+import { initEsquinaInvitacion } from './esquina-invitacion.js';
 import { initAgregarCalendario } from './calendario.js';
 
 // El movimiento se prepara antes que nada (parte las letras del título,
@@ -26,6 +27,7 @@ initTopbar();
 initHeroParallax();
 initSlideNav();
 initRastroArena();
+initEsquinaInvitacion();
 initAgregarCalendario();
 
 let stopCountdown = null;
