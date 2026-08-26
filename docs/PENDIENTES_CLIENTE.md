@@ -1,6 +1,6 @@
 # Pendientes para vos
 
-> Última actualización: 2026-08-25. Cosas que no puede resolver una sesión
+> Última actualización: 2026-08-26. Cosas que no puede resolver una sesión
 > de IA: cuentas, archivos, decisiones y ajustes que solo existen en el
 > panel de Vercel. Ordenadas por lo que más mueve la aguja.
 
@@ -15,8 +15,14 @@ Se compensó con más interlineado y limitando el ancho de lectura, pero es
 un parche. **Con DIN Pro Regular o Medium el proyecto entero mejora de
 golpe**, sin tocar nada más del diseño.
 
-Si conseguís el archivo `.otf`, subilo al repo y avisá: son unos minutos
-de trabajo aplicarlo en los dos sitios.
+⚠️ **Los dos archivos `.otf` que subiste hasta ahora ya estaban en el
+repo** — al compararlos byte a byte con lo que ya había, resultaron ser
+exactamente el mismo Discota-CondensedRough y el mismo DINPro-Black, no un
+peso nuevo. Es posible que el archivo de Regular/Medium no se haya llegado
+a adjuntar. Si volvés a subirlo, fijate que el nombre del archivo diga
+claramente el peso (por ejemplo `DINPro-Regular.otf` o
+`DINPro-Medium.otf`) para no confundirlo con el que ya está. Apenas
+llegue, son unos minutos de trabajo aplicarlo en los dos sitios.
 
 ## 2. Los despliegues automáticos ya están apagados ✅
 
@@ -91,6 +97,11 @@ Dos cosas que se construyeron pero **nadie experimentó todavía**:
       raíz del repo). Su proyecto de Vercel ya está pausado y no molesta.
       Borrar el código sí requiere tu confirmación: esa base puede tener
       inscripciones reales de gente que usó un código.
+- [ ] **Confirmar si se pueden borrar los archivos de fuente sueltos**
+      `assets/fonts/x` (vacío) y `assets/fonts/Discota-CondensedRough
+      (1).otf` / `assets/fonts/dinpro_black (1).otf` (duplicados de los
+      que ya usa el sitio) — quedaron de los dos reenvíos que resultaron
+      ser el mismo archivo.
 
 ## Ya resuelto (no requiere acción)
 
@@ -104,3 +115,9 @@ Dos cosas que se construyeron pero **nadie experimentó todavía**:
 - ✅ Sonido ambiente y de interacción, sintetizado: **0 KB de archivos**.
 - ✅ Accesibilidad: contraste AA, objetivos táctiles de 44px, textos
   alternativos y etiquetas en todos los campos.
+- ✅ **Logo de Shineray en rojo eliminado de todo el sitio y el panel** —
+  se reemplazó por la variante negra o blanca según el fondo, en todos
+  los lugares donde aparecía.
+- ✅ **Pantalla de bienvenida rehecha**: se quitaron las animaciones de
+  "nubes" en bucle infinito (causaban la lentitud reportada) y ahora usa
+  el mismo fondo de arena y dunas de la tapa del pasaporte.
