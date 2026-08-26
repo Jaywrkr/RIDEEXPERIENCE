@@ -52,6 +52,10 @@
         <div class="valor" id="stat-faltan">—</div>
         <div class="etiqueta" id="stat-faltan-etiqueta">Días para el evento</div>
       </div>
+      <div class="stat stat--secundaria">
+        <div class="valor" id="stat-llegaron">—</div>
+        <div class="etiqueta">Hicieron check-in</div>
+      </div>
     </div>
 
     <div class="tarjeta">
@@ -117,7 +121,21 @@
     </div>
 
     <div class="tarjeta">
-      <h2>Asistentes</h2>
+      <div class="tabla-cabecera">
+        <h2>Asistentes</h2>
+        <div class="acciones-tabla">
+          <input
+            type="search"
+            id="buscador-asistentes"
+            class="buscador"
+            placeholder="Buscar por nombre, correo o teléfono…"
+            aria-label="Buscar asistentes"
+          />
+          <button type="button" class="boton-claro" id="boton-exportar-csv">
+            Exportar CSV
+          </button>
+        </div>
+      </div>
       <div id="tabla-contenedor">
         <table>
           <thead>
@@ -127,11 +145,13 @@
               <th>Teléfono</th>
               <th>Estado</th>
               <th>Registrado</th>
+              <th>Llegada</th>
             </tr>
           </thead>
           <tbody id="tabla-asistentes-body"></tbody>
         </table>
         <p class="vacio oculto" id="tabla-vacia">Todavía no hay asistentes registrados en este evento.</p>
+        <p class="vacio oculto" id="tabla-sin-resultados">Ningún asistente coincide con esa búsqueda.</p>
       </div>
     </div>
   </div>

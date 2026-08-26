@@ -22,12 +22,25 @@
   const statHoy = document.getElementById('stat-hoy');
   const statFaltan = document.getElementById('stat-faltan');
   const statFaltanEtiqueta = document.getElementById('stat-faltan-etiqueta');
+  const statLlegaron = document.getElementById('stat-llegaron');
   const tablaBody = document.getElementById('tabla-asistentes-body');
   const tablaVacia = document.getElementById('tabla-vacia');
+  const tablaSinResultados = document.getElementById('tabla-sin-resultados');
+  const buscador = document.getElementById('buscador-asistentes');
+  const botonExportarCsv = document.getElementById('boton-exportar-csv');
 
   // Este panel administra un solo evento (A Todo Terreno) — no hay
   // selector, siempre se trabaja sobre el primero (y unico) que exista.
   let eventoActual = null;
+
+  // Lista completa tal como vino del servidor: las metricas siempre se
+  // calculan sobre esta, nunca sobre el resultado filtrado del buscador.
+  let asistentesTodos = [];
+  // Lo que efectivamente esta en pantalla ahora mismo (filtrado por el
+  // buscador o no) -- es lo que exporta el boton de CSV, para poder
+  // exportar justo el grupo que se esta mirando.
+  let asistentesVisibles = [];
+  let totalRegistrados = 0;
 
   // datetime-local <-> ISO. Los inputs trabajan en hora local del navegador;
   // el backend guarda/lee ISO 8601 (Prisma DateTime).
@@ -107,6 +120,7 @@
 
     statSemana.textContent = enSemana;
     statHoy.textContent = hoy;
+    statLlegaron.textContent = asistentes.filter((a) => a.llegadaEn).length;
 
     // Cuenta atras hasta el evento. Cambia de etiqueta segun el momento,
     // para no mostrar "faltan -3 dias" una vez que ya paso.
@@ -129,24 +143,38 @@
     }
   }
 
-  async function cargarAsistentes(eventoId, evento) {
-    const [asistentes, total] = await Promise.all([
-      Api.listarAsistentes(eventoId),
-      Api.totalAsistentes(eventoId),
-    ]);
+  // Coincide si el texto de busqueda aparece en nombre, correo o
+  // telefono -- las tres formas en las que alguien en la puerta suele
+  // buscar a una persona.
+  function filtrar(asistentes, texto) {
+    const q = texto.trim().toLowerCase();
+    if (!q) return asistentes;
+    return asistentes.filter((a) =>
+      [a.nombre, a.correo, a.telefono].some((campo) => (campo || '').toLowerCase().includes(q))
+    );
+  }
 
-    pintarMetricas(asistentes, total, evento);
-
+  function renderizarTabla(asistentes) {
+    asistentesVisibles = asistentes;
     tablaBody.innerHTML = '';
-    if (asistentes.length === 0) {
+
+    if (asistentesTodos.length === 0) {
       tablaVacia.classList.remove('oculto');
+      tablaSinResultados.classList.add('oculto');
       return;
     }
     tablaVacia.classList.add('oculto');
 
+    if (asistentes.length === 0) {
+      tablaSinResultados.classList.remove('oculto');
+      return;
+    }
+    tablaSinResultados.classList.add('oculto');
+
     for (const asistente of asistentes) {
       const fila = document.createElement('tr');
       const claseEstado = asistente.estado === 'REGISTRADO' ? 'estado-registrado' : 'estado-cancelado';
+      const llego = Boolean(asistente.llegadaEn);
       fila.innerHTML = `
         <td>
           <span class="celda-persona">
@@ -158,6 +186,14 @@
         <td class="celda-tel">${escapeHtml(asistente.telefono)}</td>
         <td><span class="estado-badge ${claseEstado}">${asistente.estado}</span></td>
         <td class="celda-fecha" title="${escapeHtml(formatearFecha(asistente.createdAt))}">${escapeHtml(formatearFechaCorta(asistente.createdAt))}</td>
+        <td>
+          <button
+            type="button"
+            class="boton-llegada ${llego ? 'boton-llegada--hecho' : 'boton-llegada--pendiente'}"
+            data-asistente-id="${escapeHtml(asistente.id)}"
+            title="${llego ? escapeHtml(formatearFecha(asistente.llegadaEn)) : ''}"
+          >${llego ? '✓ Llegó' : 'Marcar llegada'}</button>
+        </td>
       `;
       tablaBody.appendChild(fila);
     }
@@ -168,6 +204,77 @@
     div.textContent = texto;
     return div.innerHTML;
   }
+
+  async function cargarAsistentes(eventoId, evento) {
+    const [asistentes, total] = await Promise.all([
+      Api.listarAsistentes(eventoId),
+      Api.totalAsistentes(eventoId),
+    ]);
+
+    asistentesTodos = asistentes;
+    totalRegistrados = total;
+    pintarMetricas(asistentes, total, evento);
+    renderizarTabla(filtrar(asistentesTodos, buscador.value));
+  }
+
+  buscador.addEventListener('input', () => {
+    renderizarTabla(filtrar(asistentesTodos, buscador.value));
+  });
+
+  // Delegado en el tbody: las filas se reconstruyen enteras en cada
+  // render, asi que un listener por boton se perderia.
+  tablaBody.addEventListener('click', async (evento) => {
+    const boton = evento.target.closest('.boton-llegada');
+    if (!boton || !eventoActual) return;
+
+    const asistenteId = boton.dataset.asistenteId;
+    boton.disabled = true;
+    try {
+      const actualizado = await Api.alternarLlegada(eventoActual.id, asistenteId);
+      const i = asistentesTodos.findIndex((a) => a.id === asistenteId);
+      if (i !== -1) asistentesTodos[i] = { ...asistentesTodos[i], ...actualizado };
+      pintarMetricas(asistentesTodos, totalRegistrados, eventoActual);
+      renderizarTabla(filtrar(asistentesTodos, buscador.value));
+    } catch (error) {
+      boton.disabled = false;
+      window.alert(error.message || 'No se pudo actualizar el check-in.');
+    }
+  });
+
+  // Exporta exactamente lo que esta visible (respeta el filtro del
+  // buscador): sirve tanto para "toda la lista" como para "solo estas
+  // 5 personas que busque".
+  function exportarCsv() {
+    const columnas = ['Nombre', 'Correo', 'Teléfono', 'Estado', 'Registrado', 'Llegada'];
+    const filas = asistentesVisibles.map((a) => [
+      a.nombre,
+      a.correo,
+      a.telefono,
+      a.estado,
+      a.createdAt ? new Date(a.createdAt).toISOString() : '',
+      a.llegadaEn ? new Date(a.llegadaEn).toISOString() : '',
+    ]);
+
+    const escaparCelda = (valor) => `"${String(valor ?? '').replace(/"/g, '""')}"`;
+    // BOM al inicio: sin el, Excel en Windows interpreta los acentos y la
+    // ñ como caracteres sueltos en vez de UTF-8.
+    const csv = '﻿' + [columnas, ...filas]
+      .map((fila) => fila.map(escaparCelda).join(','))
+      .join('\r\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    const fecha = new Date().toISOString().slice(0, 10);
+    enlace.href = url;
+    enlace.download = `asistentes-a-todo-terreno-${fecha}.csv`;
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  botonExportarCsv.addEventListener('click', exportarCsv);
 
   async function cargarEventos() {
     const eventos = await Api.listarEventos();

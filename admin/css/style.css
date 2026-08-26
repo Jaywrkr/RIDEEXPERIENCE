@@ -453,6 +453,92 @@ tbody tr:hover { background: var(--arena-100); }
 .estado-registrado { background: var(--ok-bg); color: var(--ok); }
 .estado-cancelado { background: var(--danger-bg); color: var(--danger); }
 
+/* =============== CABECERA DE LA TABLA: BUSCADOR + EXPORTAR =============== */
+
+.tabla-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.tabla-cabecera h2 { margin: 0; padding: 0; border: 0; }
+
+.acciones-tabla {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.buscador {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 9px 13px;
+  min-width: 220px;
+  border: 1.5px solid var(--border-fuerte);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+}
+.buscador:focus {
+  outline: none;
+  border-color: var(--rojo);
+  box-shadow: 0 0 0 3px rgba(196, 30, 30, .14);
+}
+
+/* .boton-secundario esta pensado para el fondo oscuro del topbar (texto
+   claro, borde tenue); sobre una tarjeta blanca esa combinacion casi no
+   se lee. Este es el mismo boton pero con la paleta de una superficie
+   clara. */
+.boton-claro {
+  font-family: inherit;
+  font-size: 0.82rem;
+  letter-spacing: .03em;
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border-fuerte);
+  transition: background .18s var(--ease), border-color .18s var(--ease);
+}
+.boton-claro:hover { background: var(--bg); border-color: var(--text-muted); }
+
+/* =============== CHECK-IN =============== */
+
+.boton-llegada {
+  font-family: inherit;
+  font-size: 0.62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s var(--ease), border-color .15s var(--ease), opacity .15s var(--ease);
+}
+.boton-llegada:disabled { cursor: wait; opacity: .6; }
+
+.boton-llegada--pendiente {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px dashed var(--border-fuerte);
+}
+.boton-llegada--pendiente:hover:not(:disabled) {
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+.boton-llegada--hecho {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border: 1.5px solid transparent;
+}
+.boton-llegada--hecho:hover:not(:disabled) { background: #d7f0dd; }
+
 /* =============== ESTADOS VACÍOS =============== */
 
 .vacio {
