@@ -1144,6 +1144,16 @@ body::after {
   color: var(--tinta);
   opacity: .75;
 }
+
+/* La aguja gira con el sensor real del telefono (compas.js); el
+   transform-origin en el centro del viewBox (32,32 en un SVG de 64x64
+   = 50%) es lo que la hace girar sobre su propio eje en vez de barrer
+   un arco. La transicion suaviza el ruido del sensor entre lecturas. */
+#compassAguja {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .4s var(--ease, ease-out);
+}
 .datapage__stamp {
   width: 2.3rem; height: 2.3rem;
   color: var(--rojo);

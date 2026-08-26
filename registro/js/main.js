@@ -5,6 +5,7 @@ import { renderClues } from './clues.js';
 import { initWelcome } from './welcome.js';
 import { initMotion, iniciarEntradaTapa } from './motion.js';
 import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
+import { initCompasReal } from './compas.js';
 import { initAgregarCalendario } from './calendario.js';
 
 // El movimiento se prepara antes que nada (parte las letras del título,
@@ -24,6 +25,7 @@ initScrollCue();
 initTopbar();
 initHeroParallax();
 initSlideNav();
+initCompasReal();
 initAgregarCalendario();
 
 let stopCountdown = null;
