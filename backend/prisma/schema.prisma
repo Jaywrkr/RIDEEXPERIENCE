@@ -65,6 +65,10 @@ model Asistente {
   telefono  String
   estado    EstadoRegistro @default(REGISTRADO)
 
+  // Momento en que el organizador marco su llegada el dia del evento
+  // (check-in en la puerta). null = todavia no llego.
+  llegadaEn DateTime? @map("llegada_en")
+
   eventoId String @map("evento_id")
   evento   Evento @relation(fields: [eventoId], references: [id], onDelete: Cascade)
 

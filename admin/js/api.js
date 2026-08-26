@@ -57,6 +57,13 @@ const Api = {
     return this._request(`/eventos/${eventoId}/asistentes/total`, { auth: true });
   },
 
+  async alternarLlegada(eventoId, asistenteId) {
+    return this._request(`/eventos/${eventoId}/asistentes/${asistenteId}/llegada`, {
+      method: 'PATCH',
+      auth: true,
+    });
+  },
+
   async _request(path, { method = 'GET', body, auth = false } = {}) {
     const headers = { 'Content-Type': 'application/json' };
     if (auth) {

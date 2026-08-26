@@ -80,4 +80,20 @@ export class AsistentesService {
     }
     return asistente;
   }
+
+  // Check-in en la puerta el dia del evento. Alterna: si ya tenia
+  // llegada marcada, la quita (por si se toco por error); si no, la
+  // marca con la hora actual.
+  async alternarLlegada(eventoId: string, asistenteId: string) {
+    const asistente = await this.prisma.asistente.findFirst({
+      where: { id: asistenteId, eventoId },
+    });
+    if (!asistente) {
+      throw new NotFoundException('Asistente no encontrado en este evento.');
+    }
+    return this.prisma.asistente.update({
+      where: { id: asistenteId },
+      data: { llegadaEn: asistente.llegadaEn ? null : new Date() },
+    });
+  }
 }

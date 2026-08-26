@@ -1,5 +1,6 @@
 import { initValidacion } from './validacion.js';
 import { golpeDeSello, sonidoPagina, sonidoError } from './ambiente.js';
+import { trackEvent } from './analytics.js';
 
 const TOTAL_STEPS = 3;
 
@@ -328,8 +329,27 @@ export function initPassportForm({ onSealed }) {
     };
   }
 
+  const consentimientoInput = form.elements['consentimiento'];
+  const errConsentimiento = document.getElementById('err-consentimiento');
+
+  function validarConsentimiento() {
+    if (!consentimientoInput) return true;
+    const ok = consentimientoInput.checked;
+    consentimientoInput.closest('.field--consentimiento')?.classList.toggle('invalid', !ok);
+    if (errConsentimiento) {
+      errConsentimiento.textContent = ok ? '' : 'Para continuar necesitamos tu autorización para usar estos datos.';
+    }
+    return ok;
+  }
+
+  if (consentimientoInput) {
+    consentimientoInput.addEventListener('change', validarConsentimiento);
+  }
+
   function goNext() {
     if (currentStep === 2 && !validacion.validarTodo()) return;
+    if (currentStep === 2 && !validarConsentimiento()) return;
+    if (currentStep === 2) trackEvent('datos_completados');
     if (currentStep < TOTAL_STEPS) showStep(currentStep + 1);
   }
 
@@ -343,7 +363,10 @@ export function initPassportForm({ onSealed }) {
   const coverCta = document.getElementById('coverCta');
   if (coverCta) {
     coverCta.addEventListener('click', () => {
-      if (currentStep === 1) showStep(2);
+      if (currentStep === 1) {
+        trackEvent('registro_iniciado');
+        showStep(2);
+      }
     });
   }
 
@@ -376,6 +399,7 @@ export function initPassportForm({ onSealed }) {
       return;
     }
 
+    trackEvent('registro_sellado');
     sealing = true;
     document.body.dataset.state = 'sellando';
 
