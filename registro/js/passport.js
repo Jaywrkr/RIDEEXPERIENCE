@@ -6,16 +6,15 @@ import { EVENT_DATE } from './countdown.js';
 
 const TOTAL_STEPS = 3;
 
-// Placeholder decorativo mientras se llena el pasaporte: el número real
-// (ATT-1001, ATT-1002...) lo asigna el backend en orden de registro recién
-// al sellar, así que hasta ese momento esto es puramente narrativo -- se
+// Placeholder mientras se llena el pasaporte: el número real (ATT-1001,
+// ATT-1002...) lo asigna el backend en orden de registro recién al
+// sellar, así que hasta ese momento esto es puramente narrativo -- se
 // reemplaza por el definitivo apenas responde el servidor (ver el submit
-// más abajo).
+// más abajo). Se muestra siempre el mismo "ATT-1001" (el primero de la
+// serie) en vez de un número al azar, para no dar la impresión de que ya
+// se asignó un número real distinto al que le va a tocar.
 function generateSerial() {
-  const n = Math.floor(Math.random() * 9999)
-    .toString()
-    .padStart(4, '0');
-  return `ATT-${n}`;
+  return 'ATT-1001';
 }
 
 // Arma una línea estilo MRZ (zona de lectura mecánica de un pasaporte real)
