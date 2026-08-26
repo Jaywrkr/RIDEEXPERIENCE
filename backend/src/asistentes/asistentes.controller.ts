@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AsistentesService } from './asistentes.service';
 import { CreateAsistenteDto } from './dto/create-asistente.dto';
@@ -35,5 +35,15 @@ export class AsistentesController {
     @Param('asistenteId') asistenteId: string,
   ) {
     return this.asistentesService.buscarUno(eventoId, asistenteId);
+  }
+
+  // Panel administrativo: check-in en la puerta el dia del evento.
+  @UseGuards(JwtAuthGuard)
+  @Patch(':asistenteId/llegada')
+  alternarLlegada(
+    @Param('eventoId') eventoId: string,
+    @Param('asistenteId') asistenteId: string,
+  ) {
+    return this.asistentesService.alternarLlegada(eventoId, asistenteId);
   }
 }
