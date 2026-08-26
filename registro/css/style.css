@@ -1339,10 +1339,43 @@ input.invalid { border-bottom-color: var(--rojo); }
   animation: sello-drop .45s cubic-bezier(.2, .9, .3, 1.1) forwards;
 }
 @keyframes sello-drop {
-  0% { transform: translate(-50%, -50%) rotate(-20deg) scale(2.8); opacity: 0; }
-  55% { transform: translate(-50%, -50%) rotate(-11deg) scale(.93); opacity: 1; }
-  75% { transform: translate(-50%, -50%) rotate(-13deg) scale(1.05); opacity: .92; }
-  100% { transform: translate(-50%, -50%) rotate(-12deg) scale(1); opacity: .9; }
+  /* El desenfoque solo existe mientras el sello todavia esta cayendo
+     rapido (0-55%): es lo que vende la velocidad del golpe. Para el
+     instante del impacto ya esta nitido, como una foto que congela el
+     momento exacto en que toca el papel. */
+  0% { transform: translate(-50%, -50%) rotate(-20deg) scale(2.8); opacity: 0; filter: blur(5px); }
+  40% { filter: blur(3px); }
+  55% { transform: translate(-50%, -50%) rotate(-11deg) scale(.93); opacity: 1; filter: blur(0); }
+  75% { transform: translate(-50%, -50%) rotate(-13deg) scale(1.05); opacity: .92; filter: blur(0); }
+  100% { transform: translate(-50%, -50%) rotate(-12deg) scale(1); opacity: .9; filter: blur(0); }
+}
+
+/* Destello del impacto: un flash breve de luz justo cuando el sello
+   toca el papel, como si el propio golpe encendiera una luz por un
+   instante. Es un elemento hermano del sello, no un pseudo-elemento
+   suyo: .sello-stamp tiene mix-blend-mode: multiply (solo puede
+   oscurecer), asi que un blanco brillante metido ADENTRO de ese grupo
+   se multiplicaria contra la pagina y nunca llegaria a "encender" nada
+   -- probado, no se veia. Como hermano, compone normal contra la pagina. */
+.sello-flash {
+  position: absolute;
+  top: 42%; left: 50%;
+  z-index: 7;
+  width: clamp(5.5rem, 20vw, 8.75rem);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, rgba(255,255,255,0) 70%);
+  transform: translate(-50%, -50%) scale(.5);
+  opacity: 0;
+  pointer-events: none;
+}
+#selloStamp.is-landed ~ .sello-flash {
+  animation: destello-impacto .3s ease-out .2s forwards;
+}
+@keyframes destello-impacto {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
+  30%  { opacity: .95; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
 }
 .pasaporte.is-dissolving {
   opacity: 0;
