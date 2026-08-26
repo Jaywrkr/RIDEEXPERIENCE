@@ -1537,12 +1537,16 @@ input.invalid { border-bottom-color: var(--rojo); }
 .confirmacion__datos > div { text-align: left; }
 .confirmacion__datos dt {
   font-family: var(--font-mono);
-  font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; opacity: .55;
+  font-size: clamp(.6rem, 2.6vw, .65rem);
+  white-space: nowrap;
+  letter-spacing: .12em; text-transform: uppercase; opacity: .55;
   margin-bottom: .25rem;
 }
 .confirmacion__datos dd {
   margin: 0;
   font-family: var(--font-mono);
+  font-size: clamp(.95rem, 5vw, 1.1rem);
+  white-space: nowrap;
   font-weight: 700;
   color: var(--rojo-dark);
   letter-spacing: .04em;
@@ -1563,15 +1567,17 @@ input.invalid { border-bottom-color: var(--rojo); }
   transition: background .2s var(--ease), transform .15s var(--ease);
 }
 
-/* "Consulta con tu asesor..." es un dato práctico corto: se le da más
-   ancho y menos tracking que al resto del cuerpo para que entre en una
-   sola línea en la mayoría de pantallas, en vez de partirse a media
-   palabra como el resto del texto corrido. */
-.confirmacion__embarque {
+/* "Consulta con tu asesor..." tiene que ser siempre una sola línea. La
+   regla general de texto corrido (más abajo, ".confirmacion p") le pone
+   max-width: 34ch y le gana en especificidad a una clase sola por venir
+   después en el archivo -- por eso el selector repite ".confirmacion p"
+   acá, para ganarle de verdad. nowrap + clamp() achica la letra en vez
+   de dejar que se parta a media palabra. */
+.confirmacion p.confirmacion__embarque {
   max-width: none;
-  font-size: clamp(.82rem, 3.6vw, .9375rem);
+  white-space: nowrap;
+  font-size: clamp(.62rem, 4.2vw, .9375rem);
   letter-spacing: .01em;
-  white-space: normal;
 }
 
 /* El aviso de notificaciones es el dato accionable de toda la pantalla
@@ -1579,7 +1585,10 @@ input.invalid { border-bottom-color: var(--rojo); }
    notificaciones y las pistas de ruta caen en spam o pasan sin verse.
    Una caja con acento rojo lo separa como una alerta real, no como una
    nota al pie más. */
-.confirmacion__aviso {
+/* ".confirmacion p" (más abajo) le pone max-width/margin/line-height a
+   cualquier <p> de esta pantalla con más especificidad que una sola
+   clase: se repite "p.confirmacion__aviso" para que esta caja sí gane. */
+.confirmacion p.confirmacion__aviso {
   max-width: 26rem;
   margin: 0 auto;
   font-size: .92rem;
@@ -1591,10 +1600,24 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .confirmacion__aviso strong { color: var(--rojo-dark); }
 
-.confirmacion__despedida {
+.confirmacion p.confirmacion__despedida {
   font-size: .92rem;
   opacity: .85;
   margin-top: 1rem;
+}
+
+/* En una pantalla de PC sobra ancho: la columna angosta de 31rem (pensada
+   para que el texto no se sintiera perdido en un mar de arena vacío en
+   mobile/tablet) en un monitor grande se ve amontonada, todo pegado en
+   el centro con espacio de sobra a los costados sin usar. Desde 64rem
+   (~1024px) se le da más aire: columna más ancha y más separación entre
+   bloques, sin tocar nada por debajo de ese punto. */
+@media (min-width: 64rem) {
+  .confirmacion__content { max-width: 42rem; }
+  .confirmacion { padding: 5rem 2rem 3rem; }
+  .confirmacion__divisor { margin: 2.2rem auto; }
+  .confirmacion p.confirmacion__aviso { max-width: 34rem; padding: 1.15rem 1.4rem; font-size: 1rem; }
+  .confirmacion__datos { padding: 1.25rem 2.25rem; gap: 3rem; }
 }
 .boton-calendario:hover { background: rgba(20,17,13,.05); transform: translateY(-1px); }
 .boton-calendario:active { transform: scale(.97); }
@@ -2180,15 +2203,24 @@ label {
   color: var(--tinta);
 }
 .confirmacion__bajada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
   font-family: var(--font-mono);
-  font-size: var(--t-apoyo);
   letter-spacing: var(--track-etiqueta);
   text-transform: uppercase;
   line-height: 1.4;
-  max-width: 30ch;  /* el <br> ya define el corte en 2 líneas: este ancho
-                        solo evita que "SECRETO HASTA TU LLEGADA." se
-                        parta en una tercera línea */
   color: var(--rojo-dark);
+}
+/* "¿El destino?" y "Secreto hasta tu llegada." tienen que ser cada una
+   una sola línea, sin importar el ancho de pantalla -- por eso
+   white-space: nowrap en vez de max-width. clamp() achica la letra en
+   pantallas angostas en vez de dejar que el texto se desborde o se
+   parta en una tercera línea. */
+.confirmacion__bajada-linea {
+  white-space: nowrap;
+  font-size: clamp(.62rem, 4.3vw, .8125rem);
 }
 
 /* ---- Campo validado ----
