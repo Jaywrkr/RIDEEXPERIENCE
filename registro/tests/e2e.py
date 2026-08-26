@@ -114,7 +114,7 @@ def t_flujo_feliz(page):
     check("la confirmación muestra el correo",
           "jay@ejemplo.com" in page.inner_text("#confCorreo"))
     check("la confirmación muestra un número de pasaporte",
-          page.inner_text("#confSerial").startswith("AT26-"),
+          page.inner_text("#confSerial").startswith("ATT-"),
           page.inner_text("#confSerial"))
 
 

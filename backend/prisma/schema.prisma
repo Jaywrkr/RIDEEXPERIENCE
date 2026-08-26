@@ -65,6 +65,14 @@ model Asistente {
   telefono  String
   estado    EstadoRegistro @default(REGISTRADO)
 
+  // Correlativo real, asignado por la base de datos en el momento del
+  // INSERT: es lo unico que garantiza que dos registros simultaneos nunca
+  // reciban el mismo numero (una lectura+escritura hecha a mano en la
+  // app tiene ventana de carrera; una columna autoincremental de
+  // Postgres no). El pasaporte visible es "ATT-" + (1000 + numero), asi
+  // que el primero en registrarse es ATT-1001.
+  numero Int @unique @default(autoincrement())
+
   // Momento en que el organizador marco su llegada el dia del evento
   // (check-in en la puerta). null = todavia no llego.
   llegadaEn DateTime? @map("llegada_en")

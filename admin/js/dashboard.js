@@ -176,6 +176,7 @@
       const claseEstado = asistente.estado === 'REGISTRADO' ? 'estado-registrado' : 'estado-cancelado';
       const llego = Boolean(asistente.llegadaEn);
       fila.innerHTML = `
+        <td class="celda-codigo">${escapeHtml(asistente.codigo || '—')}</td>
         <td>
           <span class="celda-persona">
             <span class="inicial" aria-hidden="true">${escapeHtml(inicialDe(asistente.nombre))}</span>
@@ -245,8 +246,9 @@
   // buscador): sirve tanto para "toda la lista" como para "solo estas
   // 5 personas que busque".
   function exportarCsv() {
-    const columnas = ['Nombre', 'Correo', 'Teléfono', 'Estado', 'Registrado', 'Llegada'];
+    const columnas = ['Código', 'Nombre', 'Correo', 'Teléfono', 'Estado', 'Registrado', 'Llegada'];
     const filas = asistentesVisibles.map((a) => [
+      a.codigo || '',
       a.nombre,
       a.correo,
       a.telefono,

@@ -213,7 +213,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
   transform: scale(1.12);
   transform-origin: bottom center;
 }
-.welcome__dunes-back { opacity: .55; }
+.welcome__dunes-back { opacity: .72; }
 .welcome__dunes-ruta {
   position: absolute; left: 0; right: 0; bottom: 0;
   height: 62%;
@@ -237,7 +237,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
 
 .welcome__brand {
   display: block;
-  width: clamp(9.5rem, 34vw, 13rem);
+  width: clamp(12.4rem, 44vw, 16.9rem); /* x1.3 sobre el tamaño anterior */
   height: auto;
   margin: 0 auto 1.75rem;
 }
@@ -372,7 +372,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
 
 .hero__dune--back {
   height: 52%;
-  opacity: .4;
+  opacity: .6;
   background-image: url("../assets/brand/montanas-halftone-alt.png");
 }
 
@@ -920,7 +920,7 @@ body::after {
   width: 100%; height: 100%;
   object-fit: cover; object-position: bottom;
 }
-.cover-dunes__back { opacity: .55; }
+.cover-dunes__back { opacity: .72; }
 /* La ruta viene como trazo gris claro; puesta tal cual sobre el
    semitono rojo se leía como rayones/daño en la imagen. Se usa como
    máscara y se rellena con el arena de la tapa, así se lee como un
@@ -1280,6 +1280,41 @@ input.invalid { border-bottom-color: var(--rojo); }
 .btn-sellar:active { transform: scale(.97); }
 .btn-sellar:focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; }
 
+/* Entre el click en "Sellar mi lugar" y la respuesta del servidor puede
+   pasar más de un instante (red lenta, servidor recién despertando):
+   sin nada visible ahí, la persona no sabe si el click funcionó y
+   vuelve a tocar el botón, disparando un segundo registro. El spinner +
+   texto "Sellando..." confirma que el click se registró; :disabled ya
+   bloquea el segundo tap mientras tanto. */
+.btn-sellar:disabled {
+  cursor: not-allowed;
+  opacity: .85;
+}
+.btn-sellar.is-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .65rem;
+}
+.btn-sellar__spinner {
+  display: none;
+  width: 1.1rem; height: 1.1rem;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.btn-sellar.is-loading .btn-sellar__spinner {
+  display: inline-block;
+  animation: girar-spinner .7s linear infinite;
+}
+@keyframes girar-spinner {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-sellar.is-loading .btn-sellar__spinner { animation: none; }
+}
+
 .pasaporte.is-stamped {
   animation: stamp-hit .5s var(--ease) forwards;
 }
@@ -1448,7 +1483,7 @@ input.invalid { border-bottom-color: var(--rojo); }
 .confirmacion__logo {
   position: absolute; z-index: -1;
   top: 1.5rem; left: 1.5rem;
-  width: clamp(7.5rem, 26vw, 9.5rem);
+  width: clamp(10rem, 34vw, 13rem);
   height: auto;
 }
 
@@ -1528,9 +1563,38 @@ input.invalid { border-bottom-color: var(--rojo); }
   transition: background .2s var(--ease), transform .15s var(--ease);
 }
 
-.confirmacion__cierre {
+/* "Consulta con tu asesor..." es un dato práctico corto: se le da más
+   ancho y menos tracking que al resto del cuerpo para que entre en una
+   sola línea en la mayoría de pantallas, en vez de partirse a media
+   palabra como el resto del texto corrido. */
+.confirmacion__embarque {
+  max-width: none;
+  font-size: clamp(.82rem, 3.6vw, .9375rem);
+  letter-spacing: .01em;
+  white-space: normal;
+}
+
+/* El aviso de notificaciones es el dato accionable de toda la pantalla
+   -- si se pierde entre el resto del texto corrido, nadie activa las
+   notificaciones y las pistas de ruta caen en spam o pasan sin verse.
+   Una caja con acento rojo lo separa como una alerta real, no como una
+   nota al pie más. */
+.confirmacion__aviso {
+  max-width: 26rem;
+  margin: 0 auto;
+  font-size: .92rem;
+  line-height: 1.55;
+  text-align: left;
+  background: var(--hueso);
+  border-left: 3px solid var(--rojo);
+  padding: .85rem 1rem;
+}
+.confirmacion__aviso strong { color: var(--rojo-dark); }
+
+.confirmacion__despedida {
   font-size: .92rem;
   opacity: .85;
+  margin-top: 1rem;
 }
 .boton-calendario:hover { background: rgba(20,17,13,.05); transform: translateY(-1px); }
 .boton-calendario:active { transform: scale(.97); }
@@ -2121,7 +2185,9 @@ label {
   letter-spacing: var(--track-etiqueta);
   text-transform: uppercase;
   line-height: 1.4;
-  max-width: 22ch;
+  max-width: 30ch;  /* el <br> ya define el corte en 2 líneas: este ancho
+                        solo evita que "SECRETO HASTA TU LLEGADA." se
+                        parta en una tercera línea */
   color: var(--rojo-dark);
 }
 
