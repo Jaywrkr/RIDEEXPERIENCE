@@ -128,4 +128,18 @@ export class AsistentesService {
     });
     return conCodigo(actualizado);
   }
+
+  // Elimina un asistente. Las notificaciones asociadas se borran solas
+  // (onDelete: Cascade en el schema), asi que no hace falta borrarlas
+  // aparte.
+  async eliminar(eventoId: string, asistenteId: string) {
+    const asistente = await this.prisma.asistente.findFirst({
+      where: { id: asistenteId, eventoId },
+    });
+    if (!asistente) {
+      throw new NotFoundException('Asistente no encontrado en este evento.');
+    }
+    await this.prisma.asistente.delete({ where: { id: asistenteId } });
+    return { id: asistenteId };
+  }
 }

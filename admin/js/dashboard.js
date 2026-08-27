@@ -28,6 +28,10 @@
   const tablaSinResultados = document.getElementById('tabla-sin-resultados');
   const buscador = document.getElementById('buscador-asistentes');
   const botonExportarCsv = document.getElementById('boton-exportar-csv');
+  const dialogoEliminar = document.getElementById('dialogo-eliminar');
+  const dialogoEliminarNombre = document.getElementById('dialogo-eliminar-nombre');
+  const botonCancelarEliminar = document.getElementById('boton-cancelar-eliminar');
+  const botonConfirmarEliminar = document.getElementById('boton-confirmar-eliminar');
 
   // Este panel administra un solo evento (A Todo Terreno) — no hay
   // selector, siempre se trabaja sobre el primero (y unico) que exista.
@@ -195,6 +199,16 @@
             title="${llego ? escapeHtml(formatearFecha(asistente.llegadaEn)) : ''}"
           >${llego ? '✓ Llegó' : 'Marcar llegada'}</button>
         </td>
+        <td class="celda-acciones">
+          <button
+            type="button"
+            class="boton-eliminar"
+            data-asistente-id="${escapeHtml(asistente.id)}"
+            data-asistente-nombre="${escapeHtml(asistente.nombre)}"
+            title="Eliminar asistente"
+            aria-label="Eliminar a ${escapeHtml(asistente.nombre)}"
+          >Eliminar</button>
+        </td>
       `;
       tablaBody.appendChild(fila);
     }
@@ -225,20 +239,68 @@
   // Delegado en el tbody: las filas se reconstruyen enteras en cada
   // render, asi que un listener por boton se perderia.
   tablaBody.addEventListener('click', async (evento) => {
-    const boton = evento.target.closest('.boton-llegada');
-    if (!boton || !eventoActual) return;
+    const botonLlegada = evento.target.closest('.boton-llegada');
+    if (botonLlegada && eventoActual) {
+      const asistenteId = botonLlegada.dataset.asistenteId;
+      botonLlegada.disabled = true;
+      try {
+        const actualizado = await Api.alternarLlegada(eventoActual.id, asistenteId);
+        const i = asistentesTodos.findIndex((a) => a.id === asistenteId);
+        if (i !== -1) asistentesTodos[i] = { ...asistentesTodos[i], ...actualizado };
+        pintarMetricas(asistentesTodos, totalRegistrados, eventoActual);
+        renderizarTabla(filtrar(asistentesTodos, buscador.value));
+      } catch (error) {
+        botonLlegada.disabled = false;
+        window.alert(error.message || 'No se pudo actualizar el check-in.');
+      }
+      return;
+    }
 
-    const asistenteId = boton.dataset.asistenteId;
-    boton.disabled = true;
+    const botonEliminar = evento.target.closest('.boton-eliminar');
+    if (botonEliminar) {
+      asistenteAEliminar = {
+        id: botonEliminar.dataset.asistenteId,
+        nombre: botonEliminar.dataset.asistenteNombre,
+      };
+      dialogoEliminarNombre.textContent = asistenteAEliminar.nombre;
+      dialogoEliminar.showModal();
+    }
+  });
+
+  // Confirmacion antes de borrar: un click de mas en una tabla larga no
+  // debe poder eliminar a alguien por accidente.
+  let asistenteAEliminar = null;
+
+  botonCancelarEliminar.addEventListener('click', () => {
+    asistenteAEliminar = null;
+    dialogoEliminar.close();
+  });
+
+  dialogoEliminar.addEventListener('cancel', () => {
+    asistenteAEliminar = null;
+  });
+
+  botonConfirmarEliminar.addEventListener('click', async () => {
+    if (!asistenteAEliminar || !eventoActual) return;
+    const { id, nombre } = asistenteAEliminar;
+    botonConfirmarEliminar.disabled = true;
     try {
-      const actualizado = await Api.alternarLlegada(eventoActual.id, asistenteId);
-      const i = asistentesTodos.findIndex((a) => a.id === asistenteId);
-      if (i !== -1) asistentesTodos[i] = { ...asistentesTodos[i], ...actualizado };
+      await Api.eliminarAsistente(eventoActual.id, id);
+      const eliminado = asistentesTodos.find((a) => a.id === id);
+      asistentesTodos = asistentesTodos.filter((a) => a.id !== id);
+      // El total que pinta la tarjeta solo cuenta REGISTRADO, igual que
+      // el backend: si el que se borro estaba cancelado, no debe restar.
+      if (eliminado && eliminado.estado === 'REGISTRADO') {
+        totalRegistrados = Math.max(0, totalRegistrados - 1);
+      }
       pintarMetricas(asistentesTodos, totalRegistrados, eventoActual);
       renderizarTabla(filtrar(asistentesTodos, buscador.value));
+      asistenteAEliminar = null;
+      dialogoEliminar.close();
     } catch (error) {
-      boton.disabled = false;
-      window.alert(error.message || 'No se pudo actualizar el check-in.');
+      window.alert(error.message || `No se pudo eliminar a ${nombre}.`);
+    } finally {
+      botonConfirmarEliminar.disabled = false;
     }
   });
 

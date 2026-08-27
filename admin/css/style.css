@@ -539,6 +539,58 @@ tbody tr:hover { background: var(--arena-100); }
 }
 .boton-llegada--hecho:hover:not(:disabled) { background: #d7f0dd; }
 
+/* =============== ELIMINAR ASISTENTE =============== */
+
+.celda-acciones-cabecera { text-align: right; }
+.celda-acciones { text-align: right; }
+
+.boton-eliminar {
+  font-family: inherit;
+  font-size: 0.62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-fuerte);
+  transition: background .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
+}
+.boton-eliminar:hover { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+
+.boton-peligro {
+  font-family: inherit;
+  font-size: 0.82rem;
+  letter-spacing: .03em;
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--danger);
+  color: #fff;
+  border: 1.5px solid var(--danger);
+  transition: background .18s var(--ease);
+}
+.boton-peligro:hover:not(:disabled) { background: #8f1e18; border-color: #8f1e18; }
+.boton-peligro:disabled { cursor: wait; opacity: .6; }
+
+.dialogo-confirmar {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-alto);
+  padding: 24px;
+  max-width: 380px;
+  width: calc(100% - 48px);
+  color: var(--text);
+  background: var(--surface);
+}
+.dialogo-confirmar::backdrop { background: rgba(20, 17, 13, .5); }
+.dialogo-confirmar h3 { margin: 0 0 10px; font-family: var(--fuente-display); }
+.dialogo-confirmar p { margin: 0 0 20px; color: var(--text-muted); font-size: .9rem; }
+.dialogo-acciones { display: flex; justify-content: flex-end; gap: 10px; }
+
 /* =============== ESTADOS VACÍOS =============== */
 
 .vacio {
