@@ -21,10 +21,14 @@ export class MailerService {
     }
   }
 
-  async enviar(destinatario: string, asunto: string, html: string): Promise<void> {
+  // Devuelve el id que asigna Resend al aceptar el envio -- es la unica
+  // forma de correlacionar, mas tarde, un evento del webhook ("este
+  // correo se entrego"/"rebotó") con la Notificacion nuestra que lo
+  // origino. null cuando no hay API key (modo simulado, sin Resend real).
+  async enviar(destinatario: string, asunto: string, html: string): Promise<string | null> {
     if (!this.resend) {
       this.logger.log(`[correo simulado] a=${destinatario} asunto="${asunto}"`);
-      return;
+      return null;
     }
 
     const resultado = await this.resend.emails.send({
@@ -37,5 +41,7 @@ export class MailerService {
     if (resultado.error) {
       throw new Error(resultado.error.message);
     }
+
+    return resultado.data?.id ?? null;
   }
 }
