@@ -34,6 +34,12 @@ initAgregarCalendario();
 
 let stopCountdown = null;
 
+// Segundos que tarda en "llegar" el aviso de cuenta regresiva despues del
+// sellado. Si aparece en el mismo instante que la confirmacion, se lee
+// como una sola pantalla de golpe; llegando unos segundos despues se
+// siente lo que es -- una notificacion real, separada del sellado.
+const RETRASO_AVISO_CUENTA_REGRESIVA_MS = 2600;
+
 function revealPostSello({ serial, asistente }) {
   const confirmacion = document.getElementById('confirmacion');
   const countdown = document.getElementById('countdown');
@@ -44,7 +50,6 @@ function revealPostSello({ serial, asistente }) {
   if (confCorreoEl) confCorreoEl.textContent = asistente?.correo || '';
 
   if (confirmacion) confirmacion.hidden = false;
-  if (countdown) countdown.hidden = false;
   // La sección de pistas ("#pistas") queda oculta por pedido del cliente
   // hasta que las 3 pistas tengan contenido real -- por ahora las 3
   // mostraban "SELLADA" de relleno. El elemento y clues.js quedan
@@ -59,7 +64,10 @@ function revealPostSello({ serial, asistente }) {
     confirmacion.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  stopCountdown = initCountdown((diffMs) => renderClues(diffMs));
+  setTimeout(() => {
+    if (countdown) countdown.hidden = false;
+    stopCountdown = initCountdown((diffMs) => renderClues(diffMs));
+  }, RETRASO_AVISO_CUENTA_REGRESIVA_MS);
 }
 
 initPassportForm({ onSealed: revealPostSello });

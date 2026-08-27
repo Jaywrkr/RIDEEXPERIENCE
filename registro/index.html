@@ -54,7 +54,7 @@
 
   <div class="welcome__content">
     <img class="welcome__brand" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="208" height="36" loading="eager">
-    <p class="overline">CONVENCIÓN NACIONAL 2026</p>
+    <p class="overline">CONVENCIÓN 2026</p>
     <h1 class="welcome__title" id="welcomeTitle">
       <span class="welcome__bienvenido">BIENVENIDO</span>
       <img class="welcome__wordmark" src="assets/brand/wordmark-atodoterreno.png"
@@ -72,16 +72,12 @@
       Esta experiencia se vive mejor con sonido
     </p>
 
-    <!-- Dos entradas en vez de una recomendacion pasiva: el navegador
-         exige un gesto para poder reproducir audio, asi que el propio
-         clic de entrada hace de permiso. Quien no quiera sonido tiene la
-         puerta de al lado, sin penalizacion. -->
+    <!-- Una sola entrada, siempre con sonido: el navegador exige un
+         gesto para poder reproducir audio, asi que este clic hace de
+         permiso. Ya no se pregunta -- entrar es entrar con sonido. -->
     <div class="welcome__acciones">
-      <button class="welcome__cta" id="welcomeCtaSonido" type="button">
-        ENTRAR CON SONIDO →
-      </button>
-      <button class="welcome__cta welcome__cta--mudo" id="welcomeCta" type="button">
-        Entrar en silencio
+      <button class="welcome__cta" id="welcomeCta" type="button">
+        ENTRAR →
       </button>
     </div>
   </div>
@@ -272,7 +268,7 @@
           <div class="field field--consentimiento">
             <label class="consentimiento__label">
               <input type="checkbox" id="consentimiento" name="consentimiento" required>
-              <span>Acepto que Shineray Motors use mis datos (nombre, correo, teléfono) para gestionar mi inscripción y contactarme sobre este evento.</span>
+              <span>Acepto que Shineray use mis datos (nombre, correo, teléfono) para gestionar mi inscripción y contactarme sobre este evento.</span>
             </label>
             <span class="field__error" id="err-consentimiento" role="alert"></span>
           </div>
