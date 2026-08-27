@@ -1,7 +1,7 @@
 {
   "name": "A Todo Terreno — Shineray",
   "short_name": "A Todo Terreno",
-  "description": "Pasaporte de aventura para la Convención Nacional Shineray 2026.",
+  "description": "Pasaporte de aventura para la Convención Shineray 2026.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

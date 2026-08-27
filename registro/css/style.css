@@ -128,7 +128,7 @@ body::before {
 /* =========== Slides: scroll-snap + navegación por pasos =========== */
 
 html { scroll-snap-type: y proximity; }
-.hero, .bitacora, .explicador, .manifiesto, .confirmacion, .countdown, .pistas {
+.hero, .bitacora, .explicador, .manifiesto, .confirmacion, .pistas {
   scroll-snap-align: start;
 }
 
@@ -257,19 +257,6 @@ html.no-scroll { overflow: hidden; height: 100%; }
    span que queda es "BIENVENIDO", al que esta regla le ganaba en
    especificidad y lo pintaba de rojo. */
 
-.welcome__hint {
-  font-family: var(--font-mono);
-  font-size: .78rem;
-  letter-spacing: .12em;
-  color: var(--tinta);
-  opacity: .65;
-  margin: 0 0 1.75rem;
-  animation: hint-pulse 2.2s ease-in-out infinite;
-}
-@keyframes hint-pulse {
-  0%, 100% { opacity: .5; }
-  50% { opacity: .95; }
-}
 
 .welcome__cta {
   position: relative; z-index: 3;
@@ -1673,13 +1660,22 @@ input.invalid { border-bottom-color: var(--rojo); }
 }
 .confirmacion__sellos strong { color: var(--rojo-dark); }
 
-/* ========================= COUNTDOWN (notificación) ========================= */
+/* ========================= AVISO DE CUENTA REGRESIVA (notificación flotante) ========================= */
 
+/* Ya no es una pantalla mas del documento: es una notificacion que
+   "llega" flotando encima de lo que sea que la persona este mirando en
+   ese momento, igual que una notificacion real de telefono -- no hay
+   scroll que la revele, aparece sola. pointer-events va en none en el
+   contenedor y en auto en la tarjeta: el area vacia alrededor de la
+   tarjeta no debe bloquear clics en lo que hay debajo. */
 .countdown {
-  min-height: 100svh;
-  background: var(--tinta);
-  padding: 4rem 1.5rem;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  left: 0; right: 0;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 70;
+  display: flex; justify-content: center;
+  padding: 0 1.25rem;
+  pointer-events: none;
 }
 
 /* Tarjeta estilo notificación push, como si el teléfono avisara los días
@@ -1693,6 +1689,7 @@ input.invalid { border-bottom-color: var(--rojo); }
   padding: 1.1rem 1.25rem;
   box-shadow: 0 18px 40px rgba(0,0,0,.35);
   animation: notif-in .5s var(--ease) both;
+  pointer-events: auto;
 }
 @keyframes notif-in {
   from { opacity: 0; transform: translateY(14px) scale(.97); }
@@ -2449,11 +2446,3 @@ input.is-ok + .field__error::after {
   gap: .7rem;
 }
 
-.welcome__hint {
-  display: inline-flex; align-items: center; gap: .5rem;
-  justify-content: center;
-}
-.welcome__auricular {
-  display: inline-flex;
-  color: var(--rojo);
-}
