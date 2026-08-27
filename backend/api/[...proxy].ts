@@ -15,7 +15,12 @@ let cachedServer: Express | undefined;
 async function bootstrapServer(): Promise<Express> {
   if (!cachedServer) {
     const expressApp = express();
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+    // rawBody: true expone request.rawBody, que necesita el webhook de
+    // Resend para verificar la firma Svix sobre los bytes exactos
+    // recibidos (ver src/main.ts para el detalle).
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp), {
+      rawBody: true,
+    });
 
     app.use(helmet());
     app.enableCors({ origin: process.env.CORS_ORIGIN || '*' });

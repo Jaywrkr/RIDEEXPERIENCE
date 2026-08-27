@@ -117,6 +117,30 @@ model Notificacion {
   programadaPara DateTime? @map("programada_para")
   enviadaEn      DateTime? @map("enviada_en")
 
+  // Todo lo de acá abajo lo completa el webhook de Resend
+  // (notificaciones.controller.ts, POST /notificaciones/webhook-resend),
+  // no procesarPendientes(): "enviada" es solo "Resend aceptó mandarlo",
+  // estos campos son la confirmacion real de que salio de sus servidores.
+  //
+  // proveedorId es el id que Resend devuelve al aceptar el envio (id de
+  // mailer.service.ts): es la unica forma de saber a que Notificacion
+  // corresponde un evento de webhook, que no trae el id nuestro.
+  proveedorId          String?   @map("proveedor_id")
+  // Crudo del evento de Resend ("delivered", "bounced", "complained",
+  // "delivery_delayed"...) en vez de un enum cerrado: si Resend agrega un
+  // tipo de evento nuevo, lo seguimos guardando igual sin otra migracion.
+  entregaEstado        String?   @map("entrega_estado")
+  entregaActualizadaEn DateTime? @map("entrega_actualizada_en")
+  abiertaEn            DateTime? @map("abierta_en")
+
+  // AVISO_PREVIO y AVISO_FINAL van como Resend Broadcast, no correo por
+  // correo: hay que sincronizar antes al asistente como contacto de la
+  // Audience de Resend (una llamada API paceada, igual de sujeta al
+  // limite de 2/s que antes). Esta bandera evita reintentar esa
+  // sincronizacion en cada corrida del cron una vez que ya se hizo.
+  // CONFIRMACION nunca la usa (queda en false, sin significado).
+  sincronizadaEnAudiencia Boolean @default(false) @map("sincronizada_en_audiencia")
+
   eventoId    String    @map("evento_id")
   evento      Evento    @relation(fields: [eventoId], references: [id], onDelete: Cascade)
   asistenteId String    @map("asistente_id")
@@ -124,5 +148,6 @@ model Notificacion {
 
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([proveedorId])
   @@map("notificaciones")
 }

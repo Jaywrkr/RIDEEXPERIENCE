@@ -5,7 +5,11 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // rawBody: true expone request.rawBody -- lo necesita el webhook de
+  // Resend (notificaciones.controller.ts) para verificar la firma Svix,
+  // que se calcula sobre los bytes exactos del body, no sobre el JSON ya
+  // parseado (reserializarlo no da bit a bit lo mismo que se firmó).
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   const config = app.get(ConfigService);
 
   app.use(helmet());
