@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import type { RawBodyRequest } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { TipoNotificacion } from '@prisma/client';
 import type { Request } from 'express';
 import { Webhook } from 'svix';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -28,7 +29,7 @@ export class NotificacionesController {
   @UseGuards(JwtAuthGuard)
   @Post('procesar')
   procesar() {
-    return this.notificacionesService.procesarPendientes();
+    return this.procesarTodo();
   }
 
   // Punto de entrada para Vercel Cron (ver backend/vercel.json) y para
@@ -45,7 +46,22 @@ export class NotificacionesController {
     if (secret && authorization !== `Bearer ${secret}`) {
       throw new ForbiddenException('Token de cron invalido.');
     }
-    return this.notificacionesService.procesarPendientes();
+    return this.procesarTodo();
+  }
+
+  // CONFIRMACION sigue siendo un correo por asistente (inmediato, ya
+  // personalizado con su codigo); AVISO_PREVIO/AVISO_FINAL van como
+  // Broadcast (ver procesarAvisoMasivo en el service) -- ambos flujos
+  // conviene dispararlos en la misma llamada del cron/scheduler externo.
+  private async procesarTodo() {
+    const confirmaciones = await this.notificacionesService.procesarPendientes();
+    const avisoPrevio = await this.notificacionesService.procesarAvisoMasivo(
+      TipoNotificacion.AVISO_PREVIO,
+    );
+    const avisoFinal = await this.notificacionesService.procesarAvisoMasivo(
+      TipoNotificacion.AVISO_FINAL,
+    );
+    return { confirmaciones, avisoPrevio, avisoFinal };
   }
 
   // Recibe los eventos de entrega de Resend (entregado, rebotado,

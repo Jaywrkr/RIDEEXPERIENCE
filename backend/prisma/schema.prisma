@@ -133,6 +133,14 @@ model Notificacion {
   entregaActualizadaEn DateTime? @map("entrega_actualizada_en")
   abiertaEn            DateTime? @map("abierta_en")
 
+  // AVISO_PREVIO y AVISO_FINAL van como Resend Broadcast, no correo por
+  // correo: hay que sincronizar antes al asistente como contacto de la
+  // Audience de Resend (una llamada API paceada, igual de sujeta al
+  // limite de 2/s que antes). Esta bandera evita reintentar esa
+  // sincronizacion en cada corrida del cron una vez que ya se hizo.
+  // CONFIRMACION nunca la usa (queda en false, sin significado).
+  sincronizadaEnAudiencia Boolean @default(false) @map("sincronizada_en_audiencia")
+
   eventoId    String    @map("evento_id")
   evento      Evento    @relation(fields: [eventoId], references: [id], onDelete: Cascade)
   asistenteId String    @map("asistente_id")
