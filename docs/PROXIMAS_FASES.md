@@ -79,9 +79,10 @@
 - [ ] **Probar el sonido con auriculares reales.** Todo el audio se
   calibró midiendo la señal renderizada, no escuchándolo. Los niveles son
   correctos en dB, pero nadie lo ha oído todavía.
-- [ ] **Borrar 2 ramas de GitHub** ya fusionadas:
+- [x] ~~Borrar 2 ramas de GitHub ya fusionadas~~ (verificado 2026-08-27:
   `claude/seo-metadata-jay-jaramillo-4w1p6b` y
-  `claude/passport-stamp-notifications-s0vk0a`.
+  `claude/passport-stamp-notifications-s0vk0a` ya no existen en el
+  remoto — se borraron en algún momento fuera de esta sesión).
 - [ ] Decidir qué hacer con el **pasaporte viejo** en la raíz del repo
   (`index.html`, `api/`, `lib/`, `db/`). Su proyecto de Vercel ya está
   pausado. Borrar el código requiere confirmación explícita: esa base
@@ -89,9 +90,9 @@
 
 ## Ideas evaluadas y no hechas
 
-- **Exportar los inscritos a CSV** desde el panel. Es de valor real para
-  el equipo organizador el día del evento y es poco trabajo, pero no se
-  pidió, así que no se agregó.
+- ~~Exportar los inscritos a CSV desde el panel~~ — **ya está hecho**
+  (verificado 2026-08-27: `admin/js/dashboard.js`, función
+  `exportarCsv()`, con botón en el panel). Esta nota quedó vieja.
 - **Reemplazar los `datetime-local` del panel** por un selector propio.
   Hoy muestran el formato del idioma del sistema (`09/25/2026` en un
   equipo en inglés), que no se puede forzar desde el sitio. Arreglarlo es

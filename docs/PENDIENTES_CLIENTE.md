@@ -83,9 +83,8 @@ Dos cosas que se construyeron pero **nadie experimentó todavía**:
 ## Cierre
 
 - [ ] **Dominio propio** en vez de `*.vercel.app` (opcional, cosmético).
-- [ ] **Borrar 2 ramas de GitHub** ya fusionadas:
-      `claude/seo-metadata-jay-jaramillo-4w1p6b` y
-      `claude/passport-stamp-notifications-s0vk0a`.
+- [x] ~~Borrar 2 ramas de GitHub ya fusionadas~~ — ya no existen
+      (verificado 2026-08-27), no hace falta nada de tu parte.
 - [ ] **Decidir sobre el pasaporte viejo** (el de código de acceso, en la
       raíz del repo). Su proyecto de Vercel ya está pausado y no molesta.
       Borrar el código sí requiere tu confirmación: esa base puede tener
