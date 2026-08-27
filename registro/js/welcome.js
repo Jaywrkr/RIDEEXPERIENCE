@@ -67,7 +67,6 @@ function burstDust(canvas) {
 export function initWelcome({ onDismissed } = {}) {
   const overlay = document.getElementById('welcome');
   const cta = document.getElementById('welcomeCta');
-  const ctaSonido = document.getElementById('welcomeCtaSonido');
   const canvas = document.getElementById('welcomeDustCanvas');
   if (!overlay || !cta) {
     // Sin overlay no hay nada que disipar, pero la tapa igual tiene que
@@ -77,7 +76,7 @@ export function initWelcome({ onDismissed } = {}) {
   }
 
   document.documentElement.classList.add('no-scroll');
-  (ctaSonido || cta).focus({ preventScroll: true });
+  cta.focus({ preventScroll: true });
 
   let dismissing = false;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -108,13 +107,9 @@ export function initWelcome({ onDismissed } = {}) {
 
   cta.addEventListener('click', (event) => {
     event.stopPropagation();
-    dismiss(false);
-  });
-  ctaSonido?.addEventListener('click', (event) => {
-    event.stopPropagation();
     dismiss(true);
   });
-  // Un clic en el fondo entra en silencio: no se puede dar por supuesto
-  // que quien toca fuera de los botones quiere audio.
-  overlay.addEventListener('click', () => dismiss(false));
+  // Ya no hay eleccion silencio/sonido: cualquier gesto de entrada,
+  // tambien un clic en el fondo, entra con sonido.
+  overlay.addEventListener('click', () => dismiss(true));
 }
