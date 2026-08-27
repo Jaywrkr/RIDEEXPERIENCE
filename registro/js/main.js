@@ -4,7 +4,7 @@ import { initCountdown } from './countdown.js';
 import { renderClues } from './clues.js';
 import { initWelcome } from './welcome.js';
 import { initMotion, iniciarEntradaTapa } from './motion.js';
-import { initAmbiente, mostrarAmbiente, initSonidosInterfaz } from './ambiente.js';
+import { initAmbiente, mostrarAmbiente, initSonidosInterfaz, sonidoNotificacion } from './ambiente.js';
 import { initRastroArena } from './rastro-arena.js';
 import { initEsquinaInvitacion } from './esquina-invitacion.js';
 import { initCompasReal } from './compas.js';
@@ -66,6 +66,7 @@ function revealPostSello({ serial, asistente }) {
 
   setTimeout(() => {
     if (countdown) countdown.hidden = false;
+    sonidoNotificacion();
     stopCountdown = initCountdown((diffMs) => renderClues(diffMs));
   }, RETRASO_AVISO_CUENTA_REGRESIVA_MS);
 }

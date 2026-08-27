@@ -133,7 +133,7 @@ function envoltorioHtml({
 
           <tr>
             <td style="background:${COLOR.tinta};padding:16px 28px;text-align:center;">
-              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,226,.45);">Shineray &mdash; Convenci&oacute;n Nacional 2026 &middot; A Todo Terreno</p>
+              <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,238,226,.45);">Shineray &mdash; Convenci&oacute;n 2026 &middot; A Todo Terreno</p>
             </td>
           </tr>
 

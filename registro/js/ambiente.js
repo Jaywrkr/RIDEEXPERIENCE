@@ -354,6 +354,32 @@ export function sonidoError() {
   }, 110);
 }
 
+/** Aviso de cuenta regresiva llegando: dos notas ascendentes, cortas y
+ *  limpias -- el timbre de una notificación real de teléfono, no un
+ *  efecto de interfaz. */
+export function sonidoNotificacion() {
+  if (!puedeSonar()) return;
+  const t = ctx.currentTime;
+
+  function nota(frecuencia, inicio) {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = frecuencia;
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t + inicio);
+    g.gain.exponentialRampToValueAtTime(0.16, t + inicio + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + inicio + 0.22);
+
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t + inicio);
+    osc.stop(t + inicio + 0.24);
+  }
+
+  nota(880, 0);
+  nota(1318.5, 0.09);
+}
+
 /**
  * El golpe del sello: vibración corta en el móvil y un "tunc" grave.
  *
