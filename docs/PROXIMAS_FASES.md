@@ -22,19 +22,16 @@
 
 ## Lo más importante que queda pendiente
 
-- [ ] **Conseguir un peso de texto de DIN Pro que no sea Black.** Hoy el
-  único tipo disponible para texto es **DIN Pro Black, un peso 900**, así
-  que todo el texto corrido —del sitio y del panel— se lee como un muro de
-  negritas. El cliente ya reenvió los `.otf` dos veces pidiendo esto
-  explícitamente ("no solo en negrita", "fuente oficial"), pero **las dos
-  veces resultaron ser bytes idénticos a los archivos que ya estaban en el
-  repo** (mismo Discota-CondensedRough, mismo DINPro-Black) — no llegó
-  ningún peso nuevo todavía. Con **DIN Pro Regular o Medium** el proyecto
-  entero da un salto inmediato; es el cambio de mayor impacto que queda.
-  Al llegar el archivo real: sumarlo a `registro/assets/fonts/` y
-  `admin/assets/fonts/`, declarar el `@font-face` y apuntar `--font-mono`
-  (sitio) y `--fuente` (panel) al peso nuevo, dejando el Black solo para
-  titulares y botones.
+- [x] ~~Conseguir un peso de texto de DIN Pro que no sea Black.~~
+  **Descartado (2026-08-26): no era un pendiente real.** Una sesión
+  anterior asumió por su cuenta que "todo en negrita" era un problema y
+  le pidió al cliente un peso Regular/Medium que nadie había pedido. El
+  cliente confirmó directamente que el diseño está definido con
+  exactamente `Discota-CondensedRough` + `DINPro-Black`, sin un tercer
+  peso. **No volver a pedir ni sugerir esto.** (Los `.otf` que el cliente
+  reenvió dos veces, confundido por ese pedido, siguen siendo duplicados
+  idénticos de los que ya están en el repo — ver el punto de limpieza más
+  abajo.)
 
 - [ ] **Limpiar los archivos de fuente duplicados/sueltos** que quedaron
   de los dos reenvíos fallidos: `assets/fonts/x` (vacío, de un commit
@@ -82,9 +79,10 @@
 - [ ] **Probar el sonido con auriculares reales.** Todo el audio se
   calibró midiendo la señal renderizada, no escuchándolo. Los niveles son
   correctos en dB, pero nadie lo ha oído todavía.
-- [ ] **Borrar 2 ramas de GitHub** ya fusionadas:
+- [x] ~~Borrar 2 ramas de GitHub ya fusionadas~~ (verificado 2026-08-27:
   `claude/seo-metadata-jay-jaramillo-4w1p6b` y
-  `claude/passport-stamp-notifications-s0vk0a`.
+  `claude/passport-stamp-notifications-s0vk0a` ya no existen en el
+  remoto — se borraron en algún momento fuera de esta sesión).
 - [ ] Decidir qué hacer con el **pasaporte viejo** en la raíz del repo
   (`index.html`, `api/`, `lib/`, `db/`). Su proyecto de Vercel ya está
   pausado. Borrar el código requiere confirmación explícita: esa base
@@ -92,9 +90,9 @@
 
 ## Ideas evaluadas y no hechas
 
-- **Exportar los inscritos a CSV** desde el panel. Es de valor real para
-  el equipo organizador el día del evento y es poco trabajo, pero no se
-  pidió, así que no se agregó.
+- ~~Exportar los inscritos a CSV desde el panel~~ — **ya está hecho**
+  (verificado 2026-08-27: `admin/js/dashboard.js`, función
+  `exportarCsv()`, con botón en el panel). Esta nota quedó vieja.
 - **Reemplazar los `datetime-local` del panel** por un selector propio.
   Hoy muestran el formato del idioma del sistema (`09/25/2026` en un
   equipo en inglés), que no se puede forzar desde el sitio. Arreglarlo es
