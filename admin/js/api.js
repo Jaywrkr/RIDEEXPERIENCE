@@ -64,6 +64,13 @@ const Api = {
     });
   },
 
+  async eliminarAsistente(eventoId, asistenteId) {
+    return this._request(`/eventos/${eventoId}/asistentes/${asistenteId}`, {
+      method: 'DELETE',
+      auth: true,
+    });
+  },
+
   async _request(path, { method = 'GET', body, auth = false } = {}) {
     const headers = { 'Content-Type': 'application/json' };
     if (auth) {

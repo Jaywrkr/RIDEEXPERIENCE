@@ -147,6 +147,7 @@
               <th>Estado</th>
               <th>Registrado</th>
               <th>Llegada</th>
+              <th class="celda-acciones-cabecera">Acciones</th>
             </tr>
           </thead>
           <tbody id="tabla-asistentes-body"></tbody>
@@ -156,6 +157,20 @@
       </div>
     </div>
   </div>
+
+  <dialog id="dialogo-eliminar" class="dialogo-confirmar">
+    <form method="dialog">
+      <h3>Eliminar asistente</h3>
+      <p>
+        Vas a eliminar a <strong id="dialogo-eliminar-nombre"></strong> de este evento.
+        Esta acción no se puede deshacer.
+      </p>
+      <div class="dialogo-acciones">
+        <button type="button" class="boton-claro" id="boton-cancelar-eliminar">Cancelar</button>
+        <button type="button" class="boton-peligro" id="boton-confirmar-eliminar">Sí, eliminar</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="js/api.js"></script>
   <script src="js/dashboard.js"></script>

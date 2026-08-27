@@ -1460,8 +1460,17 @@ input.invalid { border-bottom-color: var(--rojo); }
   background-position: center;
   color: var(--tinta);
   text-align: center;
-  padding: 4rem 1.5rem 2rem;
+  /* Esta pantalla la va a abrir casi todo el mundo desde el celular, en
+     el momento, parado en algún lado -- no es un documento para leer con
+     scroll, es la confirmación de "ya quedaste". Tiene que entrar
+     completa de una, en el celular más chico razonable, sin que nadie
+     tenga que arrastrar el dedo para verla entera. Por eso CADA medida
+     de acá para abajo (sello, título, separadores, tarjetas) usa clamp()
+     atado a svh: en un teléfono bajo se comprime sola; en uno alto o en
+     desktop, respira. */
+  padding: clamp(1rem, 4svh, 2.75rem) 1.25rem clamp(.75rem, 3svh, 1.75rem);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0;
   opacity: 0;
   transform: translateY(16px);
   transition: opacity .8s var(--ease) .3s, transform .8s var(--ease) .3s;
@@ -1495,22 +1504,22 @@ input.invalid { border-bottom-color: var(--rojo); }
   position: relative; z-index: 1;
   display: inline-block;
   transform: rotate(-6deg);
-  margin-bottom: 1.75rem;
+  margin-bottom: clamp(.4rem, 1.8svh, 1rem);
   mix-blend-mode: multiply;
 }
 .sello img {
   display: block;
-  width: clamp(8.5rem, 26vw, 11rem);
+  width: clamp(3.5rem, 12vw, 5.5rem);
   height: auto;
 }
 
 .confirmacion h2 {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 5vw, 2.6rem);
-  margin: 0 0 1rem;
+  margin: 0 0 .4rem;
 }
 
-.confirmacion p { max-width: 30rem; margin: 0 auto 1rem; line-height: 1.6; }
+.confirmacion p { max-width: 30rem; margin: 0 auto .35rem; line-height: 1.5; }
 
 /* La pantalla mezclaba titular, dato practico y cierre todo pegado,
    uno atras del otro sin aire -- con todo el texto en el mismo peso
@@ -1521,7 +1530,7 @@ input.invalid { border-bottom-color: var(--rojo); }
   display: block;
   width: 3rem;
   height: 1.5px;
-  margin: 1.6rem auto;
+  margin: clamp(.4rem, 1.6svh, 1rem) auto;
   background: rgba(20,17,13,.18);
 }
 
@@ -1530,7 +1539,7 @@ input.invalid { border-bottom-color: var(--rojo); }
 .confirmacion__datos {
   display: inline-flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;
   margin: 0;
-  padding: 1rem 1.75rem;
+  padding: .5rem 1.25rem;
   background: var(--hueso);
   border: 1px solid rgba(20,17,13,.15);
 }
@@ -1561,8 +1570,8 @@ input.invalid { border-bottom-color: var(--rojo); }
   background: transparent;
   color: var(--tinta);
   border: 1.5px solid rgba(20,17,13,.3);
-  padding: .7rem 1.4rem;
-  margin: 1.2rem auto 0;
+  padding: .5rem 1.2rem;
+  margin: .5rem auto 0;
   cursor: pointer;
   transition: background .2s var(--ease), transform .15s var(--ease);
 }
@@ -1583,27 +1592,55 @@ input.invalid { border-bottom-color: var(--rojo); }
 /* El aviso de notificaciones es el dato accionable de toda la pantalla
    -- si se pierde entre el resto del texto corrido, nadie activa las
    notificaciones y las pistas de ruta caen en spam o pasan sin verse.
-   Una caja con acento rojo lo separa como una alerta real, no como una
-   nota al pie más. */
-/* ".confirmacion p" (más abajo) le pone max-width/margin/line-height a
-   cualquier <p> de esta pantalla con más especificidad que una sola
-   clase: se repite "p.confirmacion__aviso" para que esta caja sí gane. */
-.confirmacion p.confirmacion__aviso {
+   Se arma como la misma tarjeta-notificación push que usa .notif en el
+   countdown (icono en chip rojo + entrada animada): mismo lenguaje de
+   marca en las dos pantallas, y de paso se lee como una alerta real, no
+   como una nota al pie más. Es un <div>, no un <p>, así no compite con
+   la regla general ".confirmacion p" de más abajo. Reemplaza al divisor
+   que separaba este bloque del anterior: su propio fondo + sombra ya
+   marcan el corte, un divisor encima era espacio de sobra que esta
+   pantalla, pensada ante todo para el celular, no tiene para regalar. */
+.confirmacion__aviso {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
   max-width: 26rem;
-  margin: 0 auto;
-  font-size: .92rem;
-  line-height: 1.55;
+  margin: clamp(.5rem, 1.8svh, 1rem) auto 0;
   text-align: left;
   background: var(--hueso);
+  border-radius: .7rem;
   border-left: 3px solid var(--rojo);
-  padding: .85rem 1rem;
+  box-shadow: 0 8px 20px rgba(20,17,13,.1);
+  padding: .5rem .75rem;
+  animation: notif-in .5s var(--ease) .1s both;
+}
+.confirmacion__aviso-icon {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 1.6rem; height: 1.6rem;
+  border-radius: .45rem;
+  background: var(--rojo);
+  color: #fff;
+  animation: aviso-pulse 2.4s ease-in-out 1s infinite;
+}
+.confirmacion__aviso-icon svg { width: 14px; height: 14px; }
+@keyframes aviso-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1) rotate(-8deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confirmacion__aviso-icon { animation: none; }
+}
+.confirmacion__aviso-texto {
+  font-size: .74rem;
+  line-height: 1.35;
 }
 .confirmacion__aviso strong { color: var(--rojo-dark); }
 
 .confirmacion p.confirmacion__despedida {
-  font-size: .92rem;
+  font-size: .78rem;
   opacity: .85;
-  margin-top: 1rem;
+  margin-top: .4rem;
 }
 
 /* En una pantalla de PC sobra ancho: la columna angosta de 31rem (pensada
@@ -1614,10 +1651,11 @@ input.invalid { border-bottom-color: var(--rojo); }
    bloques, sin tocar nada por debajo de ese punto. */
 @media (min-width: 64rem) {
   .confirmacion__content { max-width: 42rem; }
-  .confirmacion { padding: 5rem 2rem 3rem; }
-  .confirmacion__divisor { margin: 2.2rem auto; }
-  .confirmacion p.confirmacion__aviso { max-width: 34rem; padding: 1.15rem 1.4rem; font-size: 1rem; }
-  .confirmacion__datos { padding: 1.25rem 2.25rem; gap: 3rem; }
+  .confirmacion { padding: clamp(2.5rem, 8svh, 4rem) 2rem clamp(1.5rem, 5svh, 2.5rem); }
+  .confirmacion__divisor { margin: clamp(1.2rem, 3.5svh, 2.2rem) auto; }
+  .confirmacion__aviso { max-width: 34rem; padding: .9rem 1.3rem; }
+  .confirmacion__aviso-texto { font-size: .95rem; }
+  .confirmacion__datos { padding: 1rem 2rem; gap: 3rem; }
 }
 .boton-calendario:hover { background: rgba(20,17,13,.05); transform: translateY(-1px); }
 .boton-calendario:active { transform: scale(.97); }
@@ -2192,13 +2230,19 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
-  margin: 0 0 1.25rem;
+  gap: .25rem;
+  margin: 0 0 .4rem;
 }
+/* Antes clamp(2.6rem, 12vw, 4rem): el grito real de la pantalla no
+   necesita ser el elemento más grande del documento -- solo el más
+   protagonista. Esta pantalla la abre casi todo el mundo desde el
+   celular: tiene que entrar completa, sin scroll, en el teléfono más
+   chico razonable -- por eso el mínimo del clamp es tan bajo. En
+   desktop/tablet (más vw, más aire) sigue leyendo como titular. */
 .confirmacion__grito {
   font-family: var(--font-display);
-  font-size: clamp(2.6rem, 12vw, 4rem);
-  line-height: .92;
+  font-size: clamp(1.3rem, 6.2vw, 2.35rem);
+  line-height: .98;
   letter-spacing: var(--track-titulo);
   color: var(--tinta);
 }
@@ -2206,11 +2250,11 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .15rem;
+  gap: .05rem;
   font-family: var(--font-mono);
   letter-spacing: var(--track-etiqueta);
   text-transform: uppercase;
-  line-height: 1.4;
+  line-height: 1.3;
   color: var(--rojo-dark);
 }
 /* "¿El destino?" y "Secreto hasta tu llegada." tienen que ser cada una
@@ -2220,7 +2264,7 @@ label {
    parta en una tercera línea. */
 .confirmacion__bajada-linea {
   white-space: nowrap;
-  font-size: clamp(.62rem, 4.3vw, .8125rem);
+  font-size: clamp(.56rem, 4vw, .75rem);
 }
 
 /* ---- Campo validado ----

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AsistentesService } from './asistentes.service';
 import { CreateAsistenteDto } from './dto/create-asistente.dto';
@@ -45,5 +45,16 @@ export class AsistentesController {
     @Param('asistenteId') asistenteId: string,
   ) {
     return this.asistentesService.alternarLlegada(eventoId, asistenteId);
+  }
+
+  // Panel administrativo: eliminar un asistente (y sus notificaciones,
+  // en cascada). El panel pide confirmacion antes de llegar aca.
+  @UseGuards(JwtAuthGuard)
+  @Delete(':asistenteId')
+  eliminar(
+    @Param('eventoId') eventoId: string,
+    @Param('asistenteId') asistenteId: string,
+  ) {
+    return this.asistentesService.eliminar(eventoId, asistenteId);
   }
 }

@@ -1,11 +1,11 @@
 # Estado actual del repositorio (RIDEEXPERIENCE)
 
-> Última actualización: 2026-08-26. Este documento existe para que
+> Última actualización: 2026-08-27. Este documento existe para que
 > cualquier sesión nueva (de IA o de persona) pueda retomar el trabajo sin
 > depender del historial de chat anterior. **Reemplaza la versión del
-> 2026-08-25**: desde entonces se apagaron los despliegues automáticos, se
-> mergearon las 7 fases de "wow factor" visual, se corrigió el logo rojo
-> en todo el sitio y se rehizo la pantalla de bienvenida.
+> 2026-08-26**: desde entonces se agregó a `admin/` el botón para eliminar
+> asistentes (con confirmación) y se rediseñó la pantalla final de
+> confirmación del pasaporte en `registro/`.
 
 ## Qué es esto
 
@@ -88,6 +88,12 @@ inscritos con cuatro métricas. Tiene **su propia copia** de las fuentes y
 el logo en `admin/assets/`: se despliega como raíz propia en Vercel y no
 puede leer los archivos de `registro/`.
 
+- Cada fila de la tabla tiene un botón **Eliminar** (`admin/js/dashboard.js`)
+  que abre un `<dialog>` de confirmación (`admin/dashboard.html`) antes de
+  borrar — no hay borrado directo desde la tabla. Confirmar llama a
+  `Api.eliminarAsistente` (`admin/js/api.js`), que pega contra
+  `DELETE /api/eventos/:eventoId/asistentes/:asistenteId`.
+
 ### `backend/` — API (NestJS + Prisma + PostgreSQL)
 
 Desplegado como función serverless (`backend/api/[...proxy].ts`).
@@ -95,6 +101,11 @@ Desplegado como función serverless (`backend/api/[...proxy].ts`).
 - Auth JWT para el panel (`POST /api/auth/login`).
 - CRUD de eventos.
 - Registro público de asistentes (`POST /api/eventos/:id/asistentes`).
+- Panel administrativo: listar, ver, check-in y **eliminar** asistentes
+  (`backend/src/asistentes/asistentes.controller.ts` +
+  `asistentes.service.ts`). Borrar un asistente elimina en cascada sus
+  notificaciones (`onDelete: Cascade` en `Notificacion.asistente`, ver
+  `schema.prisma`) — no hace falta borrarlas aparte.
 - Notificaciones por correo vía Resend — **el mecanismo funciona pero los
   correos NO se envían**: falta cargar `RESEND_API_KEY`. Sin ella, el
   sistema registra gente normal y solo loguea los correos.
