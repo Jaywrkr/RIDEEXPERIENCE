@@ -8,7 +8,9 @@
 > de confirmación del pasaporte y la bienvenida de `registro/`, y se
 > optimizó el peso de fuentes e imágenes sin tocar nada visual (ver
 > [«Peso de página»](#peso-de-página-fuentes-en-woff2-imágenes-en-webp-2026-08-28)
-> más abajo).
+> más abajo), y se arregló la suite e2e (`tests/e2e.py` le faltaba tildar
+> el checkbox de consentimiento — el sitio nunca estuvo roto, ver nota en
+> «Cómo correr las pruebas»). Vuelve a estar 43/43 en verde.
 
 ## Qué es esto
 
@@ -135,7 +137,7 @@ python3 tests/e2e.py -k borrador   # solo un grupo
 
 Levanta el sitio y un backend de pruebas (`tests/mockapi.py`) que replica
 el contrato real del NestJS, y maneja un navegador de punta a punta.
-**43 comprobaciones, todas en verde** al cierre de esta sesión.
+**43 comprobaciones, todas en verde** al cierre de esta sesión (2026-08-28).
 
 Requiere `pip install playwright`. El entorno de estas sesiones ya trae
 Chromium en `/opt/pw-browsers/chromium`.
@@ -144,6 +146,20 @@ Chromium en `/opt/pw-browsers/chromium`.
 > `rideexperience-api.vercel.app`, por eso las pruebas corren contra el
 > backend local. Si se cambian las reglas de validación del backend, hay
 > que cambiarlas en `tests/mockapi.py` **y** en `registro/js/validacion.js`.
+
+**Arreglo 2026-08-28: la suite se había quedado desactualizada, no el
+sitio.** El commit `066958d` (2026-08-26) agregó el checkbox obligatorio
+de consentimiento de datos al paso 2, pero nunca actualizó el helper
+`llenar()` de `tests/e2e.py` para tildarlo. Sin el checkbox tildado,
+`goNext()` bloquea el avance (correcto — es exactamente lo que tiene que
+pasar), así que `t_flujo_feliz` quedaba colgada 30s esperando `.btn-sellar`
+y tiraba una excepción; como todas las pruebas comparten la misma página
+de Playwright, el borrador a medio llenar que había quedado en
+`sessionStorage` contaminaba las pruebas siguientes y arrastraba 10 de
+las 36 comprobaciones a rojo en cadena. Se verificó a mano con Playwright
+que el sitio real funciona perfecto tildando el checkbox (cero errores
+de JS) antes de tocar nada — el bug estaba solo en `llenar()`, que ahora
+hace `page.check("#consentimiento")`. Vuelve a estar 43/43 en verde.
 
 ## Peso de página: fuentes en `.woff2`, imágenes en `.webp` (2026-08-28)
 
@@ -234,9 +250,10 @@ si se pueden borrar.
 - **"A TODO TERRENO" es una imagen, no texto.** Es el lockup real de
   marca (`wordmark-atodoterreno.webp`). Componerlo con la fuente da un
   peso y un kerning distintos.
-- **El audio arranca siempre en silencio.** La bienvenida ofrece "entrar
-  con sonido" porque el navegador solo permite reproducir audio dentro de
-  un gesto del usuario.
+- **El audio arranca siempre con sonido, sin preguntar** (cambió el
+  2026-08-27; antes ofrecía "entrar con sonido" / "entrar en silencio"
+  como dos botones separados). El único botón "ENTRAR →" hace de gesto
+  de permiso del navegador para reproducir audio.
 - **El rojo de marca (#c41e1e) sobre fondo oscuro da 3.18:1**, que falla
   WCAG AA para texto chico. Para eso existe `--rojo-sobre-oscuro`
   (#e84545). No usar el rojo de marca en texto chico sobre oscuro.
