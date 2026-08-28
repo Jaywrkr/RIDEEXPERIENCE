@@ -22,6 +22,11 @@
 <meta name="twitter:image" content="assets/og-image.png">
 
 <link rel="stylesheet" href="css/style.css">
+<!-- Las dos fuentes se usan de entrada en la bienvenida (BIENVENIDO, el
+     hint, el CTA): precargarlas evita el salto de tipografia mientras
+     el navegador todavia esta descubriendo el @font-face dentro del CSS. -->
+<link rel="preload" href="assets/fonts/Discota-CondensedRough.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/DINPro-Black.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body data-state="invitado">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -46,18 +51,18 @@
 <div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
   <span class="welcome__grain" aria-hidden="true"></span>
   <div class="welcome__dunes" aria-hidden="true">
-    <img class="welcome__dunes-back" src="assets/brand/montanas-halftone-alt.png" alt="">
-    <img class="welcome__dunes-front" src="assets/brand/montanas-halftone.png" alt="">
+    <img class="welcome__dunes-back" src="assets/brand/montanas-halftone-alt.webp" alt="" fetchpriority="high">
+    <img class="welcome__dunes-front" src="assets/brand/montanas-halftone.webp" alt="" fetchpriority="high">
     <span class="welcome__dunes-ruta"></span>
   </div>
   <canvas id="welcomeDustCanvas" class="welcome__canvas" aria-hidden="true"></canvas>
 
   <div class="welcome__content">
-    <img class="welcome__brand" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="208" height="36" loading="eager">
+    <img class="welcome__brand" src="assets/brand/shineray-shm-logo-negro.webp" alt="Shineray SHM" width="208" height="36" loading="eager">
     <p class="overline">CONVENCIÓN 2026</p>
     <h1 class="welcome__title" id="welcomeTitle">
       <span class="welcome__bienvenido">BIENVENIDO</span>
-      <img class="welcome__wordmark" src="assets/brand/wordmark-atodoterreno.png"
+      <img class="welcome__wordmark" src="assets/brand/wordmark-atodoterreno.webp"
            alt="A Todo Terreno" width="1996" height="780">
     </h1>
     <!-- Una sola entrada, siempre con sonido: el navegador exige un
@@ -94,7 +99,7 @@
   <div class="hero__dune" id="heroDune" aria-hidden="true"></div>
   <div class="hero__content">
     <p class="overline">CONVENCIÓN SHINERAY</p>
-    <img class="brand-mark" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="220" height="38" loading="eager">
+    <img class="brand-mark" src="assets/brand/shineray-shm-logo-negro.webp" alt="Shineray SHM" width="220" height="38" loading="eager">
     <h1 class="hero__title">A TODO<br>TERRENO</h1>
     <p class="hero__sub">CONVENCIÓN 2026 — 25, 26 Y 27 DE SEPTIEMBRE</p>
     <p class="hero__hint">Vas a subir a un bus sin saber a dónde te llevamos.<br>Baja y empieza a entender por qué.</p>
@@ -192,17 +197,17 @@
           <canvas class="cover-arena" id="coverArenaCanvas" aria-hidden="true"></canvas>
 
           <div class="cover-dunes" aria-hidden="true">
-            <img class="cover-dunes__back" src="assets/brand/montanas-halftone-alt.png" alt="">
-            <img class="cover-dunes__front" src="assets/brand/montanas-halftone.png" alt="">
+            <img class="cover-dunes__back" src="assets/brand/montanas-halftone-alt.webp" alt="">
+            <img class="cover-dunes__front" src="assets/brand/montanas-halftone.webp" alt="">
             <span class="cover-dunes__ruta"></span>
           </div>
 
-          <img class="cover-brand" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="180" height="31">
+          <img class="cover-brand" src="assets/brand/shineray-shm-logo-negro.webp" alt="Shineray SHM" width="180" height="31">
 
           <span class="cover-pasaporte" aria-hidden="true">PASAPORTE</span>
 
           <div class="cover-title">
-            <img class="cover-wordmark" src="assets/brand/wordmark-atodoterreno.png"
+            <img class="cover-wordmark" src="assets/brand/wordmark-atodoterreno.webp"
                  alt="A Todo Terreno" width="1996" height="780">
           </div>
 
@@ -414,7 +419,7 @@
 
 <!-- ============ CONFIRMACIÓN ============ -->
 <section class="confirmacion" id="confirmacion" hidden aria-labelledby="confTitulo">
-  <img class="confirmacion__logo" src="assets/brand/shineray-shm-logo-negro.png" alt="Shineray SHM" width="150" height="26">
+  <img class="confirmacion__logo" src="assets/brand/shineray-shm-logo-negro.webp" alt="Shineray SHM" width="150" height="26">
   <div class="confirmacion__content">
     <div class="sello" aria-hidden="true"><img src="assets/brand/sello-aventura-garantizada.png" alt="" width="90" height="90"></div>
     <h2 id="confTitulo">

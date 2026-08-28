@@ -3,15 +3,20 @@
    Paleta y tipografía extraídas del brief visual (Paso 0)
    ========================================================= */
 
+/* .woff2 primero (mismo glifo, contenedor mucho mas liviano) con el
+   .otf original como respaldo para el puñado de navegadores que
+   todavia no entienden woff2 -- no cambia una sola letra en pantalla. */
 @font-face {
   font-family: "Discota";
-  src: url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
+  src: url("../assets/fonts/Discota-CondensedRough.woff2") format("woff2"),
+       url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: "DIN Pro Black";
-  src: url("../assets/fonts/DINPro-Black.otf") format("opentype");
+  src: url("../assets/fonts/DINPro-Black.woff2") format("woff2"),
+       url("../assets/fonts/DINPro-Black.otf") format("opentype");
   font-weight: 900;
   font-display: swap;
 }
@@ -106,7 +111,7 @@ body {
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: -1;
-  background: var(--tinta) url("../assets/brand/montanas-topografia.png") center 12% / 140% auto no-repeat;
+  background: var(--tinta) url("../assets/brand/montanas-topografia.webp") center 12% / 140% auto no-repeat;
   opacity: .16;
   pointer-events: none;
 }
@@ -219,8 +224,8 @@ html.no-scroll { overflow: hidden; height: 100%; }
   height: 62%;
   opacity: .42;
   background: #cbb494;
-  -webkit-mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
-  mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
+  -webkit-mask: url("../assets/brand/ruta.webp") bottom center / contain no-repeat;
+  mask: url("../assets/brand/ruta.webp") bottom center / contain no-repeat;
 }
 
 .welcome__canvas {
@@ -349,7 +354,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
 
 .hero__dune {
   position: absolute; left: 0; right: 0; bottom: 0; height: 42%;
-  background-image: url("../assets/brand/montanas-halftone.png");
+  background-image: url("../assets/brand/montanas-halftone.webp");
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: cover;
@@ -359,7 +364,7 @@ html.no-scroll { overflow: hidden; height: 100%; }
 .hero__dune--back {
   height: 52%;
   opacity: .6;
-  background-image: url("../assets/brand/montanas-halftone-alt.png");
+  background-image: url("../assets/brand/montanas-halftone-alt.webp");
 }
 
 /* Viñeta sutil de cohesión visual, presente en todo el sitio */
@@ -602,7 +607,7 @@ body::after {
   content: "";
   position: absolute; left: -5%; right: -5%; bottom: 0; z-index: -1;
   height: 38%;
-  background: url("../assets/brand/montanas-halftone-alt.png") bottom center / 110% auto no-repeat;
+  background: url("../assets/brand/montanas-halftone-alt.webp") bottom center / 110% auto no-repeat;
   opacity: .17;
   pointer-events: none;
 }
@@ -916,8 +921,8 @@ body::after {
   height: 62%;
   opacity: .42;
   background: #cbb494;
-  -webkit-mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
-  mask: url("../assets/brand/ruta.png") bottom center / contain no-repeat;
+  -webkit-mask: url("../assets/brand/ruta.webp") bottom center / contain no-repeat;
+  mask: url("../assets/brand/ruta.webp") bottom center / contain no-repeat;
 }
 
 .cover-brand {

@@ -3,7 +3,7 @@
 // cambiar el nombre de la caché los visitantes que ya entraron una vez
 // seguirían viendo la versión vieja del sitio aunque se despliegue una
 // nueva. El `activate` de más abajo borra las cachés con otro nombre.
-const CACHE = 'atodoterreno-registro-v2';
+const CACHE = 'atodoterreno-registro-v3';
 const SHELL = [
   './',
   './index.html',
