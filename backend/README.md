@@ -17,9 +17,10 @@ notificaciones automáticas de correo (Semana 4). El panel admin
   `GET /api/eventos/:id`, `POST /api/eventos` y `PATCH /api/eventos/:id`
   (protegidos, panel administrativo).
 - **Asistentes**: `POST /api/eventos/:eventoId/asistentes` (público, es el
-  formulario de inscripción — valida cédula ecuatoriana real con dígito
-  verificador, no solo formato), `GET /api/eventos/:eventoId/asistentes`,
-  `GET .../total` y `GET .../:asistenteId` (protegidos, panel).
+  formulario de inscripción), `GET /api/eventos/:eventoId/asistentes`,
+  `GET .../total`, `GET .../:asistenteId`, `PATCH .../:asistenteId/llegada`
+  (check-in) y `DELETE .../:asistenteId` (protegidos, panel — borra en
+  cascada las notificaciones del asistente).
 - **Notificaciones** (`src/notificaciones/`, ver
   [`../docs/SEMANA_4.md`](../docs/SEMANA_4.md)): cron cada minuto que
   procesa las notificaciones `PENDIENTE` (confirmación, aviso previo,

@@ -73,6 +73,10 @@ def llenar(page, nombre="Jay Jaramillo",
     page.fill("#nombre", nombre)
     page.fill("#telefono", telefono)
     page.fill("#email", email)
+    # Checkbox obligatorio desde 066958d (consentimiento de datos): sin
+    # esto goNext() se queda bloqueado en el paso 2 para siempre, igual
+    # que si faltara cualquier otro campo.
+    page.check("#consentimiento")
 
 
 def avanzar_a_revision(page):

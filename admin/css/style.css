@@ -7,15 +7,20 @@
    que estorbe a quien tiene que leer una lista.
    ========================================================= */
 
+/* .woff2 primero (mismo glifo, contenedor mucho mas liviano) con el
+   .otf original como respaldo para el puñado de navegadores que
+   todavia no entienden woff2 -- no cambia una sola letra en pantalla. */
 @font-face {
   font-family: "DIN Pro Black";
-  src: url("../assets/fonts/DINPro-Black.otf") format("opentype");
+  src: url("../assets/fonts/DINPro-Black.woff2") format("woff2"),
+       url("../assets/fonts/DINPro-Black.otf") format("opentype");
   font-weight: 900;
   font-display: swap;
 }
 @font-face {
   font-family: "Discota";
-  src: url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
+  src: url("../assets/fonts/Discota-CondensedRough.woff2") format("woff2"),
+       url("../assets/fonts/Discota-CondensedRough.otf") format("opentype");
   font-weight: 400;
   font-display: swap;
 }

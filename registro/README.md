@@ -1,26 +1,29 @@
 # Sitio de registro — A Todo Terreno (Shineray)
 
-Pasaporte digital de inscripción para la Convención Nacional Shineray
-2026. Es el sitio que se abre al escanear el QR de la invitación: una
-bienvenida, un pasaporte de tres hojas y el sello final.
+Pasaporte digital de inscripción para la Convención Shineray 2026. Es el
+sitio que se abre al escanear el QR de la invitación: una bienvenida, un
+pasaporte de tres hojas y el sello final.
 
 Sin build step ni dependencias — HTML/CSS/JS plano con módulos ES nativos,
 PWA instalable (manifest + service worker).
 
 ## El flujo
 
-1. **Bienvenida** — nubes de arena a la deriva. Dos entradas: *con sonido*
-   o *en silencio*. Esa elección existe por una razón técnica además de
-   narrativa: el navegador solo permite reproducir audio dentro de un
-   gesto del usuario, así que el clic de entrada hace de permiso.
+1. **Bienvenida** — dunas de arena, un solo botón "ENTRAR →". Siempre
+   entra con sonido, sin preguntar: el navegador solo permite reproducir
+   audio dentro de un gesto del usuario, así que ese clic hace de permiso.
 2. **Tapa del pasaporte** — el wordmark oficial grabado sobre kraft, con
    las montañas de la marca al pie.
-3. **Hoja de datos** — nombre, teléfono y correo. Se valida al salir de
-   cada campo, no mientras se escribe.
+3. **Hoja de datos** — nombre, teléfono, correo y el checkbox de
+   consentimiento de datos (los cuatro son obligatorios, todos bloquean
+   el avance igual si faltan). Se valida al salir de cada campo, no
+   mientras se escribe.
 4. **Hoja de visado** — resumen con etiquetas bilingües, fechas del viaje
    y el destino tachado como dato clasificado (es sorpresa).
 5. **Sello** — cae sobre el papel, vibra el teléfono, el documento se
-   disuelve en arena y aparece la confirmación con la cuenta atrás.
+   disuelve en arena y aparece la confirmación. Unos segundos después
+   "llega" flotando el aviso de cuenta regresiva, como una notificación
+   real de teléfono (con su propio sonido).
 
 ## Estructura
 
@@ -34,10 +37,11 @@ PWA instalable (manifest + service worker).
 | `js/ambiente.js` | **Todo el audio**, sintetizado con Web Audio. |
 | `js/passport.js` | Los 3 pasos, el sello y el envío. |
 | `js/validacion.js` | Validación en el navegador, espejo del backend. |
+| `js/countdown.js` | Cuenta regresiva hasta el evento (`EVENT_DATE`, fuente única de la fecha). |
 | `js/api.js` | Cliente HTTP. |
 | `js/config.js` | URL de la API y ID del evento. |
-| `assets/brand/` | Logo, wordmark, sello, montañas, arena. |
-| `assets/fonts/` | Discota-CondensedRough, DINPro-Black. |
+| `assets/brand/` | Logo, wordmark, sello, montañas, arena — casi todo en `.webp` sin pérdida; ver nota de rendimiento más abajo. |
+| `assets/fonts/` | Discota-CondensedRough, DINPro-Black, en `.woff2` (con el `.otf` original de respaldo). |
 | `tests/` | Suite end-to-end. |
 
 ## Pruebas
@@ -58,6 +62,14 @@ Requiere `pip install playwright`.
 > separan, el formulario rechazaría datos que el servidor acepta, o
 > dejaría pasar datos que el servidor va a rechazar igual.
 
+> Si se agrega un campo obligatorio nuevo al paso 2 (como pasó con el
+> checkbox de consentimiento, `066958d`), hay que sumarlo también al
+> helper `llenar()` de `tests/e2e.py` — si no, `t_flujo_feliz` se cuelga
+> esperando `.btn-sellar`, y como todas las pruebas comparten la misma
+> página de Playwright, el borrador a medio llenar contamina las
+> siguientes y arrastra un puñado de comprobaciones más a rojo en cadena
+> (pasó el 2026-08-28: ver `docs/ESTADO_ACTUAL.md`).
+
 ## El audio no son archivos
 
 Todo el sonido se genera en el navegador con Web Audio: **0 KB y ninguna
@@ -66,7 +78,21 @@ grave, silbido lejano y roce de arena), cada una modulada con un periodo
 distinto y no múltiplo de los otros, para que la combinación tarde
 muchísimo en repetirse y el oído no detecte el bucle.
 
-Arranca **siempre en silencio**. Nada suena si la persona no lo encendió.
+Arranca **siempre con sonido**, sin preguntar: el clic de "ENTRAR →" en
+la bienvenida hace de gesto de permiso del navegador para audio.
+
+## Peso de página
+
+Las imágenes decorativas (`assets/brand/`) están en `.webp` sin pérdida
+y las fuentes (`assets/fonts/`) en `.woff2` — mismo resultado en
+pantalla, contenedor mucho más liviano. Dos excepciones a propósito:
+`sello-aventura-garantizada.png` y `shineray-shm-logo-blanco.png` siguen
+en `.png` porque `backend/src/notificaciones/templates/correos.ts` los
+incrusta en los correos por nombre de archivo exacto, y el soporte de
+webp en clientes de correo es mucho menos confiable que en navegadores.
+Si se agrega una imagen nueva a `assets/brand/` y no la usa ningún
+correo, conviene sumarla también como `.webp` sin pérdida (`Pillow`:
+`im.save(out, format="WEBP", lossless=True)`) en vez de `.png`.
 
 ## Antes de desplegar
 
