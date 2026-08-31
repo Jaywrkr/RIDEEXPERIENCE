@@ -1,8 +1,12 @@
 # Pendientes para vos
 
-> Última actualización: 2026-08-26. Cosas que no puede resolver una sesión
+> Última actualización: 2026-08-31. Cosas que no puede resolver una sesión
 > de IA: cuentas, archivos, decisiones y ajustes que solo existen en el
 > panel de Vercel. Ordenadas por lo que más mueve la aguja.
+>
+> **2026-08-31: los tres proyectos se pusieron al día en producción**
+> (commit `d1556c6`, "Merge pull request #30"), disparados con Deploy
+> Hooks. Con eso se cerró el punto de la cédula — ver más abajo.
 
 ## ~~1. La fuente de texto~~ — descartado, no es un pendiente real
 
@@ -26,25 +30,29 @@ que **ningún push dispara un build**, en ninguna rama.
 Se hizo así en vez de con el "Ignored Build Step" del dashboard para que
 quede versionado y no dependa de que alguien lo recuerde configurar.
 
-**Para desplegar cuando vos quieras**, dos opciones:
+**Para desplegar cuando vos quieras**: usá el **Deploy Hook**. Cada uno
+de los tres proyectos ya tiene uno creado, llamado `manual`, apuntando a
+la rama `claude/las-tanusas-landing-8ttqff` (Settings → Git → Deploy
+Hooks). Pegás la URL en el navegador, o `curl -X POST <url>`, y listo.
 
-- **Redeploy**: Vercel → proyecto → Deployments → elegí el commit → "..."
-  → Redeploy.
-- **Deploy Hook**: Settings → Git → Deploy Hooks. Te da una URL que
-  dispara el deploy con un `curl -X POST <url>`.
+Guardate las tres URLs: son distintas, una por proyecto, y no vencen.
+
+> **El botón "Redeploy" NO sirve para publicar código nuevo.** Reconstruye
+> *ese mismo commit viejo*. Como los deploys automáticos están apagados,
+> nunca se crea un deployment para el commit nuevo, así que no hay nada
+> que redeployar. El Deploy Hook sí construye la punta de la rama.
 
 > Ojo con el orden: el commit que apaga los deploys todavía se despliega
 > (Vercel lee el archivo del commit entrante). A partir del siguiente, ya
 > no.
 
-## 3. ⚠️ Antes del próximo deploy del backend: la cédula se borra
+## ~~3. La cédula se borra en el próximo deploy~~ — ya pasó ✅
 
-La migración que quita la cédula **elimina esa columna y todos sus datos,
-de forma irreversible**, y corre sola en el próximo despliegue del
-backend.
-
-**Si hay inscripciones previas y esos números te sirven para algo,
-exportalos antes.** Si no, no hay nada que hacer.
+**Resuelto.** La migración destructiva ya corrió: el backend se desplegó
+varias veces desde que se agregó (la última, el 2026-08-31 con `d1556c6`)
+y `vercel-build` ejecuta `prisma migrate deploy` en cada build. La columna
+`cedula` y sus datos ya no existen. No hay nada que exportar ni que
+decidir.
 
 Contexto de la decisión: al quitar la cédula, el **correo** pasó a ser lo
 único que impide que la misma persona se inscriba dos veces. Esa

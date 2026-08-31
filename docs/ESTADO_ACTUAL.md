@@ -1,6 +1,10 @@
 # Estado actual del repositorio (RIDEEXPERIENCE)
 
-> Última actualización: 2026-08-28. Este documento existe para que
+> Última actualización: 2026-08-31. **Producción está al día**: los tres
+> proyectos corren el commit `d1556c6` ("Merge pull request #30"),
+> desplegados a mano con Deploy Hooks el 2026-08-31. La migración que
+> retira la cédula ya se aplicó en ese despliegue. Lo anterior sigue
+> vigente. Este documento existe para que
 > cualquier sesión nueva (de IA o de persona) pueda retomar el trabajo sin
 > depender del historial de chat anterior. **Reemplaza la versión del
 > 2026-08-27**: desde entonces se agregó a `admin/` el botón para
@@ -39,7 +43,9 @@ rama, dispara un build.** Mergear código a la rama por defecto ya NO lo
 saca a producción por sí solo.
 
 Para que un cambio llegue a producción hace falta un paso manual después
-del merge: botón **"Redeploy"** en Vercel, o un **Deploy Hook**. Ver
+del merge: disparar el **Deploy Hook** `manual` de cada proyecto (una URL
+distinta por proyecto, ya creadas). El botón "Redeploy" **no** sirve para
+esto: reconstruye el commit viejo, no la punta de la rama. Ver
 [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md) y
 [`PENDIENTES_CLIENTE.md`](./PENDIENTES_CLIENTE.md#2-los-despliegues-automáticos-ya-están-apagados-).
 

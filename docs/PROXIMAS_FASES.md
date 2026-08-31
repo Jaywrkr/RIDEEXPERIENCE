@@ -1,8 +1,19 @@
 # Próximas fases
 
-> Última actualización: 2026-08-26. Ver
+> Última actualización: 2026-08-31. Ver
 > [`ESTADO_ACTUAL.md`](./ESTADO_ACTUAL.md) para la foto completa del repo,
 > incluidas las reglas permanentes del cliente (fecha del evento, logo).
+
+## Estado de producción (2026-08-31)
+
+Los tres proyectos están en el commit **`d1556c6`** ("Merge pull request
+#30"), desplegados a mano con Deploy Hooks. La rama por defecto y
+producción están alineadas: no hay código fusionado esperando salir.
+
+Recordatorio: los deploys automáticos siguen apagados. Para publicar algo
+nuevo hay que disparar el Deploy Hook `manual` de cada proyecto — el botón
+"Redeploy" reconstruye el commit viejo, no sirve. Ver
+[`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md).
 
 ## Lo primero que debería hacer una sesión nueva
 
@@ -47,22 +58,23 @@
   panel para que quede versionado. Para desplegar: botón "Redeploy" o un
   Deploy Hook. Ver [`DESPLIEGUE_VERCEL.md`](./DESPLIEGUE_VERCEL.md).
 
-- [ ] **Aplicar la migración que quita la cédula.** El código ya no la
-  usa, pero la migración
-  `backend/prisma/migrations/20260825120000_quitar_cedula/` **borra la
-  columna y sus datos de forma irreversible**. Si hay inscripciones
-  previas con cédulas que se necesiten, **exportarlas antes**. Corre sola
-  en el próximo deploy del backend.
+- [x] ~~Aplicar la migración que quita la cédula.~~ **Ya se aplicó.** La
+  migración `backend/prisma/migrations/20260825120000_quitar_cedula/`
+  corrió en los despliegues del backend (el `vercel-build` ejecuta
+  `prisma migrate deploy` en cada build); el último, del 2026-08-31, ya
+  la incluye. La columna y sus datos ya no existen. No volver a avisar
+  sobre esto.
 
 ## Correos reales (siguen sin enviarse)
 
 - [ ] Crear cuenta en [Resend](https://resend.com) y verificar dominio.
 - [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en Vercel → proyecto
   `rideexperience-api` → Settings → Environment Variables, y redesplegar.
-- [ ] Revisar el copy de los 3 correos en
-  `backend/src/notificaciones/templates/correos.ts` — sigue siendo
-  genérico. Hay copy de marca validado en `shineray-deck/index.html`,
-  slide "El mensaje real".
+- [x] ~~Revisar el copy de los 3 correos.~~ **Hecho.** Los tres correos de
+  `backend/src/notificaciones/templates/correos.ts` ya están con la voz de
+  marca ("¡Ya estás dentro de la aventura A Todo Terreno!", "Falta poco,
+  …", "Nos vemos ahí, …"), la paleta del sitio y el sello. Esta nota
+  quedó vieja.
 
 ## Cierre
 
