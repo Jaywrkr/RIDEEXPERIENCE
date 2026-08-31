@@ -3,7 +3,11 @@
 > Última actualización: 2026-08-31. **Producción está al día**: los tres
 > proyectos corren el commit `d1556c6` ("Merge pull request #30"),
 > desplegados a mano con Deploy Hooks el 2026-08-31. La migración que
-> retira la cédula ya se aplicó en ese despliegue. Lo anterior sigue
+> retira la cédula ya se aplicó en ese despliegue. **Los correos ya
+> funcionan de verdad**: dominio `atodoterrenoec.com` comprado y
+> verificado en Resend, probado con un registro real (correo de
+> confirmación entregado con logo y sello) — ver el detalle en
+> "Backend / API". Lo anterior sigue
 > vigente. Este documento existe para que
 > cualquier sesión nueva (de IA o de persona) pueda retomar el trabajo sin
 > depender del historial de chat anterior. **Reemplaza la versión del
@@ -28,8 +32,13 @@ lugar. Hay un panel administrativo aparte para el equipo organizador.
 | Qué es | URL |
 |---|---|
 | **Sitio público** (el pasaporte, lo que ve quien escanea el QR) | **https://atodoterreno.vercel.app** |
+| Sitio público, dominio propio (mismo sitio, agregado 2026-08-31) | **https://atodoterrenoec.com** |
 | Panel administrativo | **https://rideexperience-admin.vercel.app** |
 | Backend / API | https://rideexperience-api.vercel.app |
+
+El QR ya enviado sigue apuntando a `atodoterreno.vercel.app` — no hace
+falta reimprimir ni reenviar nada, las dos URLs sirven el mismo
+deployment del proyecto `atodoterreno`.
 
 Rama por defecto del repo: **`claude/las-tanusas-landing-8ttqff`**. No
 existe `main`.
@@ -117,9 +126,15 @@ Desplegado como función serverless (`backend/api/[...proxy].ts`).
   `asistentes.service.ts`). Borrar un asistente elimina en cascada sus
   notificaciones (`onDelete: Cascade` en `Notificacion.asistente`, ver
   `schema.prisma`) — no hace falta borrarlas aparte.
-- Notificaciones por correo vía Resend — **el mecanismo funciona pero los
-  correos NO se envían**: falta cargar `RESEND_API_KEY`. Sin ella, el
-  sistema registra gente normal y solo loguea los correos.
+- Notificaciones por correo vía Resend — **funciona, en producción,
+  probado de punta a punta (2026-08-31)**. Dominio propio
+  `atodoterrenoec.com` (comprado en Vercel, conectado como dominio
+  adicional de `atodoterreno` — `atodoterreno.vercel.app` sigue activo,
+  el QR ya enviado no se ve afectado), verificado en Resend, y
+  `RESEND_API_KEY` + `RESEND_FROM_EMAIL` + `REGISTRO_SITIO_URL` cargadas
+  en `rideexperience-api`. Falta cargar `fechaAvisoPrevio` /
+  `fechaAvisoFinal` del evento desde el panel para que los otros dos
+  avisos (no solo la confirmación) tengan cuándo dispararse.
 
 ### `shineray-deck/` — deck de venta
 

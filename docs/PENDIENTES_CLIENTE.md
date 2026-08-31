@@ -7,6 +7,16 @@
 > **2026-08-31: los tres proyectos se pusieron al día en producción**
 > (commit `d1556c6`, "Merge pull request #30"), disparados con Deploy
 > Hooks. Con eso se cerró el punto de la cédula — ver más abajo.
+>
+> **2026-08-31: los correos ya se envían de verdad.** Se compró
+> `atodoterrenoec.com` (en Vercel, $11.25/año), se conectó como dominio
+> adicional del proyecto `atodoterreno` (`atodoterreno.vercel.app` sigue
+> funcionando igual — el QR que ya se mandó a la gente no se toca), se
+> verificó en Resend (DKIM, SPF, DMARC) y se cargaron
+> `RESEND_API_KEY`, `RESEND_FROM_EMAIL` y `REGISTRO_SITIO_URL` en
+> `rideexperience-api`. Probado de punta a punta: el correo de
+> confirmación llega, con logo y sello. El punto 4 de abajo queda
+> resuelto.
 
 ## ~~1. La fuente de texto~~ — descartado, no es un pendiente real
 
@@ -58,17 +68,18 @@ Contexto de la decisión: al quitar la cédula, el **correo** pasó a ser lo
 único que impide que la misma persona se inscriba dos veces. Esa
 protección quedó puesta.
 
-## 4. Correos: siguen sin enviarse
+## ~~4. Correos: siguen sin enviarse~~ — resuelto ✅
 
-El mecanismo funciona, pero falta la cuenta:
+**2026-08-31: los correos ya llegan.** Dominio `atodoterrenoec.com`
+comprado y verificado en Resend, variables cargadas en
+`rideexperience-api`, probado con un registro real: el correo de
+confirmación llega con logo y sello.
 
-- [ ] Crear cuenta en [Resend](https://resend.com) y verificar tu dominio
-      de envío (o usar el de pruebas mientras tanto).
-- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en **Vercel →
-      `rideexperience-api` → Settings → Environment Variables**, y
-      redesplegar.
-
-Sin esto la gente se registra normal, pero **no recibe ningún correo**.
+Sigue pendiente cargar las **fechas de los otros dos avisos** (previo y
+final) — ver el punto de "Confirmar la fecha del evento" más abajo, y la
+nota sobre `fechaAvisoPrevio` / `fechaAvisoFinal` en el panel del evento.
+Sin esas fechas, solo sale el correo de confirmación; los otros dos no
+tienen cuándo dispararse.
 
 ## 5. Confirmar la fecha del evento
 

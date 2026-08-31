@@ -65,16 +65,33 @@ nuevo hay que disparar el Deploy Hook `manual` de cada proyecto — el botón
   la incluye. La columna y sus datos ya no existen. No volver a avisar
   sobre esto.
 
-## Correos reales (siguen sin enviarse)
+## ~~Correos reales (siguen sin enviarse)~~ — resuelto (2026-08-31)
 
-- [ ] Crear cuenta en [Resend](https://resend.com) y verificar dominio.
-- [ ] Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL` en Vercel → proyecto
-  `rideexperience-api` → Settings → Environment Variables, y redesplegar.
+- [x] ~~Crear cuenta en Resend y verificar dominio.~~ **Hecho.** Se compró
+  `atodoterrenoec.com` en Vercel ($11.25/año) y se conectó como dominio
+  adicional del proyecto `atodoterreno` — `atodoterreno.vercel.app` sigue
+  activo sin cambios, el QR ya enviado a la gente sigue funcionando igual,
+  porque es el mismo deployment sirviendo las dos URLs. Verificado en
+  Resend (DKIM, SPF, DMARC cargados como registros DNS en Vercel).
+- [x] ~~Cargar `RESEND_API_KEY` y `RESEND_FROM_EMAIL`.~~ **Hecho**, más
+  `REGISTRO_SITIO_URL=https://atodoterrenoec.com` (necesaria para que el
+  logo y el sello del correo carguen — no estaba documentada antes).
+  Deploy Hook de `rideexperience-api` disparado para tomar los valores.
+- [x] Probado de punta a punta: registro real → correo de confirmación
+  entregado, con logo y sello.
 - [x] ~~Revisar el copy de los 3 correos.~~ **Hecho.** Los tres correos de
   `backend/src/notificaciones/templates/correos.ts` ya están con la voz de
   marca ("¡Ya estás dentro de la aventura A Todo Terreno!", "Falta poco,
   …", "Nos vemos ahí, …"), la paleta del sitio y el sello. Esta nota
   quedó vieja.
+- [ ] **Pendiente real que queda:** el evento todavía no tiene
+  `fechaAvisoPrevio` ni `fechaAvisoFinal` cargadas (confirmado
+  consultando `GET /api/eventos` el 2026-08-31, las dos en `null`). Sin
+  esas fechas, solo sale el correo de confirmación — los otros dos avisos
+  masivos no tienen cuándo dispararse. Se cargan desde el panel, en la
+  vista del evento; `eventos.service.ts` ya cubre el caso de que haya
+  gente registrada antes de poner la fecha (les crea la notificación
+  igual al guardarla).
 
 ## Cierre
 
