@@ -18,13 +18,23 @@ Los tres archivos: `registro/vercel.json`, `admin/vercel.json` y
 
 ### Entonces, ¿cómo se despliega?
 
-De dos maneras, ambas a propósito:
+**Con el Deploy Hook.** Cada proyecto ya tiene uno creado, llamado
+`manual`, apuntando a `claude/las-tanusas-landing-8ttqff`
+(Settings → Git → Deploy Hooks). Son tres URLs distintas, una por
+proyecto. Se disparan pegándolas en el navegador o con
+`curl -X POST <url>`.
 
-1. **Botón Redeploy** — Vercel → proyecto → Deployments → elegir el commit
-   → "..." → Redeploy.
-2. **Deploy Hook** — Settings → Git → Deploy Hooks. Crea una URL por
-   proyecto y rama; se dispara con `curl -X POST <url>`. Sirve para
-   automatizar el despliegue desde otro lado cuando se quiera.
+Orden recomendado: primero `rideexperience-api` (esperar a que quede
+Ready, porque compila y corre las migraciones), después
+`rideexperience-admin` y `atodoterreno`. El panel y el sitio público le
+hablan a la API, no al revés.
+
+> **Ojo con el botón "Redeploy": no publica código nuevo.** Reconstruye
+> *el mismo commit* del deployment que elegiste. Con los deploys
+> automáticos apagados nunca se crea un deployment para el commit nuevo,
+> así que no hay nada suyo que redeployar. Redeploy sirve para volver a
+> construir algo que ya se desplegó (por ejemplo, tras cambiar una
+> variable de entorno), no para sacar los últimos commits.
 
 ### Para volver a activar el despliegue automático
 
