@@ -2411,12 +2411,35 @@ input.is-ok + .field__error::after {
 }
 .visado__mono { font-variant-numeric: tabular-nums; letter-spacing: .06em; }
 
-/* El destino es sorpresa: se muestra tachado como un dato censurado,
-   que es la manera de decirlo sin dejar el campo vacío. */
+/* El destino es sorpresa: se muestra sellado como un dato censurado,
+   que es la manera de decirlo sin dejar el campo vacío -- y de paso
+   luce como un sello real de aduana en vez de texto suelto. */
 .visado__clasificado {
+  display: inline-block;
   color: var(--rojo-dark);
-  letter-spacing: .16em;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
   position: relative;
+}
+/* Selector reforzado para ganarle en especificidad al borde punteado
+   que trae por defecto .visado__dato dd. */
+.visado__dato dd.visado__clasificado {
+  margin-top: .05rem;
+  padding: .2rem .5rem;
+  border: 1.5px solid currentColor;
+  border-radius: 2px 7px 3px 8px;
+  transform: rotate(-4deg);
+}
+/* Doble filo, como cuando el sello no pega parejo al papel. */
+.visado__clasificado::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid currentColor;
+  border-radius: inherit;
+  opacity: .4;
+  pointer-events: none;
 }
 
 .visado__datos--viaje {

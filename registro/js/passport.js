@@ -2,7 +2,7 @@ import { initValidacion } from './validacion.js';
 import { golpeDeSello, sonidoPagina, sonidoError, sonidoTecla } from './ambiente.js';
 import { trackEvent } from './analytics.js';
 import { initTiltGiroscopio } from './orientacion.js';
-import { EVENT_DATE } from './countdown.js';
+import { EVENT_END_DATE } from './countdown.js';
 
 const TOTAL_STEPS = 3;
 
@@ -279,9 +279,9 @@ export function initPassportForm({ onSealed }) {
   const fechaEmisionEl = document.getElementById('fechaEmision');
   if (fechaEmisionEl) fechaEmisionEl.textContent = formatFecha(new Date());
   const fechaExpiracionEl = document.getElementById('fechaExpiracion');
-  // La fecha del evento es el 25 de septiembre y no cambia: se importa
-  // de countdown.js (fuente unica) en vez de escribirla de nuevo aqui.
-  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(EVENT_DATE);
+  // Expira cuando cierra el convoy (27 de septiembre), no cuando arranca:
+  // se importa de countdown.js (fuente unica) en vez de escribirla aqui.
+  if (fechaExpiracionEl) fechaExpiracionEl.textContent = formatFecha(EVENT_END_DATE);
 
   initBookTilt(document.querySelector('.pasaporte__pageframe'));
 

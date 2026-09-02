@@ -2,6 +2,12 @@
 // Convención Nacional Shineray 2026: 25, 26 y 27 de septiembre (UTC-5).
 export const EVENT_DATE = new Date('2026-09-25T09:00:00-05:00');
 
+// Sale el 27: fuente unica de la fecha de cierre del convoy, para que
+// "fecha de expiracion" del pasaporte, el .ics de calendario y la hoja
+// de visado no dupliquen esta cuenta cada uno por su lado.
+const DURACION_DIAS = 2;
+export const EVENT_END_DATE = new Date(EVENT_DATE.getTime() + DURACION_DIAS * 24 * 60 * 60 * 1000);
+
 export function initCountdown(onTick) {
   const els = {
     dias: document.getElementById('cd-dias'),

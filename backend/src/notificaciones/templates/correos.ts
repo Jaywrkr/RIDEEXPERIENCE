@@ -153,7 +153,7 @@ export const PlantillasCorreo = {
         overline: '¿El destino? Secreto hasta tu llegada.',
         titulo: `¡Ya estás dentro, ${nombreAsistente}!`,
         cuerpoHtml: `
-          <p style="margin:0 0 14px;">Tu pasaporte para <strong>${evento.nombre}</strong> quedó sellado. Consulta con tu asesor el lugar de embarque.</p>
+          <p style="margin:0 0 14px;">Tu pasaporte para <strong>${evento.nombre}</strong> quedó sellado. Consulta con tu asesor el lugar de encuentro.</p>
           <p style="margin:0;">Te enviaremos por acá las pistas clave del destino antes de la fecha — no hay forma de adelantarlas, así que revisa tu correo.</p>`,
         codigo,
         sitioUrl,

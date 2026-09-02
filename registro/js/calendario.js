@@ -2,13 +2,7 @@
 // client-side y lo dispara como descarga. Sin backend ni dependencias,
 // funciona igual en Google Calendar, Apple Calendar y Outlook porque
 // .ics es el formato que los tres importan de forma nativa.
-import { EVENT_DATE } from './countdown.js';
-
-// Duracion del convoy: entra el 25, sale el 27 (ver la hoja de visado).
-// Se calcula a partir de EVENT_DATE en vez de escribir la fecha de
-// salida de nuevo, para no sumar un cuarto lugar donde vive la fecha
-// del evento (ver docs/PROXIMAS_FASES.md).
-const DURACION_DIAS = 2;
+import { EVENT_DATE, EVENT_END_DATE } from './countdown.js';
 
 function formatoIcs(fecha) {
   return fecha.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -16,7 +10,7 @@ function formatoIcs(fecha) {
 
 function construirIcs({ serial }) {
   const inicio = EVENT_DATE;
-  const fin = new Date(inicio.getTime() + DURACION_DIAS * 24 * 60 * 60 * 1000);
+  const fin = EVENT_END_DATE;
   const ahora = formatoIcs(new Date());
 
   const lineas = [
@@ -30,7 +24,7 @@ function construirIcs({ serial }) {
     `DTSTART:${formatoIcs(inicio)}`,
     `DTEND:${formatoIcs(fin)}`,
     'SUMMARY:A Todo Terreno · Convención Shineray 2026',
-    'DESCRIPTION:Sales con el convoy. El destino se revela al llegar. Consulta con tu asesor el lugar de embarque.',
+    'DESCRIPTION:Sales con el convoy. El destino se revela al llegar. Consulta con tu asesor el lugar de encuentro.',
     'END:VEVENT',
     'END:VCALENDAR',
   ];
