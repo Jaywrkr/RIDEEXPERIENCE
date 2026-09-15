@@ -175,9 +175,9 @@ export const PlantillasCorreo = {
     };
   },
 
-  avisoFinal({ nombreAsistente, evento, sitioUrl, codigo }: DatosCorreo) {
+  avisoIntermedio({ nombreAsistente, evento, sitioUrl, codigo }: DatosCorreo) {
     return {
-      subject: `Últimos días — ${evento.nombre}`,
+      subject: `Prepara tu maleta — ${evento.nombre}`,
       html: envoltorioHtml({
         overline: 'Ya casi es hora',
         titulo: `Es hora de preparar la maleta, ${nombreAsistente}.`,
@@ -187,7 +187,22 @@ export const PlantillasCorreo = {
             <li style="margin-bottom:8px;"><strong>Primera noche:</strong> algo especial, para una bienvenida cálida.</li>
             <li><strong>Noche de gala:</strong> blanco total o tonos muy claros.</li>
           </ul>
-          <p style="margin:0;">Pista: los vestidos fluidos y las guayaberas se sienten increíbles acá. Nos vemos muy pronto.</p>`,
+          <p style="margin:0;">Pista: los vestidos fluidos y las guayaberas se sienten increíbles acá.</p>`,
+        codigo,
+        sitioUrl,
+      }),
+    };
+  },
+
+  avisoFinal({ nombreAsistente, evento, sitioUrl, codigo }: DatosCorreo) {
+    return {
+      subject: `Últimos días — ${evento.nombre}`,
+      html: envoltorioHtml({
+        overline: 'Ya casi es hora',
+        titulo: `Faltan 3 días, ${nombreAsistente}.`,
+        cuerpoHtml: `
+          <p style="margin:0 0 14px;">Y esto es solo el comienzo… Al llegar al destino recibirás tu Pasaporte de Aventura, que te acompañará durante toda la experiencia y será la guía de todo lo que está por venir.</p>
+          <p style="margin:0;">Recuerda consultar con tu asesor el lugar de encuentro. ¡Nos vemos muy pronto!</p>`,
         codigo,
         sitioUrl,
       }),

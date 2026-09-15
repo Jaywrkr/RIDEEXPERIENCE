@@ -77,6 +77,7 @@
     document.getElementById('ev-fecha-inicio').value = isoADatetimeLocal(evento.fechaInicio);
     document.getElementById('ev-fecha-fin').value = isoADatetimeLocal(evento.fechaFin);
     document.getElementById('ev-aviso-previo').value = isoADatetimeLocal(evento.fechaAvisoPrevio);
+    document.getElementById('ev-aviso-intermedio').value = isoADatetimeLocal(evento.fechaAvisoIntermedio);
     document.getElementById('ev-aviso-final').value = isoADatetimeLocal(evento.fechaAvisoFinal);
   }
 
@@ -382,6 +383,7 @@
       fechaInicio: datetimeLocalAIso(document.getElementById('ev-fecha-inicio').value),
       fechaFin: datetimeLocalAIso(document.getElementById('ev-fecha-fin').value) || undefined,
       fechaAvisoPrevio: datetimeLocalAIso(document.getElementById('ev-aviso-previo').value) || undefined,
+      fechaAvisoIntermedio: datetimeLocalAIso(document.getElementById('ev-aviso-intermedio').value) || undefined,
       fechaAvisoFinal: datetimeLocalAIso(document.getElementById('ev-aviso-final').value) || undefined,
     };
 

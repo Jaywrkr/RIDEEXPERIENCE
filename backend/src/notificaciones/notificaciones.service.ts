@@ -12,6 +12,7 @@ const PLANTILLA_POR_TIPO: Record<
 > = {
   [TipoNotificacion.CONFIRMACION]: PlantillasCorreo.confirmacion,
   [TipoNotificacion.AVISO_PREVIO]: PlantillasCorreo.avisoPrevio,
+  [TipoNotificacion.AVISO_INTERMEDIO]: PlantillasCorreo.avisoIntermedio,
   [TipoNotificacion.AVISO_FINAL]: PlantillasCorreo.avisoFinal,
 };
 
@@ -55,11 +56,12 @@ export class NotificacionesService {
   /**
    * Busca notificaciones CONFIRMACION en PENDIENTE cuya fecha ya llego y
    * las envia una por una (hasta MAX_POR_CORRIDA por llamada, ver arriba).
-   * AVISO_PREVIO y AVISO_FINAL ya no pasan por aca -- van como Broadcast,
-   * ver procesarAvisoMasivo() -- porque a diferencia de la confirmacion
-   * (inmediata, una persona a la vez) le llegan a los ~150 de golpe el
-   * mismo dia, y ahi el ritmo de entrega conviene dejarselo a Resend en
-   * vez de mandarlo correo por correo desde una funcion serverless.
+   * AVISO_PREVIO, AVISO_INTERMEDIO y AVISO_FINAL ya no pasan por aca --
+   * van como Broadcast, ver procesarAvisoMasivo() -- porque a diferencia
+   * de la confirmacion (inmediata, una persona a la vez) le llegan a los
+   * ~150 de golpe el mismo dia, y ahi el ritmo de entrega conviene
+   * dejarselo a Resend en vez de mandarlo correo por correo desde una
+   * funcion serverless.
    */
   async procesarPendientes(): Promise<{ enviadas: number; fallidas: number }> {
     const pendientes = await this.prisma.notificacion.findMany({
@@ -115,8 +117,9 @@ export class NotificacionesService {
   }
 
   /**
-   * Envia AVISO_PREVIO o AVISO_FINAL como un solo Resend Broadcast a todos
-   * los que ya tienen esa notificacion PENDIENTE y vencida. Dos fases,
+   * Envia AVISO_PREVIO, AVISO_INTERMEDIO o AVISO_FINAL como un solo
+   * Resend Broadcast a todos los que ya tienen esa notificacion
+   * PENDIENTE y vencida. Dos fases,
    * repartidas en corridas del cron para no pisar el limite de 2 req/s:
    *
    *  1. Sincronizar a cada asistente pendiente como contacto de la
@@ -130,7 +133,10 @@ export class NotificacionesService {
    * mandar ~150 correos individuales el mismo dia.
    */
   async procesarAvisoMasivo(
-    tipo: typeof TipoNotificacion.AVISO_PREVIO | typeof TipoNotificacion.AVISO_FINAL,
+    tipo:
+      | typeof TipoNotificacion.AVISO_PREVIO
+      | typeof TipoNotificacion.AVISO_INTERMEDIO
+      | typeof TipoNotificacion.AVISO_FINAL,
   ): Promise<{ estado: 'nada-pendiente' | 'sincronizando' | 'enviado'; cantidad?: number }> {
     const pendientes = await this.prisma.notificacion.findMany({
       where: {
@@ -203,8 +209,8 @@ export class NotificacionesService {
       return { ok: true };
     }
     if (notificaciones.length > 1) {
-      // AVISO_PREVIO/AVISO_FINAL van como Broadcast: todos sus
-      // destinatarios comparten el mismo proveedorId (el id del
+      // AVISO_PREVIO/AVISO_INTERMEDIO/AVISO_FINAL van como Broadcast:
+      // todos sus destinatarios comparten el mismo proveedorId (el id del
       // broadcast), y el evento del webhook no trae ninguna referencia
       // nuestra que diga a cual de ellos corresponde. Marcar el estado de
       // uno solo arriesgaria pisar el de otro, asi que se ignora a

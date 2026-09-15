@@ -32,7 +32,7 @@ export class AsistentesService {
 
     // El registro crea de una vez la notificacion de confirmacion
     // (pendiente de envio, Semana 4 la conecta a un correo real) y, si el
-    // evento ya tiene fechas de aviso configuradas, las otras dos.
+    // evento ya tiene fechas de aviso configuradas, las otras tres.
     const asistente = await this.prisma.asistente.create({
       data: {
         ...dto,
@@ -46,6 +46,15 @@ export class AsistentesService {
                     tipo: TipoNotificacion.AVISO_PREVIO,
                     eventoId,
                     programadaPara: evento.fechaAvisoPrevio,
+                  },
+                ]
+              : []),
+            ...(evento.fechaAvisoIntermedio
+              ? [
+                  {
+                    tipo: TipoNotificacion.AVISO_INTERMEDIO,
+                    eventoId,
+                    programadaPara: evento.fechaAvisoIntermedio,
                   },
                 ]
               : []),

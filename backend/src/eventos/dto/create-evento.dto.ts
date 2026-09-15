@@ -30,6 +30,11 @@ export class CreateEventoDto {
 
   @IsOptional()
   @Type(() => Date)
+  @IsDate({ message: 'fechaAvisoIntermedio debe ser una fecha valida (ISO 8601).' })
+  fechaAvisoIntermedio?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
   @IsDate({ message: 'fechaAvisoFinal debe ser una fecha valida (ISO 8601).' })
   fechaAvisoFinal?: Date;
 }
