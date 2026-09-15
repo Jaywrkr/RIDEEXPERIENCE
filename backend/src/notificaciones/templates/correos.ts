@@ -166,10 +166,10 @@ export const PlantillasCorreo = {
       subject: `Se acerca ${evento.nombre}`,
       html: envoltorioHtml({
         overline: 'La cuenta regresiva ya empezó',
-        titulo: `Falta poco, ${nombreAsistente}.`,
+        titulo: `¡Ya estás dentro de la aventura ${evento.nombre}!`,
         cuerpoHtml: `
-          <p style="margin:0 0 14px;">Prepárate: <strong>${evento.nombre}</strong> está cada vez más cerca.</p>
-          <p style="margin:0;">Fecha: ${formatearFecha(evento.fechaInicio)}</p>`,
+          <p style="margin:0 0 14px;">Nos trasladamos a un terreno cálido, de horizontes sin fin y donde el viento marca el camino.</p>
+          <p style="margin:0;">Muy pronto recibirás nuevas pistas sobre este viaje, ${nombreAsistente}. ¡Quédate muy atento y no te pierdas ningún detalle!</p>`,
         codigo,
         sitioUrl,
       }),
@@ -181,10 +181,15 @@ export const PlantillasCorreo = {
       subject: `Últimos días — ${evento.nombre}`,
       html: envoltorioHtml({
         overline: 'Ya casi es hora',
-        titulo: `Nos vemos ahí, ${nombreAsistente}.`,
+        titulo: `Es hora de preparar la maleta, ${nombreAsistente}.`,
         cuerpoHtml: `
-          <p style="margin:0 0 14px;"><strong>${evento.nombre}</strong> está por comenzar.</p>
-          <p style="margin:0;">Fecha: ${formatearFecha(evento.fechaInicio)}</p>`,
+          <p style="margin:0 0 14px;">Guarda tu ropa más cómoda, tus mejores gafas de sol y tus atuendos más especiales. Tendremos dos cenas inolvidables:</p>
+          <ul style="margin:0 0 14px;padding-left:20px;text-align:left;max-width:340px;margin-left:auto;margin-right:auto;">
+            <li style="margin-bottom:8px;">Para la primera noche, elige algo especial que marque una cálida bienvenida a esta gran aventura.</li>
+            <li>Para la noche de gala, te sugerimos apostar por el blanco total o tonos muy claros.</li>
+          </ul>
+          <p style="margin:0 0 14px;"><strong>Pista:</strong> los vestidos fluidos y las guayaberas se sienten increíbles en este destino.</p>
+          <p style="margin:0;">¡Sigue atento a tus próximos correos para descubrir más detalles!</p>`,
         codigo,
         sitioUrl,
       }),
