@@ -29,16 +29,20 @@ export class EventosService {
     const evento = await this.prisma.evento.update({ where: { id }, data: dto });
 
     // asistentes.service.ts solo crea la Notificacion de AVISO_PREVIO /
-    // AVISO_FINAL de un asistente si el evento ya tenia esa fecha puesta
-    // en el momento en que se registro. Alguien que se registro *antes*
-    // de que el organizador definiera la fecha del aviso se quedaria sin
-    // esa Notificacion para siempre. Por eso, cada vez que se guarda una
-    // fecha de aviso: (1) se le crea la Notificacion pendiente a quien le
-    // falte, y (2) se reprograma la de quien ya la tenia pero todavia no
-    // se le envio -- asi el organizador puede mover la fecha sin miedo a
-    // dejar gente sin avisar o mandarlo en el momento equivocado.
+    // AVISO_INTERMEDIO / AVISO_FINAL de un asistente si el evento ya
+    // tenia esa fecha puesta en el momento en que se registro. Alguien
+    // que se registro *antes* de que el organizador definiera la fecha
+    // del aviso se quedaria sin esa Notificacion para siempre. Por eso,
+    // cada vez que se guarda una fecha de aviso: (1) se le crea la
+    // Notificacion pendiente a quien le falte, y (2) se reprograma la de
+    // quien ya la tenia pero todavia no se le envio -- asi el organizador
+    // puede mover la fecha sin miedo a dejar gente sin avisar o mandarlo
+    // en el momento equivocado.
     if (dto.fechaAvisoPrevio !== undefined && evento.fechaAvisoPrevio) {
       await this.sincronizarAvisoMasivo(evento.id, TipoNotificacion.AVISO_PREVIO, evento.fechaAvisoPrevio);
+    }
+    if (dto.fechaAvisoIntermedio !== undefined && evento.fechaAvisoIntermedio) {
+      await this.sincronizarAvisoMasivo(evento.id, TipoNotificacion.AVISO_INTERMEDIO, evento.fechaAvisoIntermedio);
     }
     if (dto.fechaAvisoFinal !== undefined && evento.fechaAvisoFinal) {
       await this.sincronizarAvisoMasivo(evento.id, TipoNotificacion.AVISO_FINAL, evento.fechaAvisoFinal);

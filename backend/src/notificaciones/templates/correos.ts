@@ -166,10 +166,28 @@ export const PlantillasCorreo = {
       subject: `Se acerca ${evento.nombre}`,
       html: envoltorioHtml({
         overline: 'La cuenta regresiva ya empezó',
-        titulo: `Falta poco, ${nombreAsistente}.`,
+        titulo: `La aventura se acerca, ${nombreAsistente}.`,
         cuerpoHtml: `
-          <p style="margin:0 0 14px;">Prepárate: <strong>${evento.nombre}</strong> está cada vez más cerca.</p>
-          <p style="margin:0;">Fecha: ${formatearFecha(evento.fechaInicio)}</p>`,
+          <p style="margin:0;">Nos vamos a un terreno cálido, de horizontes sin fin, donde el viento marca el camino. Pronto llegan más pistas — no te las pierdas.</p>`,
+        codigo,
+        sitioUrl,
+      }),
+    };
+  },
+
+  avisoIntermedio({ nombreAsistente, evento, sitioUrl, codigo }: DatosCorreo) {
+    return {
+      subject: `Prepara tu maleta — ${evento.nombre}`,
+      html: envoltorioHtml({
+        overline: 'Ya casi es hora',
+        titulo: `Es hora de preparar la maleta, ${nombreAsistente}.`,
+        cuerpoHtml: `
+          <p style="margin:0 0 14px;">Empaca ropa cómoda, gafas de sol y tus mejores atuendos — vienen dos cenas inolvidables.</p>
+          <ul style="margin:0 0 14px;padding-left:20px;text-align:left;max-width:340px;margin-left:auto;margin-right:auto;">
+            <li style="margin-bottom:8px;"><strong>Primera noche:</strong> algo especial, para una bienvenida cálida.</li>
+            <li><strong>Noche de gala:</strong> blanco total o tonos muy claros.</li>
+          </ul>
+          <p style="margin:0;">Pista: los vestidos fluidos y las guayaberas se sienten increíbles acá.</p>`,
         codigo,
         sitioUrl,
       }),
@@ -181,10 +199,10 @@ export const PlantillasCorreo = {
       subject: `Últimos días — ${evento.nombre}`,
       html: envoltorioHtml({
         overline: 'Ya casi es hora',
-        titulo: `Nos vemos ahí, ${nombreAsistente}.`,
+        titulo: `Faltan 3 días, ${nombreAsistente}.`,
         cuerpoHtml: `
-          <p style="margin:0 0 14px;"><strong>${evento.nombre}</strong> está por comenzar.</p>
-          <p style="margin:0;">Fecha: ${formatearFecha(evento.fechaInicio)}</p>`,
+          <p style="margin:0 0 14px;">Y esto es solo el comienzo… Al llegar al destino recibirás tu Pasaporte de Aventura, que te acompañará durante toda la experiencia y será la guía de todo lo que está por venir.</p>
+          <p style="margin:0;">Recuerda consultar con tu asesor el lugar de encuentro. ¡Nos vemos muy pronto!</p>`,
         codigo,
         sitioUrl,
       }),

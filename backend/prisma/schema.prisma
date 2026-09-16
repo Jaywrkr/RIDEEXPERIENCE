@@ -38,10 +38,11 @@ model Evento {
   fechaInicio DateTime @map("fecha_inicio")
   fechaFin    DateTime? @map("fecha_fin")
 
-  // Fechas configurables de los 2 avisos programados (el de confirmacion
+  // Fechas configurables de los 3 avisos programados (el de confirmacion
   // es inmediato, no se configura). Ver Notificacion.tipo.
-  fechaAvisoPrevio DateTime? @map("fecha_aviso_previo")
-  fechaAvisoFinal  DateTime? @map("fecha_aviso_final")
+  fechaAvisoPrevio     DateTime? @map("fecha_aviso_previo")
+  fechaAvisoIntermedio DateTime? @map("fecha_aviso_intermedio")
+  fechaAvisoFinal      DateTime? @map("fecha_aviso_final")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -97,6 +98,7 @@ model Asistente {
 enum TipoNotificacion {
   CONFIRMACION
   AVISO_PREVIO
+  AVISO_INTERMEDIO
   AVISO_FINAL
 }
 
@@ -106,7 +108,7 @@ enum EstadoNotificacion {
   FALLIDA
 }
 
-// Registro de las 3 notificaciones de correo prometidas en la cotizacion.
+// Registro de las 4 notificaciones de correo (confirmacion + 3 avisos).
 // Se crea en el registro del asistente; el envio real (Semana 4) lo
 // completa un job/cron que lee estado = PENDIENTE.
 model Notificacion {
@@ -133,11 +135,12 @@ model Notificacion {
   entregaActualizadaEn DateTime? @map("entrega_actualizada_en")
   abiertaEn            DateTime? @map("abierta_en")
 
-  // AVISO_PREVIO y AVISO_FINAL van como Resend Broadcast, no correo por
-  // correo: hay que sincronizar antes al asistente como contacto de la
-  // Audience de Resend (una llamada API paceada, igual de sujeta al
-  // limite de 2/s que antes). Esta bandera evita reintentar esa
-  // sincronizacion en cada corrida del cron una vez que ya se hizo.
+  // AVISO_PREVIO, AVISO_INTERMEDIO y AVISO_FINAL van como Resend
+  // Broadcast, no correo por correo: hay que sincronizar antes al
+  // asistente como contacto de la Audience de Resend (una llamada API
+  // paceada, igual de sujeta al limite de 2/s que antes). Esta bandera
+  // evita reintentar esa sincronizacion en cada corrida del cron una vez
+  // que ya se hizo.
   // CONFIRMACION nunca la usa (queda en false, sin significado).
   sincronizadaEnAudiencia Boolean @default(false) @map("sincronizada_en_audiencia")
 

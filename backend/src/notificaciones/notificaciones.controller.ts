@@ -50,18 +50,22 @@ export class NotificacionesController {
   }
 
   // CONFIRMACION sigue siendo un correo por asistente (inmediato, ya
-  // personalizado con su codigo); AVISO_PREVIO/AVISO_FINAL van como
-  // Broadcast (ver procesarAvisoMasivo en el service) -- ambos flujos
-  // conviene dispararlos en la misma llamada del cron/scheduler externo.
+  // personalizado con su codigo); AVISO_PREVIO/AVISO_INTERMEDIO/
+  // AVISO_FINAL van como Broadcast (ver procesarAvisoMasivo en el
+  // service) -- los tres flujos conviene dispararlos en la misma llamada
+  // del cron/scheduler externo.
   private async procesarTodo() {
     const confirmaciones = await this.notificacionesService.procesarPendientes();
     const avisoPrevio = await this.notificacionesService.procesarAvisoMasivo(
       TipoNotificacion.AVISO_PREVIO,
     );
+    const avisoIntermedio = await this.notificacionesService.procesarAvisoMasivo(
+      TipoNotificacion.AVISO_INTERMEDIO,
+    );
     const avisoFinal = await this.notificacionesService.procesarAvisoMasivo(
       TipoNotificacion.AVISO_FINAL,
     );
-    return { confirmaciones, avisoPrevio, avisoFinal };
+    return { confirmaciones, avisoPrevio, avisoIntermedio, avisoFinal };
   }
 
   // Recibe los eventos de entrega de Resend (entregado, rebotado,
