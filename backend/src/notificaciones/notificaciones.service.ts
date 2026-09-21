@@ -43,6 +43,14 @@ const MAX_POR_CORRIDA = 25;
 // contacto es tambien una llamada API por asistente.
 const LOTE_SINCRONIZACION_AUDIENCIA = 25;
 
+// Vercel mata la funcion a los 60s (maxDuration en backend/vercel.json)
+// sin devolver respuesta: el que la llamo recibe un
+// FUNCTION_INVOCATION_TIMEOUT que no dice cuanto se alcanzo a procesar.
+// Cada bucle de abajo se corta en este presupuesto para responder con el
+// avance real. Es por llamada, y procesarTodo() encadena varias, por eso
+// queda bastante por debajo de los 60s.
+const PRESUPUESTO_CORRIDA_MS = 20_000;
+
 @Injectable()
 export class NotificacionesService {
   private readonly logger = new Logger(NotificacionesService.name);
@@ -78,8 +86,10 @@ export class NotificacionesService {
     let enviadas = 0;
     let fallidas = 0;
     const sitioUrl = this.config.get<string>('REGISTRO_SITIO_URL');
+    const corte = Date.now() + PRESUPUESTO_CORRIDA_MS;
 
     for (const [indice, notificacion] of pendientes.entries()) {
+      if (Date.now() > corte) break;
       if (indice > 0) await esperar(PAUSA_ENTRE_ENVIOS_MS);
 
       const plantilla = PLANTILLA_POR_TIPO[notificacion.tipo];
@@ -151,21 +161,28 @@ export class NotificacionesService {
       return { estado: 'nada-pendiente' };
     }
 
-    const sinSincronizar = pendientes.filter((n) => !n.sincronizadaEnAudiencia);
+    const yaEranContacto = await this.heredarSincronizacion(pendientes);
+    const sinSincronizar = pendientes.filter(
+      (n) => !n.sincronizadaEnAudiencia && !yaEranContacto.has(n.asistenteId),
+    );
     if (sinSincronizar.length > 0) {
       const lote = sinSincronizar.slice(0, LOTE_SINCRONIZACION_AUDIENCIA);
+      const corte = Date.now() + PRESUPUESTO_CORRIDA_MS;
+      let sincronizados = 0;
       for (const [indice, notificacion] of lote.entries()) {
+        if (Date.now() > corte) break;
         if (indice > 0) await esperar(PAUSA_ENTRE_ENVIOS_MS);
         await this.mailer.sincronizarContacto(notificacion.asistente.correo, notificacion.asistente.nombre);
         await this.prisma.notificacion.update({
           where: { id: notificacion.id },
           data: { sincronizadaEnAudiencia: true },
         });
+        sincronizados += 1;
       }
       this.logger.log(
-        `Sincronizando audiencia para ${tipo}: ${lote.length} de ${sinSincronizar.length} pendientes.`,
+        `Sincronizando audiencia para ${tipo}: ${sincronizados} de ${sinSincronizar.length} pendientes.`,
       );
-      return { estado: 'sincronizando', cantidad: sinSincronizar.length - lote.length };
+      return { estado: 'sincronizando', cantidad: sinSincronizar.length - sincronizados };
     }
 
     const plantilla = PLANTILLA_POR_TIPO[tipo];
@@ -187,6 +204,46 @@ export class NotificacionesService {
 
     this.logger.log(`Aviso masivo ${tipo} enviado como broadcast a ${pendientes.length} asistentes.`);
     return { estado: 'enviado', cantidad: pendientes.length };
+  }
+
+  /**
+   * Los tres avisos comparten una sola Audience de Resend, asi que a
+   * quien ya se dio de alta como contacto para un aviso anterior no hace
+   * falta volver a sincronizarlo: ya esta ahi. Marca sus notificaciones
+   * de una y devuelve los ids de esos asistentes.
+   *
+   * Sin este atajo, el segundo y el tercer aviso repiten una llamada API
+   * por cada asistente que Resend contesta "already exists". Con ~90
+   * inscritos y la pausa de 2 req/s son minutos de trabajo inutil: la
+   * corrida se pasa del limite de tiempo de la funcion serverless y
+   * muere antes de llegar al broadcast, corrida tras corrida.
+   */
+  private async heredarSincronizacion(
+    pendientes: { id: string; asistenteId: string; sincronizadaEnAudiencia: boolean }[],
+  ): Promise<Set<string>> {
+    const sinMarcar = pendientes.filter((n) => !n.sincronizadaEnAudiencia);
+    if (sinMarcar.length === 0) return new Set();
+
+    const contactos = await this.prisma.notificacion.findMany({
+      where: {
+        sincronizadaEnAudiencia: true,
+        asistenteId: { in: sinMarcar.map((n) => n.asistenteId) },
+      },
+      select: { asistenteId: true },
+      distinct: ['asistenteId'],
+    });
+    const yaEranContacto = new Set(contactos.map((c) => c.asistenteId));
+    if (yaEranContacto.size === 0) return yaEranContacto;
+
+    const heredadas = sinMarcar.filter((n) => yaEranContacto.has(n.asistenteId));
+    await this.prisma.notificacion.updateMany({
+      where: { id: { in: heredadas.map((n) => n.id) } },
+      data: { sincronizadaEnAudiencia: true },
+    });
+    this.logger.log(
+      `${heredadas.length} asistentes ya eran contacto de la Audience: se saltea su sincronizacion.`,
+    );
+    return yaEranContacto;
   }
 
   /**
